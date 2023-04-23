@@ -1,0 +1,10 @@
+#conda activate myenv
+
+#generat the shared library file, in this case, libplugin.so
+python build.py
+export LD_LIBRARY_PATH=/generated/lib.so/path:$LD_LIBRARY_PATH
+
+make
+./test
+
+make clean
