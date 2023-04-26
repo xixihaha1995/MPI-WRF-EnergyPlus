@@ -9,5 +9,5 @@ void hello_world(void)
         EnergyPlusState state = stateNew();
         stateReset(state);
         stateDelete(state);
-        printf("No hello, but this is from energyplus!\n");
+        printf("Hello WRF from energyplus!\n");
 }

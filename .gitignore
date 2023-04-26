@@ -1,1 +1,5 @@
 **/build/
+*.so
+*.iml
+*.o
+/_6_MPI_EP/cBossCallWorkers/boss
