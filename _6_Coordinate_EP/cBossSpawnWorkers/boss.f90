@@ -12,6 +12,7 @@ program mpi_app
     ! Get the rank and number of processes in the parent communicator
     call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
     call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
+    print *, "Before spawning with rank ", rank, " of ", num_procs,"MPI_COMM_WORLD ID: ", MPI_COMM_WORLD
 
     ! Spawn two child processes
     call spawn_children()
@@ -32,11 +33,13 @@ contains
         ! Duplicate the parent communicator
         call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
         ! Spawn two child processes
-        do i = 1, 2
-            command = "./child.exe"
-            call MPI_Comm_spawn(command, MPI_ARGV_NULL, 1, MPI_INFO_NULL, &
-                    0, MPI_COMM_WORLD, new_comm, errorcodes(i), ierr)
-        end do
+
+        command = "./child.exe"
+        call MPI_Comm_spawn(command, MPI_ARGV_NULL, 3, MPI_INFO_NULL, &
+                0, MPI_COMM_WORLD, new_comm, errorcodes(i), ierr)
+        print *, "new_comm ", new_comm, "errorcodes ", errorcodes(i), "MPI_COMM_WORLD ID: ", MPI_COMM_WORLD
+
+        call MPI_Send(66, 1, MPI_INTEGER, 2, 0, new_comm, ierr)
 
     end subroutine spawn_children
 
