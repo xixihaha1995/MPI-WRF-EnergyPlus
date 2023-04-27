@@ -25,6 +25,12 @@ int main(int argc, char** argv) {
 //        SEND TO then rank of 1 of parent_comm
         sprintf(msgstr, "I'm child %d.", rank);
         MPI_Send(&msgstr, strlen(msgstr) + 1, MPI_CHAR, 1, 0, parent_comm);
+//        send rank 0 of my own MPI_COMM_WORLD
+        MPI_Send("Chid rank 2 talking to rank 0", MAX_MSG_LEN, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
+    } else if (rank == 0)
+    {
+        MPI_Recv(&msgstr, MAX_MSG_LEN, MPI_CHAR, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        printf("Intra chid %d received %s from %d of comm %d\n", rank, msgstr, status.MPI_SOURCE, MPI_COMM_WORLD);
     }
     MPI_Finalize();
     return 0;

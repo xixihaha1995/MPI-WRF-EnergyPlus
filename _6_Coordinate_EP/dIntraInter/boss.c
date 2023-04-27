@@ -30,5 +30,10 @@ void spawn_children(void) {
     if (rank == 1) {
         MPI_Recv(&msgstr, MAX_MSG_LEN, MPI_CHAR, MPI_ANY_SOURCE, MPI_ANY_TAG, child_comm, &status);
         printf("Parent %d received %s from %d of comm %d\n", rank, msgstr, status.MPI_SOURCE, child_comm);
+//        Intra from rank 0 to 1
+        MPI_Recv(&msgstr, MAX_MSG_LEN, MPI_CHAR, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        printf("Parent Intra %d received %s from %d of comm %d\n", rank, msgstr, status.MPI_SOURCE, MPI_COMM_WORLD);
+    } else if (rank == 0) {
+        MPI_Send("Rank 0 to 1", MAX_MSG_LEN, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
     }
 }
