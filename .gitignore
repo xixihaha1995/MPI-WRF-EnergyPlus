@@ -2,4 +2,8 @@
 *.so
 *.iml
 *.o
-/_6_MPI_EP/cBossCallWorkers/boss
+*.out
+/_6_Coordinate_EP/cBossCallWorkers/boss
+/_6_Coordinate_EP/dPThread/program
+/_6_Coordinate_EP/dPThread/main
+/_4_c_hello/myprogram

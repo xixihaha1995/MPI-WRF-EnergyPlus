@@ -16,4 +16,8 @@ use, intrinsic :: iso_c_binding
 
   call hello_world()
 
+  call hello_world()
+
+  call hello_world()
+
 end program call_python        

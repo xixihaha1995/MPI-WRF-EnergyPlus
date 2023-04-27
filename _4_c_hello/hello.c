@@ -3,7 +3,10 @@
 
 extern void hello_world(void);
 
+int numCalls = 0;
+
 void hello_world(void)
 {
-    printf("Hello WRF, this is real c world!\n");
+    numCalls++;
+    printf("Hello WRF, this is real c world! %d\n", numCalls);
 }
