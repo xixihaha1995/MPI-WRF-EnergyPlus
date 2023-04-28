@@ -1,0 +1,10 @@
+CC=gcc
+CFLAGS=-I/usr/local/EnergyPlus-23-1-0/include
+LDFLAGS=-L/usr/local/EnergyPlus-23-1-0
+LDLIBS=-lenergyplusapi
+
+child.exe: child.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o child.exe child.c $(LDLIBS)
+
+clean:
+	rm -f test

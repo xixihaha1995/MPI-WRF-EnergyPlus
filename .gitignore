@@ -1,8 +1,12 @@
 **/build/
+**/EnergyPlus/
+**/ep_trivial**/
 *.so
 *.iml
 *.o
+*.exe
 *.out
+*.audit
 /_6_Coordinate_EP/cBossCallWorkers/boss
 /_6_Coordinate_EP/dPThread/program
 /_6_Coordinate_EP/dPThread/main

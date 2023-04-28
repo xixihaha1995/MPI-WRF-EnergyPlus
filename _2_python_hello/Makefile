@@ -1,5 +1,5 @@
 
-# Makefile
+# fortran_plugin_Makefile
 
 FC = gfortran
 FFLAGS = -g -Wall
