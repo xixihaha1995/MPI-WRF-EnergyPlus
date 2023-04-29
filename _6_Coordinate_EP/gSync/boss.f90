@@ -10,10 +10,13 @@ contains
         implicit none
         include 'mpif.h'
         integer :: ierr, rank, num_procs, new_comm, parent_comm, child_idx,status(MPI_STATUS_SIZE)
-        integer ::  calling = 0, num_children = 1
-        real(kind=8) :: received_data(2), random_oat_c
+        integer ::  calling = 0, num_children = 3
+        REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
+        real(kind=8) :: random_oat_c
         logical :: inited
         character(len=50) :: command
+        ALLOCATE(received_data(num_children))
+
         !define one global variable countCalling
         print *, "calling", calling
         if (calling > 0) then
@@ -39,8 +42,10 @@ contains
             do child_idx = 1, num_children
                 call random_number(random_oat_c)
                 random_oat_c = 12 + int(random_oat_c * 28)
-                call MPI_Send(random_oat_c, 1, MPI_REAL8, child_idx-1, 0, new_comm, ierr)
-                call MPI_Recv(received_data(child_idx), 1, MPI_REAL8, child_idx-1, MPI_ANY_TAG, new_comm, status, ierr)
+!                call MPI_SSend(random_oat_c, 1, MPI_REAL8, child_idx-1, 0, new_comm, ierr)
+!                call MPI_Recv(received_data(child_idx), 1, MPI_REAL8, child_idx-1, MPI_ANY_TAG, new_comm, status, ierr)
+                call MPI_Sendrecv(random_oat_c, 1, MPI_REAL8, child_idx-1, 0, &
+                        received_data(child_idx), 1, MPI_REAL8, child_idx-1, MPI_ANY_TAG, new_comm, status, ierr)
             end do
             print *, "received_data", received_data
             if (status(MPI_TAG) == 886) then
