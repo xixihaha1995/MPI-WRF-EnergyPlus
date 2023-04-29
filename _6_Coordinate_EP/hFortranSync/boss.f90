@@ -10,7 +10,8 @@ contains
     subroutine spawn_children()
         implicit none
         include 'mpif.h'
-        integer :: ierr, rank, num_procs, new_comm, parent_comm, child_idx,status(MPI_STATUS_SIZE)
+        integer :: ierr, rank, num_procs, parent_comm, child_idx,status(MPI_STATUS_SIZE)
+        integer,save :: new_comm
         integer ::  calling = 0,num_children = 3, ending_steps = 6 * 24, ucm_tag = 0
         REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
         real(kind=8) :: random_oat_c
@@ -19,7 +20,7 @@ contains
         ALLOCATE(received_data(num_children))
 
         calling = calling + 1
-        print *, "calling spawn_children()", calling
+        print *, "calling spawn_children() counts:", calling
 
         if (turnMPIon .eqv. .false.) then
             print *, "turnMPIon is false, no more MPI calls"
@@ -55,17 +56,21 @@ contains
         do child_idx = 1, num_children
             call random_number(random_oat_c)
             random_oat_c = 12 + int(random_oat_c * 28)
+!            print *, "new_comm:", new_comm
+!            new_comm = -2080374783
             call MPI_Sendrecv(random_oat_c, 1, MPI_REAL8, child_idx-1, ucm_tag, &
                     received_data(child_idx), 1, MPI_REAL8, child_idx-1, MPI_ANY_TAG, new_comm, status, ierr)
         end do
-        print *, "received_data", received_data
+        print *, "WRF (Parent(s)) received_data (waste heat J)", received_data
 
         if (ucm_tag == 886) then
-            print *, "WRF (Parent(s)) ending messsage 886 sent, to reach collective barrier, then MPI_Finalize"
+            print *, "WRF (Parent(s)) ending messsage 886 sent, &
+                    &to reach collective barrier,(no more inter-communicator calls)&
+                    & only WRF global setting call free and MPI_Finalize()"
             call MPI_Barrier(new_comm, ierr)
-            call MPI_Comm_free(new_comm, ierr)
-            call MPI_Comm_free(parent_comm, ierr)
-            call MPI_Finalize(ierr)
+!            call MPI_Comm_free(new_comm, ierr)
+!            call MPI_Comm_free(parent_comm, ierr)
+!            call MPI_Finalize(ierr)
         end if
     end subroutine spawn_children
 

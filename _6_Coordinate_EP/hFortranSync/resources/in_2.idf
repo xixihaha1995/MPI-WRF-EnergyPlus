@@ -2414,7 +2414,7 @@ ConvergenceLimits,
     1,                       !- Begin Day of Month
     2017,                    !- Begin Year
     1,                       !- End Month
-    6,                       !- End Day of Month
+    7,                       !- End Day of Month
     2017,                    !- End Year
     Sunday,                  !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days

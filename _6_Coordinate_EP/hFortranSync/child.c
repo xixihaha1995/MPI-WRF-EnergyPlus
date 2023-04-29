@@ -39,7 +39,6 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     }
     int whichperid = kindOfSim(state);
     if (whichperid != 3) {
-//        printf("Not in run period, whichperid = %d\n", whichperid);
         return;
     }
     Real64 simTimeInHours = currentSimTime(state);
@@ -48,21 +47,20 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 
     if (! turnMPIon)
     {
-        printf("No more MPI, simTime = %.2f (s), simHVAC = %.2f (J)\n", simTime, simHVAC);
+        printf("No more MPI, simTime = %.2f (s), simHVAC = %.2f (J), rank = %d\n", simTime, simHVAC, rank);
         return;
     }
     MPI_Recv(&msg, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    MPI_Send(&simHVAC, 1, MPI_DOUBLE, status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d received OAT %.2f (C) from %d of comm, and sent heat %.2f (J) to it, at time %.2f(s)\n",
            rank, msg, status.MPI_SOURCE,simHVAC, simTime);
-
-    MPI_Send(&simHVAC, 1, MPI_DOUBLE, status.MPI_SOURCE, 0, parent_comm);
     if (status.MPI_TAG == 886)
     {
-        printf("EnergyPlus(BEMs):%d ending messsage 886 recv, "
-               "to reach collective barrier, then MPI_Finalize.\n", rank);
+        printf("EnergyPlus(BEMs):%d received 'ending messsage 886', "
+               "to reach collective barrier, only WRF call free MPI_Finalize().\n", rank);
         turnMPIon = 0;
         MPI_Barrier(parent_comm);
-        MPI_Finalize();
+//        MPI_Finalize();
     }
 }
 
