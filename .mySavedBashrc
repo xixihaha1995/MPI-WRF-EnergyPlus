@@ -169,9 +169,8 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs-channels/archive/nixos-21.11.tar.gz
-export LD_LIBRARY_PATH=$HOME/fortran_experiments/python_hello:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/usr/local/EnergyPlus-23-1-0:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$HOME/fortran_experiments/_4_c_hello:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$HOME/fortran_experiments/_5_c_ep_hello:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=$HOME/fortran_experiments/_5_c_ep_hello:$LD_LIBRARY_PATH
 export PATH=$HOME/Downloads/clion-2023.1.1/bin:$PATH
-
+export LICHENWU_SO=$DIR/lichenwu_plugin
+export LD_LIBRARY_PATH=$LICHENWU_SO:$LD_LIBRARY_PATH
