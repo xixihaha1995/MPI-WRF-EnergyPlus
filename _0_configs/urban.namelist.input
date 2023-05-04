@@ -60,7 +60,7 @@
  bldt                                = 0,     0,
  cudt                                = 0,     0,
  icloud                              = 1,
- num_land_cat                        = 21,
+ num_land_cat                        = 61,
  sf_urban_physics                    = 3,     0,
  use_wudapt_lcz                      = 1,
  fractional_seaice                   = 1,

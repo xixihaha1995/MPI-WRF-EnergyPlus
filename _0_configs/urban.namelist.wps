@@ -17,11 +17,11 @@
  dx = 27000,
  dy = 27000,
  map_proj = 'mercator',
- ref_lat   =  40.00,
- ref_lon   = -105.00,
+ ref_lat   =  40.01,
+ ref_lon   = -105.27,
  truelat1  =  30.0,
  truelat2  =  60.0,
- stand_lon = -105.0,
+ stand_lon = -105.27,
  geog_data_path = '/home/xxx/NWR/DATA/WPS_GEOG/'
 /
 
