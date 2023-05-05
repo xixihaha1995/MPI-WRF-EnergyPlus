@@ -12,8 +12,10 @@ begin
 ; The WRF ARW input file.
 ; This needs to have a ".nc" appended, so just do it.
   ;a = addfile("./wrfout_d01_2023-05-01_06:00:00.nc","r")
-  a = addfile("./wrfout_d01_2023-05-01_06:00:00urban.nc","r")
-
+  ;a = addfile("./wrfout_d01_2023-05-01_06:00:00urban.nc","r")
+  ;a = addfile("~/NWP4.5/WRF/test/em_real/saved_normal_bem_010000.nc","r")
+  ;a = addfile("~/NWP4.5/WRF/test/em_real/saved_crowded_bem_010000.nc","r")
+    a = addfile("~/NWP4.5/WRF/test/em_real/saved_energyplus_bem_010000.nc","r")
  ; We generate plots, but what kind do we prefer?
    type = "x11"
  ; type = "pdf"
@@ -47,7 +49,13 @@ begin
 
    xlat = wrf_user_getvar(a, "XLAT",0)
    xlon = wrf_user_getvar(a, "XLONG",0)
-   ter = wrf_user_getvar(a, "HGT",0)
+   ;ter = wrf_user_getvar(a, "HFX",0)
+   ;ter = wrf_user_getvar(a, "LU_INDEX",0)
+
+   ;ter = wrf_user_getvar(a, "HGT",0)
+   ter = wrf_user_getvar(a, "T2",0)
+    ;ter = wrf_user_getvar(a, "PBLH",0)
+    print(ter)
 
  ;---------------------------------------------------------------
 
@@ -95,7 +103,7 @@ begin
            X_desc = "latitude"
          end if
          if(ip .eq. 3) then
-           angle = 45.
+           angle = 135.
            X_plane = wrf_user_intrp2d(xlon,plane,angle,opts)
            X_desc = "longitude"
          end if
