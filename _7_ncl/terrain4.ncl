@@ -50,10 +50,10 @@ begin
    xlat = wrf_user_getvar(a, "XLAT",0)
    xlon = wrf_user_getvar(a, "XLONG",0)
    ;ter = wrf_user_getvar(a, "HFX",0)
-   ;ter = wrf_user_getvar(a, "LU_INDEX",0)
+   ter = wrf_user_getvar(a, "LU_INDEX",0)
 
    ;ter = wrf_user_getvar(a, "HGT",0)
-   ter = wrf_user_getvar(a, "T2",0)
+   ;ter = wrf_user_getvar(a, "T2",0)
     ;ter = wrf_user_getvar(a, "PBLH",0)
     print(ter)
 
