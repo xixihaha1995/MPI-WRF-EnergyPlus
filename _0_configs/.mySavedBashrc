@@ -118,10 +118,13 @@ fi
 
 #./configure --prefix=$DIR/netcdf --disable-dap --disable-netcdf-4 
 
-export FFLAGS="-m64 -fallow-argument-mismatch" 
+
 export DIR="/home/xxx/Build_WRF/LIBRARIES" 
-##export LD_LIBRARY_PATH=$DIR/lib:$DIR/netcdf/lib:$LD_LIBRARY_PATH
-##export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/hdf5/serial:$LD_LIBRARY_PATH
+export FFLAGS="-m64 -fallow-argument-mismatch" 
+export LD_LIBRARY_PATH=$DIR/grib2/lib:$DIR/netcdf/lib:$DIR/curl/lib:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/hdf5/serial:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+
 export CC="gcc" 
 export CXX="g++" 
 export FC="gfortran" 
