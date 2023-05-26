@@ -116,39 +116,28 @@ if ! shopt -oq posix; then
   fi
 fi
 
+#./configure --prefix=$DIR/netcdf --disable-dap --disable-netcdf-4 
+
+export FFLAGS="-m64 -fallow-argument-mismatch" 
 export DIR="/home/xxx/Build_WRF/LIBRARIES" 
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$DIR/lib:$DIR/netcdf/lib:$LD_LIBRARY_PATH
+##export LD_LIBRARY_PATH=$DIR/lib:$DIR/netcdf/lib:$LD_LIBRARY_PATH
+##export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/hdf5/serial:$LD_LIBRARY_PATH
 export CC="gcc" 
-
 export CXX="g++" 
-
 export FC="gfortran" 
-
 export FCFLAGS="-m64" 
-
 export F77="gfortran" 
-
-export FFLAGS="-m64" 
-
 export JASPERLIB="$DIR/grib2/lib" 
-
 export JASPERINC="$DIR/grib2/include" 
-
-export LDFLAGS="-L$DIR/grib2/lib" 
-
-export CPPFLAGS="-I$DIR/grib2/include" 
-
-export PATH="$DIR/netcdf/bin:$PATH" 
-
-export NETCDF="$DIR/netcdf" 
-
-export LIBS="-lnetcdf -lz" 
-#export LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz"
+export LDFLAGS="-L$DIR/grib2/lib -L$DIR/curl/lib -L$DIR/netcdf/lib"
+export CPPFLAGS="-I$DIR/grib2/include -I$DIR/curl/include -I$DIR/netcdf/include"
 export PATH=$DIR/mpich/bin:$PATH 
-
+export PATH="$DIR/netcdf/bin:$PATH" 
+export NETCDF="$DIR/netcdf" 
+#export LIBS="-lnetcdf -lz" 
 export NETCDF_classic=1
-export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/hdf5/serial:$LD_LIBRARY_PATH
+
+
 export NCARG_ROOT=/usr/local/ncl-6.6.2
 export PATH=$NCARG_ROOT/bin:$PATH
 # export PATH="$HOME/miniconda3/bin:$PATH"  # commented out by conda initialize
