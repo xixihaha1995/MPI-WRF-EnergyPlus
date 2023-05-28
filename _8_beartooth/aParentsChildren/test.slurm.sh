@@ -13,6 +13,6 @@
 DIR="/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren"
 cd $DIR
 pwd
-
+make
 # Execute the program
 mpirun ./parent.exe
