@@ -2,7 +2,6 @@
 
 #SBATCH --account=communitybem
 #SBATCH --time=00:01:00
-#SBATCH --partition=teton
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=1
