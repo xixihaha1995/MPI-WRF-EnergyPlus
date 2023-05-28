@@ -5,3 +5,8 @@ wget "https://stratus.rda.ucar.edu/ds083.2/grib2/2023/2023.05/fnl_20230501_06_00
 ln -sf ungrib/Variable_Tables/Vtable.GFS Vtable
 wget "https://www2.mmm.ucar.edu/wrf/src/wps_files/geog_high_res_mandatory.tar.gz"
  ln -sf ../../../WPS/met_em.d01.2023-05-01_0* .
+
+checking for slurm/pmi.h... yes
+checking for PMI_Init in -lpmi... no
+configure: error: could not find the slurm libpmi.  Configure aborted
+
