@@ -18,6 +18,5 @@ DIR="/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren"
 cd $DIR
 pwd
 # make
-cd ..
-echo "parent"
+ls
 mpiexec ./parent.exe
