@@ -14,7 +14,7 @@
 # module load gcc/11.2.0
 
 # Set the directory where you want to install the software
-DIR="~/fortran_experiments/_8_beartooth/aParentsChildren"
+DIR="/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren"
 
 # Change to the source code directory
 cd $DIR
