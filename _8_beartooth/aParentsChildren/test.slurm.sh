@@ -2,7 +2,7 @@
 
 #SBATCH --account=communitybem
 #SBATCH --time=00:01:00
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=3
 #SBATCH --job-name=configure_script
 #SBATCH --output=configure_script_%j.out
@@ -13,11 +13,9 @@
 # module load arcc/1.0
 # module load gcc/11.2.0
 
-# Set the directory where you want to install the software
+# Set the directory where you want to install the software, Change to the source code directory
 DIR="/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren"
-
-# Change to the source code directory
 cd $DIR
 pwd
-make
-mpirun ./parent.exe
+# make
+srun ./parent.exe
