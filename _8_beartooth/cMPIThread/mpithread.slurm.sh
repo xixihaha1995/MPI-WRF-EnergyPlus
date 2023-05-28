@@ -2,6 +2,8 @@
 
 #SBATCH --account=communitybem
 #SBATCH --time=00:01:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
 #SBATCH --job-name=test_lw
 #SBATCH --output=test_lw%j.out
 #SBATCH --error=test_lw%j.err
@@ -13,5 +15,5 @@ pwd
 make
 echo "Running on $(hostname)"
 # Execute the program
-mpirun -np 4 ./mpi_thread_funneled_example
+mpirun ./mpi_thread_funneled_example
 make clean
