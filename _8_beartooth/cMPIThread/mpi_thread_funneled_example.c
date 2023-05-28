@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <mpi.h>
+#include <unistd.h>
 #include <pthread.h>
 
 void* print_pid_tid(void* arg) {
