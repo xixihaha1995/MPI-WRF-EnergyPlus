@@ -4,7 +4,7 @@
 #SBATCH --time=00:01:00
 #SBATCH --partition=teton
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=3
+##SBATCH --ntasks-per-node=3
 #SBATCH --job-name=configure_script
 #SBATCH --output=configure_script_%j.out
 #SBATCH --error=configure_script_%j.err
@@ -19,4 +19,8 @@ DIR="/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren"
 cd $DIR
 pwd
 # make
+<<<<<<< HEAD
 mpirun ./parent.exe
+=======
+mpirun -np 3 ./parent.exe
+>>>>>>> b6fe72631482a969733590a8098cb69ddfebdd70
