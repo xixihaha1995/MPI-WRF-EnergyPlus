@@ -3,7 +3,9 @@
 #SBATCH --account=communitybem
 #SBATCH --time=00:01:00
 #SBATCH --partition=teton
-#SBATCH --ntasks=3
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=1
 #SBATCH --job-name=configure_script
 #SBATCH --output=configure_script_%j.out
 #SBATCH --error=configure_script_%j.err
@@ -17,6 +19,4 @@
 DIR="/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren"
 cd $DIR
 pwd
-# make
-ls
-mpiexec ./parent.exe
+srun ./parent.exe
