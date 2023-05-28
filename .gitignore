@@ -12,3 +12,8 @@
 /_6_Coordinate_EP/dPThread/main
 /_4_c_hello/myprogram
 log.mpirun
+*.geojson
+.idea/workspace.xml
+.idea/misc.xml
+.idea/deployment.xml
+.idea/workspace.xml
