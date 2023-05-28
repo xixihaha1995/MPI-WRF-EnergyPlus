@@ -14,4 +14,5 @@ pwd
 make
 echo "Running on $(hostname)"
 # Execute the program
-mpirun  mpi_thread_funneled_example
+mpirun -np 4 ./mpi_thread_funneled_example
+make clean
