@@ -19,8 +19,4 @@ DIR="/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren"
 cd $DIR
 pwd
 # make
-<<<<<<< HEAD
-mpirun ./parent.exe
-=======
 mpirun -np 3 ./parent.exe
->>>>>>> b6fe72631482a969733590a8098cb69ddfebdd70
