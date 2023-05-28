@@ -13,6 +13,6 @@
 DIR="/project/communitybem/NWP/WRF/test/em_real"
 cd $DIR
 pwd
-
+echo "Running on $(hostname)"
 # Execute the program
 mpirun ./wrf.exe
