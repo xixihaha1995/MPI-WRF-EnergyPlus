@@ -28,7 +28,7 @@ void spawn_children(void) {
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Get_processor_name(processor_name, &size);
 
-    MPI_Comm_spawn(command, MPI_ARGV_NULL, nbr_child, info, 0, MPI_COMM_WORLD, &child_comm, MPI_ERRCODES_IGNORE);
+    MPI_Comm_spawn(command, MPI_ARGV_NULL, nbr_child, MPI_INFO_NULL, 0, MPI_COMM_WORLD, &child_comm, MPI_ERRCODES_IGNORE);
  
     
     printf("Parent %d from comm %d at processor %s\n", rank, MPI_COMM_WORLD, processor_name);
