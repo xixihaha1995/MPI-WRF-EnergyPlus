@@ -1,0 +1,6 @@
+[mpiexec@m199] match_arg (./utils/args/args.c:160): unrecognized argument pmi_args
+[mpiexec@m199] HYDU_parse_array (./utils/args/args.c:175): argument matching returned error
+[mpiexec@m199] parse_args (./ui/mpich/utils.c:1609): error parsing input array
+[mpiexec@m199] HYD_uii_mpx_get_parameters (./ui/mpich/utils.c:1660): unable to parse user arguments
+[mpiexec@m199] main (./ui/mpich/mpiexec.c:153): error parsing parameters
+slurmstepd: error: *** STEP 7142736.0 ON m199 CANCELLED AT 2023-05-28T14:26:18 DUE TO TIME LIMIT ***

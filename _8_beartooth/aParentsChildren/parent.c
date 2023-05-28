@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
 
 void spawn_children(void) {
     int rank, size, nbr_child = 1;
-    char* command = "./child.exe";
+    char* command = "/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren/child.exe";
     char msgstr[MAX_MSG_LEN];
     char processor_name[MPI_MAX_PROCESSOR_NAME];
     MPI_Status status;

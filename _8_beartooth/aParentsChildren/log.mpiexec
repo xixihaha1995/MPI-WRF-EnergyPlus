@@ -1,0 +1,152 @@
+host: m199
+[mpiexec@m199] Timeout set to -1 (-1 means infinite)
+
+==================================================================================================
+mpiexec options:
+----------------
+  Base path: /project/communitybem/Build_WRF/LIBRARIES/mpich/bin/
+  Launcher: (null)
+  Debug level: 1
+  Enable X: -1
+
+  Global environment:
+  -------------------
+    SLURM_MPI_TYPE=pmix
+    SLURM_STEP_ID=4294967290
+    SLURM_NODEID=0
+    SLURM_PMIXP_ABORT_AGENT_PORT=34375
+    SLURM_TASK_PID=4023277
+    SLURM_PRIO_PROCESS=0
+    SLURM_SUBMIT_DIR=/pfs/tc1/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren
+    SLURM_STEPID=4294967290
+    SLURM_SRUN_COMM_HOST=10.98.0.34
+    SLURM_PROCID=0
+    SLURM_JOB_GID=10359332
+    SLURMD_NODENAME=m199
+    SLURM_TASKS_PER_NODE=1
+    SLURM_NNODES=1
+    SLURM_LAUNCH_NODE_IPADDR=10.98.0.34
+    SLURM_STEP_TASKS_PER_NODE=1
+    SLURM_PMIX_MAPPING_SERV=(vector,(0,1,1))
+    SLURM_JOB_NODELIST=m199
+    SLURM_CLUSTER_NAME=beartooth
+    SLURM_NODELIST=m199
+    SLURM_JOB_CPUS_PER_NODE=1
+    SLURM_TOPOLOGY_ADDR=m199
+    SLURM_WORKING_CLUSTER=beartooth:bmgt1:6817:9728:101
+    SLURM_STEP_NODELIST=m199
+    SLURM_JOB_NAME=interactive
+    SLURM_SRUN_COMM_PORT=46209
+    SLURM_JOBID=7142718
+    SLURM_CONF=/apps/s/slurm/slurm-22.05.6/etc/slurm.conf
+    SLURM_ROOT=/apps/s/slurm/latest
+    SLURM_NODE_ALIASES=(null)
+    SLURM_JOB_QOS=communitybem
+    SLURM_TOPOLOGY_ADDR_PATTERN=node
+    SLURM_CPUS_ON_NODE=1
+    SLURM_JOB_NUM_NODES=1
+    SLURM_JOB_UID=10359332
+    SLURM_JOB_PARTITION=moran,teton,teton-cascade,teton-hugemem,beartooth
+    SLURM_PTY_WIN_ROW=35
+    SLURM_JOB_USER=lwu4
+    SLURM_PTY_WIN_COL=152
+    SLURM_SUBMIT_HOST=blog2
+    SLURM_JOB_ACCOUNT=communitybem
+    SLURM_STEP_LAUNCHER_PORT=46209
+    SLURM_PTY_PORT=44757
+    SLURM_GTIDS=0
+    SLURM_JOB_ID=7142718
+    SLURM_STEP_NUM_TASKS=1
+    SLURM_JOB_CPUS_PER_NODE_PACK_GROUP_0=1
+    SLURM_STEP_NUM_NODES=1
+    SLURM_LOCALID=0
+
+  Hydra internal environment:
+  ---------------------------
+    GFORTRAN_UNBUFFERED_PRECONNECTED=y
+
+
+    Proxy information:
+    *********************
+      [1] proxy: m199 (1 cores)
+      Exec list: ./parent.exe (1 processes); 
+
+
+==================================================================================================
+
+[mpiexec@m199] Got a control port string of m199:46333
+
+Proxy launch args: /project/communitybem/Build_WRF/LIBRARIES/mpich/bin/hydra_pmi_proxy --control-port m199:46333 --debug --rmk slurm --launcher slurm --demux poll --pgid 0 --retries 10 --usize -2 --pmi-port 0 --gpus-per-proc -2 --gpu-subdevs-per-proc -2 --proxy-id 
+
+Arguments being passed to proxy 0:
+--version 4.1.1 --iface-ip-env-name MPIR_CVAR_CH3_INTERFACE_HOSTNAME --hostname m199 --global-core-map 0,1,1 --pmi-id-map 0,0 --global-process-count 1 --auto-cleanup 1 --pmi-kvsname kvs_4023312_0_1515836964_m199 --pmi-process-mapping (vector,0) --global-inherited-env 49 'SLURM_MPI_TYPE=pmix' 'SLURM_STEP_ID=4294967290' 'SLURM_NODEID=0' 'SLURM_PMIXP_ABORT_AGENT_PORT=34375' 'SLURM_TASK_PID=4023277' 'SLURM_PRIO_PROCESS=0' 'SLURM_SUBMIT_DIR=/pfs/tc1/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren' 'SLURM_STEPID=4294967290' 'SLURM_SRUN_COMM_HOST=10.98.0.34' 'SLURM_PROCID=0' 'SLURM_JOB_GID=10359332' 'SLURMD_NODENAME=m199' 'SLURM_TASKS_PER_NODE=1' 'SLURM_NNODES=1' 'SLURM_LAUNCH_NODE_IPADDR=10.98.0.34' 'SLURM_STEP_TASKS_PER_NODE=1' 'SLURM_PMIX_MAPPING_SERV=(vector,(0,1,1))' 'SLURM_JOB_NODELIST=m199' 'SLURM_CLUSTER_NAME=beartooth' 'SLURM_NODELIST=m199' 'SLURM_JOB_CPUS_PER_NODE=1' 'SLURM_TOPOLOGY_ADDR=m199' 'SLURM_WORKING_CLUSTER=beartooth:bmgt1:6817:9728:101' 'SLURM_STEP_NODELIST=m199' 'SLURM_JOB_NAME=interactive' 'SLURM_SRUN_COMM_PORT=46209' 'SLURM_JOBID=7142718' 'SLURM_CONF=/apps/s/slurm/slurm-22.05.6/etc/slurm.conf' 'SLURM_ROOT=/apps/s/slurm/latest' 'SLURM_NODE_ALIASES=(null)' 'SLURM_JOB_QOS=communitybem' 'SLURM_TOPOLOGY_ADDR_PATTERN=node' 'SLURM_CPUS_ON_NODE=1' 'SLURM_JOB_NUM_NODES=1' 'SLURM_JOB_UID=10359332' 'SLURM_JOB_PARTITION=moran,teton,teton-cascade,teton-hugemem,beartooth' 'SLURM_PTY_WIN_ROW=35' 'SLURM_JOB_USER=lwu4' 'SLURM_PTY_WIN_COL=152' 'SLURM_SUBMIT_HOST=blog2' 'SLURM_JOB_ACCOUNT=communitybem' 'SLURM_STEP_LAUNCHER_PORT=46209' 'SLURM_PTY_PORT=44757' 'SLURM_GTIDS=0' 'SLURM_JOB_ID=7142718' 'SLURM_STEP_NUM_TASKS=1' 'SLURM_JOB_CPUS_PER_NODE_PACK_GROUP_0=1' 'SLURM_STEP_NUM_NODES=1' 'SLURM_LOCALID=0' --global-user-env 0 --global-system-env 1 'GFORTRAN_UNBUFFERED_PRECONNECTED=y' --proxy-core-count 1 --exec --exec-appnum 0 --exec-proc-count 1 --exec-local-env 0 --exec-wdir /home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren --exec-args 1 ./parent.exe 
+
+[mpiexec@m199] Launch arguments: /apps/s/slurm/latest/bin/srun -N 1 -n 1 --input none /project/communitybem/Build_WRF/LIBRARIES/mpich/bin/hydra_pmi_proxy --control-port m199:46333 --debug --rmk slurm --launcher slurm --demux poll --pgid 0 --retries 10 --usize -2 --pmi-port 0 --gpus-per-proc -2 --gpu-subdevs-per-proc -2 --proxy-id -1 
+[proxy:0:0@m199] Sending upstream hdr.cmd = CMD_PID_LIST
+[proxy:0:0@m199] got pmi command
+    cmd=init pmi_version=1 pmi_subversion=1
+[proxy:0:0@m199] Sending PMI command:
+    cmd=response_to_init rc=0 pmi_version=1 pmi_subversion=1
+[proxy:0:0@m199] got pmi command
+    cmd=get_maxes
+[proxy:0:0@m199] Sending PMI command:
+    cmd=maxes rc=0 kvsname_max=256 keylen_max=64 vallen_max=1024
+[proxy:0:0@m199] got pmi command
+    cmd=get_appnum
+[proxy:0:0@m199] Sending PMI command:
+    cmd=appnum rc=0 appnum=0
+[proxy:0:0@m199] got pmi command
+    cmd=get_my_kvsname
+[proxy:0:0@m199] Sending PMI command:
+    cmd=my_kvsname rc=0 kvsname=kvs_4023312_0_1515836964_m199
+[mpiexec@m199] [pgid: 0] got PMI command: cmd=barrier_in
+
+[mpiexec@m199] Sending internal PMI command (proxy:0:0):
+    cmd=barrier_out
+[mpiexec@m199] [pgid: 0] got PMI command: mcmd=spawn
+nprocs=3
+execname=./child.exe
+totspawns=1
+spawnssofar=1
+argcnt=0
+preput_num=1
+preput_key_0=PARENT_ROOT_PORT_NAME
+preput_val_0=tag#0$connentry#0200A0030A6281C70000000000000000$
+info_num=0
+endcmd
+[mpiexec@m199] Got a control port string of m199:41443
+
+Proxy launch args: /project/communitybem/Build_WRF/LIBRARIES/mpich/bin/hydra_pmi_proxy --control-port m199:41443 --debug --rmk slurm --launcher slurm --demux poll --pgid 1 --retries 10 --usize -2 --pmi-port 0 --gpus-per-proc -2 --gpu-subdevs-per-proc -2 --proxy-id 
+
+Arguments being passed to proxy 0:
+--version 4.1.1 --iface-ip-env-name MPIR_CVAR_CH3_INTERFACE_HOSTNAME --hostname m199 --global-core-map 0,1,1 --pmi-id-map 0,0 --global-process-count 3 --auto-cleanup 1 --pmi-kvsname kvs_4023312_1_1515836964_m199 --pmi-spawner-kvsname kvs_4023312_0_1515836964_m199 --pmi-process-mapping (vector,(0,1,3)) --global-inherited-env 49 'SLURM_MPI_TYPE=pmix' 'SLURM_STEP_ID=4294967290' 'SLURM_NODEID=0' 'SLURM_PMIXP_ABORT_AGENT_PORT=34375' 'SLURM_TASK_PID=4023277' 'SLURM_PRIO_PROCESS=0' 'SLURM_SUBMIT_DIR=/pfs/tc1/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren' 'SLURM_STEPID=4294967290' 'SLURM_SRUN_COMM_HOST=10.98.0.34' 'SLURM_PROCID=0' 'SLURM_JOB_GID=10359332' 'SLURMD_NODENAME=m199' 'SLURM_TASKS_PER_NODE=1' 'SLURM_NNODES=1' 'SLURM_LAUNCH_NODE_IPADDR=10.98.0.34' 'SLURM_STEP_TASKS_PER_NODE=1' 'SLURM_PMIX_MAPPING_SERV=(vector,(0,1,1))' 'SLURM_JOB_NODELIST=m199' 'SLURM_CLUSTER_NAME=beartooth' 'SLURM_NODELIST=m199' 'SLURM_JOB_CPUS_PER_NODE=1' 'SLURM_TOPOLOGY_ADDR=m199' 'SLURM_WORKING_CLUSTER=beartooth:bmgt1:6817:9728:101' 'SLURM_STEP_NODELIST=m199' 'SLURM_JOB_NAME=interactive' 'SLURM_SRUN_COMM_PORT=46209' 'SLURM_JOBID=7142718' 'SLURM_CONF=/apps/s/slurm/slurm-22.05.6/etc/slurm.conf' 'SLURM_ROOT=/apps/s/slurm/latest' 'SLURM_NODE_ALIASES=(null)' 'SLURM_JOB_QOS=communitybem' 'SLURM_TOPOLOGY_ADDR_PATTERN=node' 'SLURM_CPUS_ON_NODE=1' 'SLURM_JOB_NUM_NODES=1' 'SLURM_JOB_UID=10359332' 'SLURM_JOB_PARTITION=moran,teton,teton-cascade,teton-hugemem,beartooth' 'SLURM_PTY_WIN_ROW=35' 'SLURM_JOB_USER=lwu4' 'SLURM_PTY_WIN_COL=152' 'SLURM_SUBMIT_HOST=blog2' 'SLURM_JOB_ACCOUNT=communitybem' 'SLURM_STEP_LAUNCHER_PORT=46209' 'SLURM_PTY_PORT=44757' 'SLURM_GTIDS=0' 'SLURM_JOB_ID=7142718' 'SLURM_STEP_NUM_TASKS=1' 'SLURM_JOB_CPUS_PER_NODE_PACK_GROUP_0=1' 'SLURM_STEP_NUM_NODES=1' 'SLURM_LOCALID=0' --global-user-env 0 --global-system-env 1 'GFORTRAN_UNBUFFERED_PRECONNECTED=y' --proxy-core-count 1 --exec --exec-appnum 0 --exec-proc-count 3 --exec-local-env 1 'PMI_SPAWNED=1' --exec-wdir /home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren --exec-args 1 ./child.exe 
+
+[mpiexec@m199] Launch arguments: /apps/s/slurm/latest/bin/srun --nodelist m199 -N 1 -n 1 --input none /project/communitybem/Build_WRF/LIBRARIES/mpich/bin/hydra_pmi_proxy --control-port m199:41443 --debug --rmk slurm --launcher slurm --demux poll --pgid 1 --retries 10 --usize -2 --pmi-port 0 --gpus-per-proc -2 --gpu-subdevs-per-proc -2 --proxy-id -1 
+[mpiexec@m199] Sending internal PMI command (proxy:0:0):
+    cmd=spawn_result rc=0
+[proxy:0:0@m199] got pmi command
+    cmd=barrier_in
+[proxy:0:0@m199] Sending upstream internal PMI command:
+    cmd=barrier_in
+[proxy:0:0@m199] Sending upstream hdr.cmd = CMD_PMI
+[proxy:0:0@m199] Sending PMI command:
+    cmd=barrier_out
+[proxy:0:0@m199] we don't understand this command, forwarding upstream
+[proxy:0:0@m199]     mcmd=spawn
+nprocs=3
+execname=./child.exe
+totspawns=1
+spawnssofar=1
+argcnt=0
+preput_num=1
+preput_key_0=PARENT_ROOT_PORT_NAME
+preput_val_0=tag#0$connentry#0200A0030A6281C70000000000000000$
+info_num=0
+endcmd
+[proxy:0:0@m199] Sending upstream hdr.cmd = CMD_PMI
+[proxy:0:0@m199] we don't understand the response spawn_result; forwarding downstream
+srun: Job 7142718 step creation temporarily disabled, retrying (Requested nodes are busy)
+srun: Job 7142718 step creation still disabled, retrying (Requested nodes are busy)
+srun: error: Unable to create step for job 7142718: Job/step already completing or completed
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 7142718.0 ON m199 CANCELLED AT 2023-05-28T12:52:48 DUE TO TIME LIMIT ***
