@@ -5,6 +5,7 @@
 *.iml
 *.o
 *.exe
+*.err
 *.out
 *.audit
 /_6_Coordinate_EP/cBossCallWorkers/boss

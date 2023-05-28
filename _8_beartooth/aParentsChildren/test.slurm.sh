@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=communitybem
-#SBATCH --time=00:05:00
+#SBATCH --time=00:01:00
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=3
 #SBATCH --job-name=configure_script
