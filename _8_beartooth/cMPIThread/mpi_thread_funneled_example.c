@@ -13,7 +13,7 @@ void* print_pid_tid(void* arg) {
 }
 
 int main(int argc, char** argv) {
-    int rank, provided, size;
+    int rank, provided, size, namelen;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
 
     //print arguments
@@ -24,8 +24,8 @@ int main(int argc, char** argv) {
     MPI_Init_thread(&argc, &argv, MPI_THREAD_FUNNELED, &provided);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    MPI_Get_processor_name(processor_name, &size);
-    printf("Rank %d from comm %d at processor %s, size: %d\n", rank, MPI_COMM_WORLD, processor_name, size);
+    MPI_Get_processor_name(processor_name, &namelen);
+    printf("hello world from rank %d of %d on %s\n", rank, size, processor_name);
 
     printf("Rank %d: Provided level of thread support: %d\n", rank, provided);
     
