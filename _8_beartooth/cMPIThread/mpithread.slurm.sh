@@ -2,7 +2,7 @@
 
 #SBATCH --account=communitybem
 #SBATCH --time=00:01:00
-#SBATCH --ntasks=2
+#SBATCH --nodes=5
 #SBATCH --job-name=test_lw
 #SBATCH --output=test_lw%j.out
 #SBATCH --error=test_lw%j.err
