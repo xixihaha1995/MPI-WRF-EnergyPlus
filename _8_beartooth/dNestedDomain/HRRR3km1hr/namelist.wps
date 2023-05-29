@@ -1,21 +1,21 @@
 &share
  wrf_core = 'ARW',
- max_dom = 1,
- start_date = '2023-05-01_00:00:00','2019-09-04_12:00:00',
- end_date   = '2023-05-01_06:00:00','2019-09-04_12:00:00',
- interval_seconds = 21600
+ max_dom = 2,
+ start_date = '2023-05-01_00:00:00','2023-05-01_00:00:00',
+ end_date   = '2023-05-01_01:00:00','2023-05-01_00:00:00',
+ interval_seconds = 3600
 /
 
 &geogrid
  parent_id         =   1,   1,
  parent_grid_ratio =   1,   3,
- i_parent_start    =   1,  53,
- j_parent_start    =   1,  25,
- e_we              =  15, 220,
- e_sn              =  15, 214,
- geog_data_res = 'cglc_modis_lcz+default','default',
- dx = 500,
- dy = 500,
+ i_parent_start    =   1,  7,
+ j_parent_start    =   1,  7,
+ e_we              =  16, 10,
+ e_sn              =  16, 10,
+ geog_data_res = 'cglc_modis_lcz+default','cglc_modis_lcz+default',
+ dx = 3000,
+ dy = 3000,
  map_proj = 'mercator',
  ref_lat   =   41.313, !40.01, 41.313
  ref_lon   = -105.581, !-105.27, -105.581
