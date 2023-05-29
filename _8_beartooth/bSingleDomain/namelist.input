@@ -24,19 +24,19 @@
  /
 
  &domains
- time_step                           = 0,
- time_step_fract_num                 = 6,
- time_step_fract_den                 = 10,
+ time_step                           = 3,
+ time_step_fract_num                 = 0,
+ time_step_fract_den                 = 1,
  max_dom                             = 1,
- e_we                                = 50,    220,
- e_sn                                = 50,    214,
+ e_we                                = 15,    220,
+ e_sn                                = 15,    214,
  e_vert                              = 45,     45,
  dzstretch_s                         = 1.1
  p_top_requested                     = 5000,
  num_metgrid_levels                  = 34,
  num_metgrid_soil_levels             = 4,
- dx                                  = 100,
- dy                                  = 100,
+ dx                                  = 500,
+ dy                                  = 500,
  grid_id                             = 1,     2,
  parent_id                           = 0,     1,
  i_parent_start                      = 1,     53,
