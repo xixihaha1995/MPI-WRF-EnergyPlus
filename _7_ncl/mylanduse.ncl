@@ -5,7 +5,8 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/wrf/WRFUserARW.ncl"
 
 begin
 
-    a=addfile("~/NWP/WPS/geo_em.d01.nc","r")
+    a=addfile("~/NWP/WPS/geo_em.d04.nc","r")
+    ;a=addfile("~/NWP/WRF/test/em_real/wrfout_d02_2023-05-01_05:00:00.nc","r")
     wks = gsn_open_wks("x11","landuse")
     lu=a->LU_INDEX(0,:,:)
     ;print(lu)

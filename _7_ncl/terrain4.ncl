@@ -15,7 +15,7 @@ begin
   ;a = addfile("./wrfout_d01_2023-05-01_06:00:00urban.nc","r")
   ;a = addfile("~/NWP4.5/WRF/test/em_real/saved_normal_bem_010000.nc","r")
   ;a = addfile("~/NWP4.5/WRF/test/em_real/saved_crowded_bem_010000.nc","r")
-    a = addfile("~/NWP4.5/WRF/test/em_real/saved_energyplus_bem_010000.nc","r")
+    a = addfile("~/NWP/WRF/test/em_real/wrfout_d04_2023-05-01_16:00:00.nc","r")
  ; We generate plots, but what kind do we prefer?
    type = "x11"
  ; type = "pdf"
@@ -55,7 +55,6 @@ begin
    ;ter = wrf_user_getvar(a, "HGT",0)
    ;ter = wrf_user_getvar(a, "T2",0)
     ;ter = wrf_user_getvar(a, "PBLH",0)
-    print(ter)
 
  ;---------------------------------------------------------------
 
@@ -167,8 +166,8 @@ begin
          opts_xy@tmXTOn                  = False
          opts_xy@tmYROn                  = False
          opts_xy@tmXBMode                = "Explicit"
-         opts_xy@tmXBValues              = fspan(0,xspan,nx)                    ; Create tick marks
-         opts_xy@tmXBLabels              = sprintf("%.1f",fspan(xmin,xmax,nx))  ; Create labels
+         ;opts_xy@tmXBValues              = fspan(0,xspan,nx)                    ; Create tick marks
+         ;opts_xy@tmXBLabels              = sprintf("%.1f",fspan(xmin,xmax,nx))  ; Create labels
          opts_xy@tmXBLabelFontHeightF    = 0.015
          opts_xy@tmYLMode                = "Explicit"
          opts_xy@tmYLValues              = fspan(0,zspan,nz)                    ; Create tick marks
