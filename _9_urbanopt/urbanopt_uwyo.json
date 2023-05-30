@@ -1,0 +1,100 @@
+{
+  "type": "FeatureCollection",
+  "mappers": [],
+  "project": {
+    "id": "7c33a001-bccb-413e-ac87-67558b5d4b07",
+    "name": "New Project",
+    "begin_date": "2023-05-01T00:00:00.000Z",
+    "end_date": "2023-05-03T00:00:00.000Z",
+    "cec_climate_zone": null,
+    "climate_zone": "6B",
+    "default_template": "90.1-2013",
+    "import_surrounding_buildings_as_shading": null,
+    "surface_elevation": null,
+    "tariff_filename": null,
+    "timesteps_per_hour": 1,
+    "weather_filename": "USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw",
+    "emissions": true,
+    "electricity_emissions_future_subregion": "NYSTc",
+    "electricity_emissions_hourly_historical_subregion": "New York",
+    "electricity_emissions_annual_historical_subregion": "NYCW",
+    "electricity_emissions_future_year": "2030",
+    "electricity_emissions_hourly_historical_year": "2019",
+    "electricity_emissions_annual_historical_year": "2019"
+  },
+  "scenarios": [
+    {
+      "feature_mappings": [],
+      "id": "72301739-c6c3-4dd7-bf1a-f37c8eff40db",
+      "name": "New Scenario"
+    }
+  ],
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "53340c2c-ab20-40db-aba1-11ac607c52a7",
+        "name": "Site Origin",
+        "type": "Site Origin",
+        "begin_date": "2023-05-01T00:00:00.000Z",
+        "end_date": "2023-05-03T00:00:00.000Z",
+        "cec_climate_zone": null,
+        "climate_zone": "6B",
+        "default_template": "90.1-2013",
+        "import_surrounding_buildings_as_shading": null,
+        "surface_elevation": null,
+        "tariff_filename": null,
+        "timesteps_per_hour": 1,
+        "weather_filename": "USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -105.581060,
+            41.313007
+        ]
+      }
+    },
+
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "1",
+        "name": "Knight Hall",
+        "type": "Building",
+        "building_type": "Mixed use",
+        "floor_area": 136124,
+        "footprint_area":  34031,
+        "number_of_stories": 4,
+        "mixed_type_1": "Office",
+        "mixed_type_1_percentage": 100,
+        "mixed_type_2": "Food service",
+        "mixed_type_2_percentage": 0,
+        "mixed_type_3": "Strip shopping mall",
+        "mixed_type_3_percentage": 0,
+        "mixed_type_4": "Lodging",
+        "mixed_type_4_percentage": 0
+      },
+  "geometry": {"type": "Polygon", "coordinates": [[[-105.5808, 41.311827], [-105.580833, 41.311495], [-105.580689, 41.311487], [-105.580641, 41.311966], [-105.580772, 41.311974], [-105.580775, 41.311942], [-105.581058, 41.311957], [-105.581055, 41.311989], [-105.581167, 41.311996], [-105.581168, 41.311982], [-105.581536, 41.312002], [-105.581552, 41.311844], [-105.581523, 41.311842], [-105.581536, 41.311706], [-105.581608, 41.31171], [-105.581623, 41.311557], [-105.581322, 41.31154], [-105.581302, 41.311741], [-105.581211, 41.311736], [-105.581203, 41.31182], [-105.58107, 41.311813], [-105.581067, 41.311842], [-105.5808, 41.311827]]]}
+    },
+
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "2",
+        "name": "Coe Library",
+        "type": "Building",
+        "building_type": "Education",
+        "floor_area": 336844 ,
+        "footprint_area": 84211 ,
+        "number_of_stories": 4,
+        "ev_charging": true,
+        "ev_charging_behavior": "Business as Usual",
+        "ev_percent": 100,
+        "ev_curtailment_frac": 0.5,
+        "ev_use_model_occupancy": true
+      },
+        "geometry": {"type": "Polygon", "coordinates": [[[-105.578224, 41.311831], [-105.578567, 41.311849], [-105.578564, 41.311885], [-105.578799, 41.311897], [-105.578801, 41.311877], [-105.57906, 41.31189], [-105.579063, 41.311852], [-105.579955, 41.311899], [-105.579998, 41.311428], [-105.580033, 41.311429], [-105.580038, 41.311375], [-105.579411, 41.311343], [-105.579412, 41.311333], [-105.579305, 41.311327], [-105.579287, 41.311523], [-105.579241, 41.311521], [-105.579261, 41.311311], [-105.578632, 41.311278], [-105.57863, 41.3113], [-105.578279, 41.311282], [-105.578268, 41.311404], [-105.578156, 41.311398], [-105.57814, 41.311572], [-105.578247, 41.311578], [-105.578224, 41.311831]]]}
+    }
+  ]
+}
