@@ -14,5 +14,5 @@ pwd
 make
 echo "Running on $(hostname)"
 # Execute the program
-srun --mpi=list  -n 2 ./parent.exe
+mpirun ./parent.exe
 make clean
