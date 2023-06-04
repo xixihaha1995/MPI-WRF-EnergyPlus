@@ -1,6 +1,10 @@
-### Compilation
-https://forum.mmm.ucar.edu/threads/full-wrf-and-wps-installation-example.12385/
+### Cheyenne
 
+https://fastx.ucar.edu:3300/session/
+
+### Compilation
+
+https://forum.mmm.ucar.edu/threads/full-wrf-and-wps-installation-example.12385/
 git clone --recurse-submodule https://github.com/wrf-model/WRF.git
 cd WRF
 ./configure (option 15 and 1)
