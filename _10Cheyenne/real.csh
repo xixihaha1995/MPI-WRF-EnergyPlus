@@ -8,7 +8,7 @@
 #PBS -j oe
 ##PBS -m abe
 ##PBS -M lwu4@uwyo.edu
-#PBS -l nodes=1:ppn=4
+#PBS -l select=1:ncpus=4:mpiprocs=4
 
 ###Run real.exe
 cd /glade/work/lichenwu/NWP/WRF/test/em_real
