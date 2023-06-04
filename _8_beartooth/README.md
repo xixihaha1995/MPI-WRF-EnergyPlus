@@ -15,11 +15,15 @@ ln -sf ../../../WPS/met_em.d01.2023-05-01_0* .
 
 ncl util/plotgrids_new.ncl 
 
+```
+phys/module_physics_init.F
+line 3363 - 3366
  !              IF (config_flags%use_wudapt_lcz.eq.1 .and. max_utype_urb2d.le.3.0) THEN  ! new LCZ
  !                CALL wrf_error_fatal &
  !                ('USING URBPARM_LCZ.TBL WITH OLD 3 URBAN CLASSES. SET USE_WUDAPT_LCZ=0')
  !              ENDIF
-
+ ```
+ 
 ### ARCC
 - https://arccwiki.atlassian.net/wiki/spaces/DOCUMENTAT/pages/3178497/Lmod+-+Software
 - slurm introduction 1, 2
