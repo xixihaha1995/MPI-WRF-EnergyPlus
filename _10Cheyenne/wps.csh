@@ -6,8 +6,8 @@
 #PBS -l walltime=00:03:00
 #PBS -q economy
 #PBS -j oe
-#PBS -m abe
-#PBS -M lwu4@uwyo.edu
+##PBS -m abe
+##PBS -M lwu4@uwyo.edu
 #PBS -l select=1:ncpus=1:mpiprocs=1
 
 ###Run WPS
