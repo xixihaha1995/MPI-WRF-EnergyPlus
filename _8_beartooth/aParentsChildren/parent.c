@@ -14,23 +14,20 @@ int main(int argc, char** argv) {
 }
 
 void spawn_children(void) {
-    int rank, size, nbr_child = 1;
-    char* command = "/home/lwu4/fortran_experiments/_8_beartooth/aParentsChildren/child.exe";
+    int rank, world_size, nbr_child = 3, name_len;
+    char* command = "./child.exe";
     char msgstr[MAX_MSG_LEN];
     char processor_name[MPI_MAX_PROCESSOR_NAME];
     MPI_Status status;
-    MPI_Info info;
     MPI_Comm child_comm;
 
-    MPI_Info_create(&info);
-    MPI_Info_set(info, "host", "m199");
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    MPI_Get_processor_name(processor_name, &size);
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    MPI_Get_processor_name(processor_name, &name_len);
 
    // MPI_Comm_spawn(command, MPI_ARGV_NULL, nbr_child, MPI_INFO_NULL, 0, MPI_COMM_WORLD, &child_comm, MPI_ERRCODES_IGNORE);
- 
-    
-    printf("Parent %d from comm %d at processor %s\n", rank, MPI_COMM_WORLD, processor_name);
 
+    printf("Parent: Rank %d from comm %d (size %d )at processor %s\n", rank, MPI_COMM_WORLD,world_size, processor_name);
+    MPI_Finalize();
+    return 0;
 }
