@@ -1,13 +1,14 @@
 import json
 filename = "Wyoming.geojson"
-save_file = "UWyo.geojson"
+save_file = "coordinates_uwyo.json"
 # small area: 41.311200, -105.582037, 41.313557, -105.577335
 # large area: 41.291737, -105.623253, 41.335317, -105.542058
+# campus: 41.311694, -105.585418,41.315662, -105.577211
 # 1km: 41.311629, -105.585654, 41.315433, -105.570806
-lat_down = 41.311629
-lat_up = 41.315433
-long_left = -105.585654
-long_right = -105.570806
+lat_down = 41.311694
+lat_up = 41.315662
+long_left = -105.585418
+long_right = -105.577211
 # Open the JSON file
 with open(filename) as file:
     # Load the JSON data
@@ -21,10 +22,10 @@ for item in data['features']:
     # if any of the coordinates are in the range, then add the item to the newdict
     if any(lat_down < float(substring) < lat_up for substring in item['geometry']['coordinates'][0][0]) and \
             any(long_left < float(lon_substring) < long_right for lon_substring in item['geometry']['coordinates'][0][0]):
-        print(item)
+        # print(item)
         count += 1
-        # newdict['features'].append(item)
+        newdict['features'].append(item)
 print(count)
 # # Save the matching lines to a new file
-# with open(save_file, 'w') as file:
-#     json.dump(newdict, file)
+with open(save_file, 'w') as file:
+    json.dump(newdict, file)
