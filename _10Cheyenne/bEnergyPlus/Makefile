@@ -1,5 +1,5 @@
 
-CC=gcc
+CC=icc
 CFLAGS=-I/glade/u/home/lichenwu/project/EnergyPlus-23-1-0/include
 LDFLAGS=-L/glade/u/home/lichenwu/project/EnergyPlus-23-1-0
 LDLIBS=-lenergyplusapi
