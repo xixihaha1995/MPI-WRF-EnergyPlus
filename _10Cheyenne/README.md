@@ -1,3 +1,9 @@
+### EnergyPlus
+
+https://github.com/NREL/EnergyPlus/releases/download/v23.1.0/EnergyPlus-23.1.0-87ed9199d4-Linux-Ubuntu22.04-x86_64.run
+
+
+
 ### Cheyenne
 
 https://fastx.ucar.edu:3300/session/
