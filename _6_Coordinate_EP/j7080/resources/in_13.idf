@@ -1,6 +1,6 @@
   Version,23.1;
 
-  Timestep,20;
+  Timestep,1;
 
   ConvergenceLimits,
     0,                       !- Minimum System Timestep {minutes}
@@ -18640,7 +18640,7 @@
     1,                       !- Begin Day of Month
     2023,                    !- Begin Year
     5,                       !- End Month
-    1,                       !- End Day of Month
+    6,                       !- End Day of Month
     2023,                    !- End Year
     Sunday,                  !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days

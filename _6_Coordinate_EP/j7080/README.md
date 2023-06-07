@@ -7,19 +7,4 @@ https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/dri
 
 ### TODO
 1. The actual location of the domain index
-
-```
-calling spawn_children() counts:       14235 curix           5 curiy           6 curibui           1
-calling spawn_children() counts:       14236 curix           6 curiy           6 curibui           1
-calling spawn_children() counts:       14237 curix           6 curiy           6 curibui           2
-calling spawn_children() counts:       14238 curix           6 curiy           7 curibui           1
-calling spawn_children() counts:       14239 curix           8 curiy           7 curibui           1
-calling spawn_children() counts:       14240 curix           9 curiy           5 curibui           1
-calling spawn_children() counts:       14241 curix           9 curiy           5 curibui           2
-calling spawn_children() counts:       14242 curix           9 curiy           6 curibui           1
-calling spawn_children() counts:       14243 curix           9 curiy           6 curibui           2
-calling spawn_children() counts:       14244 curix           9 curiy           7 curibui           1
-calling spawn_children() counts:       14245 curix           9 curiy           7 curibui           2
-calling spawn_children() counts:       14246 curix           9 curiy           8 curibui           1
-calling spawn_children() counts:       14247 curix           9 curiy           8 curibui           2
-```
+2. WRF will start and end the MPI call. As long as the number of callings from WRF is less than the number of timesteps in IDF, it's OK.
