@@ -1,5 +1,6 @@
 program mpi_app
     integer :: time_idx, timesteps = 6 * 24 + 10, allix = 3, alliy =3, curix, curiy, curibui = 1, curitime = 1
+    integer :: ierr
     real(kind=8) :: random_oat_c,mean_recv_waste_j
 
     do time_idx = 1, timesteps
@@ -13,6 +14,7 @@ program mpi_app
         end do
     end do
 
+
 contains
 
     subroutine spawn_children(curix,curiy,curibui,curitime,random_oat_c,mean_recv_waste_j)
@@ -20,7 +22,7 @@ contains
         include 'mpif.h'
         integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
         integer, save :: new_comm,  saveix, saveiy, saveibui
-        integer ::  calling = 0, num_children = 300, ending_steps = 6*24, ucm_tag = 0
+        integer ::  calling = 0, num_children = 4, ending_steps = 5*20, ucm_tag = 0
         REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
         real(kind=8) :: random_oat_c, mean_recv_waste_j
         logical :: initedMPI, spawned = .false., turnMPIon = .true.
@@ -40,8 +42,8 @@ contains
         end if
 
         calling = calling + 1
-        print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
-        print *, "curibui", curibui, "curitime", curitime
+        ! print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
+        ! print *, "curibui", curibui, "curitime", curitime
        
 
         if (turnMPIon .eqv. .false.) then
@@ -76,10 +78,6 @@ contains
         end if
 
         do child_idx = 1, num_children
-!            call random_number(random_oat_c)
-!            random_oat_c = 12 + int(random_oat_c*28)
-            !            print *, "new_comm:", new_comm
-            !            new_comm = -2080374783
             call MPI_Sendrecv(random_oat_c, 1, MPI_REAL8, child_idx - 1, ucm_tag, &
                     received_data(child_idx), 1, MPI_REAL8, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
         end do
@@ -88,13 +86,14 @@ contains
 
 
         if (ucm_tag == 886) then
-!            print *, "WRF (Parent(s)) ending messsage 886 sent, &
-!                    &to reach collective barrier,(no more inter-communicator calls)&
-!                    & only WRF global setting call free and MPI_Finalize()"
-            ! call MPI_Barrier(new_comm, ierr)
-            !            call MPI_Comm_free(new_comm, ierr)
-            !            call MPI_Comm_free(parent_comm, ierr)
-            !            call MPI_Finalize(ierr)
+           print *, "WRF (Parent(s)) ending messsage 886 sent, &
+                   &to reach collective barrier,(no more inter-communicator calls)&
+                   & only WRF global setting call free and MPI_Finalize()"
+            call MPI_Barrier(new_comm, ierr)
+            ! call MPI_Comm_free(new_comm, ierr)
+            ! call MPI_Comm_free(parent_comm, ierr)
+           
+            ! call MPI_Finalize(ierr)
         end if
     end subroutine spawn_children
 
