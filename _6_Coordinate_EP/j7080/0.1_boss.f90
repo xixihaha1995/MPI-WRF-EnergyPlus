@@ -20,7 +20,7 @@ contains
         include 'mpif.h'
         integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
         integer, save :: new_comm,  saveix, saveiy, saveibui
-        integer ::  calling = 0, num_children = 3, ending_steps = 6*24, ucm_tag = 0
+        integer ::  calling = 0, num_children = 300, ending_steps = 6*24, ucm_tag = 0
         REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
         real(kind=8) :: random_oat_c, mean_recv_waste_j
         logical :: initedMPI, spawned = .false., turnMPIon = .true.
