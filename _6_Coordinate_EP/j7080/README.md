@@ -6,5 +6,5 @@ https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/p
 https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/drivers/wrf/module_sf_noahmpdrv.F#L3737
 
 ### TODO
-1. The actual location of the domain index
+1. Hardcoded hourly communication [actual location (lat, long)], set weather, feedback temperatures, and waste heat
 2. WRF will start and end the MPI call. As long as the number of callings from WRF is less than the number of timesteps in IDF, it's OK.
