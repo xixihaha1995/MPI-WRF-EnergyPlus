@@ -1,6 +1,6 @@
  &time_control
  run_days                            = 0,
- run_hours                           = 5,
+ run_hours                           = 6,
  run_minutes                         = 0,
  run_seconds                         = 0,
  start_year                          = 2023, 2023,2023,2023,
@@ -10,7 +10,7 @@
  end_year                            = 2023, 2023,2023,2023,
  end_month                           = 05,   05,05,05,
  end_day                             = 01,   01,01,01,
- end_hour                            = 05,   05, 05,05,
+ end_hour                            = 06,   06, 06,06,
  interval_seconds                    = 21600
  input_from_file                     = .true.,.true.,.true.,.true.,
  history_interval                    = 60,  60, 60, 60,
