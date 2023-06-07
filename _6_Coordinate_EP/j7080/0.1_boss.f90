@@ -40,9 +40,8 @@ contains
         end if
 
         calling = calling + 1
-        print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime
-
-
+        print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
+        print *, "curibui", curibui, "curitime", curitime
        
 
         if (turnMPIon .eqv. .false.) then
