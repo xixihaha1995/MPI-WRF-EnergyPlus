@@ -59,8 +59,8 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         printf("EnergyPlus(BEMs):%d received 'ending messsage 886', "
                "to reach collective barrier, only WRF call free MPI_Finalize().\n", rank);
         turnMPIon = 0;
-        // MPI_Barrier(parent_comm);
-//        MPI_Finalize();
+        MPI_Barrier(parent_comm);
+    //    MPI_Finalize();
     }
 }
 
