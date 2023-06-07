@@ -5,6 +5,9 @@ CFLAGS = -I/usr/local/EnergyPlus-23-1-0/include
 LDFLAGS = -L/usr/local/EnergyPlus-23-1-0
 LDLIBS = -lenergyplusapi
 
+# Set LD_LIBRARY_PATH
+export LD_LIBRARY_PATH := /usr/local/EnergyPlus-23-1-0:$(LD_LIBRARY_PATH)
+
 FFLAGS =
 CHILD = 0.1_child.c
 BOSS = 0.1_boss.f90
