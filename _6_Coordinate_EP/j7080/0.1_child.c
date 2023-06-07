@@ -85,19 +85,10 @@ int main(int argc, char** argv) {
     requestVariable(state, "SITE OUTDOOR AIR DEWPOINT TEMPERATURE", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
 
-    if (rank ==0)
-    {
-        strcpy(output_path, "./ep_trivial_1");
-        strcpy(idfFilePath, "./resources/in_11.idf");
-    } else if (rank == 1)
-    {
-        strcpy(output_path, "./ep_trivial_2");
-        strcpy(idfFilePath, "./resources/in_2.idf");
-    } else
-    {
-        strcpy(output_path, "./ep_trivial_3");
-        strcpy(idfFilePath, "./resources/in_13.idf");
-    }
+
+    strcpy(output_path, "./ep_trivial_%d", rank);
+    strcpy(idfFilePath, "./resources/in_11.idf");
+
     char* weather_file_path = "./resources/USA_NY_Buffalo-Greater.Buffalo.Intl.AP.725280_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
     int argc_ = sizeof(sys_args) / sizeof(char*) - 1;
