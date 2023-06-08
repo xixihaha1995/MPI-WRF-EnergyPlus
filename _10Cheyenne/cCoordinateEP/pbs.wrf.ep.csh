@@ -19,5 +19,6 @@ module load gnu/11.2.0
 ## cp saved.module_sf_bep_bem.F  /glade/u/home/lichenwu/project/NWP/WRF/phys/module_sf_bep_bem.F
 # cp -f child.exe /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
-mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe >& /glade/scratch/lichenwu/ep_temp/log.energyplus
+pwd
+mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe 
 
