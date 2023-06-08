@@ -45,7 +45,7 @@ void overwriteEpWeather(EnergyPlusState state) {
     if (whichperid != 3) {
         return;
     }
-    MPI_Barrier(MPI_COMM_WORLD);
+    // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Recv(&msg, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     printf("Child %d received OAT %.2f (C) from %d of comm.\n",
            rank, msg, status.MPI_SOURCE);

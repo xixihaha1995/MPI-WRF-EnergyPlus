@@ -39,3 +39,7 @@ Output:Variable,*,Site Outdoor Air Relative Humidity,hourly; !- Zone Average [%]
 Output:Variable,*,Site Outdoor Air Barometric Pressure,hourly; !- Zone Average [Pa]
 Output:Variable,*,Site Outdoor Air Enthalpy,hourly; !- Zone Average [J/kg]
 Output:Variable,*,Site Outdoor Air Density,hourly; !- Zone Average [kg/m3]
+
+ConvergenceLimits,
+  0,                       !- Minimum System Timestep {minutes}
+  25;                      !- Maximum HVAC Iterations
