@@ -1,5 +1,5 @@
 program mpi_app
-    integer :: time_idx, timesteps = 6 * 20, allix = 3, alliy =3, curix, curiy, curibui = 1, curitime = 1
+    integer :: time_idx, timesteps = 24 * 20, allix = 3, alliy =3, curix, curiy, curibui = 1, curitime = 1
     integer :: ierr
     real(kind=8), dimension (3) :: random_weather ! oat_c, abs_hum_kgw_kga, pressure_pa
     real(kind=8) :: mean_recv_waste_j, random_data
@@ -25,7 +25,7 @@ contains
         include 'mpif.h'
         integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
         integer, save :: new_comm,  saveix, saveiy, saveibui
-        integer ::  calling = 0, num_children = 4, ending_steps = (6 -1) * 20, ucm_tag = 0
+        integer ::  calling = 0, num_children = 4, ending_steps = (24 -1) * 20, ucm_tag = 0
         REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
         REAL(KIND=8), DIMENSION(3) :: random_weather
         real(kind=8) :: mean_recv_waste_j
