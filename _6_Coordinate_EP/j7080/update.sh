@@ -4,7 +4,7 @@
 cp saved.module_sf_bep_bem.F /home/xxx/NWP/WRF/phys/module_sf_bep_bem.F 
 cp -r resources /home/xxx/NWP/WRF/test/em_real/
 make
-cp child.exe /home/xxx/NWP/WRF/test/em_real/child.exe
+cp child.exe /home/xxx/NWP/WRF/test/em_real/
 
 # Step 3: Git add
 git add .
