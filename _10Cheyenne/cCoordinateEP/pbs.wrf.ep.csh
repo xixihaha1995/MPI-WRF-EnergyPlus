@@ -6,7 +6,7 @@
 #PBS -q economy
 #PBS -j oe
 #PBS -k eod
-#PBS -l select=1:mpiprocs=10
+#PBS -l select=2:mpiprocs=36
 
 cat $PBS_NODEFILE
 set nbr_parent = 1
@@ -17,5 +17,5 @@ make
 cp -r resources /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 cp child.exe /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
-mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe >& log.energyplus
+mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe >& /glade/scratch/lichenwu/ep_temp/log.energyplus
 
