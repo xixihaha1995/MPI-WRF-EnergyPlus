@@ -1,15 +1,18 @@
 program mpi_app
-    integer :: time_idx, timesteps = 6 * 24 + 10, allix = 3, alliy =3, curix, curiy, curibui = 1, curitime = 1
+    integer :: time_idx, timesteps = 6 * 20, allix = 3, alliy =3, curix, curiy, curibui = 1, curitime = 1
     integer :: ierr
-    real(kind=8) :: random_oat_c,mean_recv_waste_j
+    real(kind=8), dimension (3) :: random_weather ! oat_c, abs_hum_kgw_kga, pressure_pa
+    real(kind=8) :: mean_recv_waste_j, random_data
 
     do time_idx = 1, timesteps
         do curiy = 1, alliy
             do curix = 1, allix
-                call random_number(random_oat_c)
-                random_oat_c = 12 + int(random_oat_c*28)
-                call spawn_children(curix,curiy,curibui,curitime,random_oat_c,mean_recv_waste_j)
-                print * , "mean_recv_waste_j", mean_recv_waste_j
+                call random_number(random_data)
+                random_weather(1) = 12 + int(random_data*28)
+                random_weather(2) = 0.007612 + int(random_data*0.0001)
+                random_weather(3) = 101325 + int(random_data*1000)
+                call spawn_children(curix,curiy,curibui,curitime,random_weather,mean_recv_waste_j)
+                ! print * , "mean_recv_waste_j", mean_recv_waste_j
             end do
         end do
     end do
@@ -17,14 +20,15 @@ program mpi_app
 
 contains
 
-    subroutine spawn_children(curix,curiy,curibui,curitime,random_oat_c,mean_recv_waste_j)
+    subroutine spawn_children(curix,curiy,curibui,curitime,random_weather,mean_recv_waste_j)
         implicit none
         include 'mpif.h'
         integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
         integer, save :: new_comm,  saveix, saveiy, saveibui
-        integer ::  calling = 0, num_children = 50, ending_steps = 5*20, ucm_tag = 0
+        integer ::  calling = 0, num_children = 4, ending_steps = (6 -1) * 20, ucm_tag = 0
         REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
-        real(kind=8) :: random_oat_c, mean_recv_waste_j
+        REAL(KIND=8), DIMENSION(3) :: random_weather
+        real(kind=8) :: mean_recv_waste_j
         logical :: initedMPI, spawned = .false., turnMPIon = .true.
         character(len=50) :: command
         ALLOCATE (received_data(num_children))
@@ -45,12 +49,18 @@ contains
         ! print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
         ! print *, "curibui", curibui, "curitime", curitime
        
+        !if calling is % 20, then carry on, otherwise return
+        if (mod(calling,20) /= 0) then
+            !print *, "calling is not % 20, return"
+            return
+        end if
 
         if (turnMPIon .eqv. .false.) then
             !print *, "turnMPIon is false, no more MPI calls"
             return
         end if
 
+        print *, "Calling happening, calling", calling
         if (spawned .eqv. .false.) then
             spawned = .true.
             call MPI_Initialized(initedMPI, ierr)
@@ -78,7 +88,7 @@ contains
         end if
 
         do child_idx = 1, num_children
-            call MPI_Sendrecv(random_oat_c, 1, MPI_REAL8, child_idx - 1, ucm_tag, &
+            call MPI_Sendrecv(random_weather, 3, MPI_REAL8, child_idx - 1, ucm_tag, &
                     received_data(child_idx), 1, MPI_REAL8, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
         end do
         mean_recv_waste_j = sum(received_data)/num_children
