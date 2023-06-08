@@ -23,11 +23,14 @@ https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/dri
 
 ### TODO
 1. EP: set temperature and humidity
-2. WRF (finest domain) hourly communication with EP
-3. WRF overrides surface temperature (averaged). [https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L30]
-4. WRF, EP, WEF+EP (T2m, Energy Consumption and Demand)
-5. (7 days + 12 hours) simulation. WRF will start and end the MPI call. As long as the number of callings from WRF is less than the number of timesteps in IDF, it's OK.
-6. WRF (send ix, iy to EnergyPlus); IDF models are tied with pairs of (ix, iy)
+2. hourly communication with EP
+3. 6 hour small case (only 5 hour online, WRF exit, then EnergyPlus)
+4. One day simulation (for 4 dummy idfs)
+5. URABNopt one day simulation done. Then UWYO-one-day on cheyenne (build EnergyPlus 22-2-0)
+6. Script for energy consumption and demand over the 38/37 buildings.
+7. WRF overrides surface temperature (averaged). [https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L30]
+8. WRF, EP, WEF+EP (T2m, Energy Consumption and Demand)
+9. WRF (finest domain): (send ix, iy to EnergyPlus); IDF models are tied with pairs of (ix, iy)
 
 ### EnergyPlus API vs WRF API
 
