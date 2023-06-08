@@ -24,8 +24,8 @@ void overwriteEpWeather(EnergyPlusState state) {
             return;
         }
         weatherHandleRetrieved = 1;
-        odbActHandle = getActuatorHandle(state, "Outdoor Dry Bulb", "ENVIRONMENT");
-        orhActHandle = getActuatorHandle(state, "Outdoor Relative Humidity", "ENVIRONMENT");
+        odbActHandle = getActuatorHandle(state, "Weather Data", "Outdoor Dry Bulb", "ENVIRONMENT");
+        orhActHandle = getActuatorHandle(state, "Weather Data", "Outdoor Relative Humidity", "ENVIRONMENT");
         odbSenHandle = getVariableHandle(state, "SITE OUTDOOR AIR DRYBULB TEMPERATURE", "ENVIRONMENT");
         ohrSenHandle = getVariableHandle(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
 
