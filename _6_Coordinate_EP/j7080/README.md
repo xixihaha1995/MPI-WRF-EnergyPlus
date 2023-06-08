@@ -28,3 +28,13 @@ https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/dri
 4. WRF, EP, WEF+EP (T2m, Energy Consumption and Demand)
 5. (7 days + 12 hours) simulation. WRF will start and end the MPI call. As long as the number of callings from WRF is less than the number of timesteps in IDF, it's OK.
 6. WRF (send ix, iy to EnergyPlus); IDF models are tied with pairs of (ix, iy)
+
+### EnergyPlus API
+Output:Variable,*,Site Outdoor Air Drybulb Temperature,hourly; !- Zone Average [C]
+Output:Variable,*,Site Outdoor Air Dewpoint Temperature,hourly; !- Zone Average [C]
+Output:Variable,*,Site Outdoor Air Wetbulb Temperature,hourly; !- Zone Average [C]
+Output:Variable,*,Site Outdoor Air Humidity Ratio,hourly; !- Zone Average [kgWater/kgDryAir]
+Output:Variable,*,Site Outdoor Air Relative Humidity,hourly; !- Zone Average [%]
+Output:Variable,*,Site Outdoor Air Barometric Pressure,hourly; !- Zone Average [Pa]
+Output:Variable,*,Site Outdoor Air Enthalpy,hourly; !- Zone Average [J/kg]
+Output:Variable,*,Site Outdoor Air Density,hourly; !- Zone Average [kg/m3]

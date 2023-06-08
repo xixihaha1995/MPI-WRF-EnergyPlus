@@ -9,19 +9,48 @@
 
 #define MPI_MAX_PROCESSOR_NAME 128
 
-int handlesRetrieved = 0;
-int simHVACSensor = 0;
+int handlesRetrieved = 0, weatherHandleRetrieved = 0;
+int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1;
 Real64 msg = -1;
-int endingTimeSeconds = 6 * 24* 3600 - 100;
 int turnMPIon = 1;
 MPI_Comm parent_comm;
 MPI_Status status;
 
+void overwriteEpWeather(EnergyPlusState state) {
+    if (weatherHandleRetrieved == 0) {
+        if (!apiDataFullyReady(state)) {
+            printf("set weather API not fully ready\n");
+            return;
+        }
+        weatherHandleRetrieved = 1;
+        odbActHandle = getActuatorHandle(state, "Outdoor Dry Bulb", "ENVIRONMENT");
+        orhActHandle = getActuatorHandle(state, "Outdoor Relative Humidity", "ENVIRONMENT");
+        odbSenHandle = getVariableHandle(state, "SITE OUTDOOR AIR DRYBULB TEMPERATURE", "ENVIRONMENT");
+        ohrSenHandle = getVariableHandle(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
+
+        if (odbActHandle < 0 || orhActHandle < 0 || odbSenHandle < 0 || ohrSenHandle < 0)
+        {
+            printf("Error: odbActHandle = %d, orhActHandle = %d, odbSenHandle = %d, ohrSenHandle = %d\n",
+                   odbActHandle, orhActHandle, odbSenHandle, ohrSenHandle);
+            exit(1);
+        }
+    }
+    int warmUp = warmupFlag(state);
+    if (warmUp) {
+        return;
+    }
+
+    MPI_Recv(&msg, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    printf("Child %d received OAT %.2f (C) from %d of comm.\n",
+           rank, msg, status.MPI_SOURCE);
+
+}
+
 void endSysTimeStepHandler(EnergyPlusState state) {
     if (handlesRetrieved == 0) {
         if (!apiDataFullyReady(state)) {
-            printf("Data not fully ready\n");
+            printf("ep results API not fully ready\n");
             return;
         }
         handlesRetrieved = 1;
@@ -50,10 +79,9 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         printf("No more MPI, simTime = %.2f (s), simHVAC = %.2f (J), rank = %d\n", simTime, simHVAC, rank);
         return;
     }
-    MPI_Recv(&msg, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     MPI_Send(&simHVAC, 1, MPI_DOUBLE, status.MPI_SOURCE, 0, parent_comm);
-    printf("Child %d received OAT %.2f (C) from %d of comm, and sent heat %.2f (J) to it, at time %.2f(s)\n",
-           rank, msg, status.MPI_SOURCE,simHVAC, simTime);
+    printf("Child %d sent heat %.2f (J) to it, at time %.2f(s)\n",
+           rank,simHVAC, simTime);
     if (status.MPI_TAG == 886)
     {
         printf("EnergyPlus(BEMs):%d received 'ending messsage 886', "
@@ -80,10 +108,10 @@ int main(int argc, char** argv) {
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
-    callbackBegin
+    callbackBeginZoneTimestepBeforeSetCurrentWeather(state, overwriteEpWeather);
     callbackEndOfSystemTimeStepAfterHVACReporting(state, endSysTimeStepHandler);
-    requestVariable(state, "SITE OUTDOOR AIR DRYBULB TEMPERATURE", "ENVIRONMENT");
-    requestVariable(state, "SITE OUTDOOR AIR DEWPOINT TEMPERATURE", "ENVIRONMENT");
+    requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
+    requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
 
     sprintf(output_path, "./ep_trivial_%d", rank);
@@ -100,5 +128,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
-
