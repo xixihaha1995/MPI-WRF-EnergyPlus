@@ -30,6 +30,7 @@ https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/dri
 6. WRF (send ix, iy to EnergyPlus); IDF models are tied with pairs of (ix, iy)
 
 ### EnergyPlus API
+eplusout.rdd
 Output:Variable,*,Site Outdoor Air Drybulb Temperature,hourly; !- Zone Average [C]
 Output:Variable,*,Site Outdoor Air Dewpoint Temperature,hourly; !- Zone Average [C]
 Output:Variable,*,Site Outdoor Air Wetbulb Temperature,hourly; !- Zone Average [C]
