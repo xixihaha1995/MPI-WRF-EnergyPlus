@@ -12,7 +12,7 @@
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1;
-Real64 msg = -1;
+Real64 msg_arr[3] = {-1, -1, -1};
 int turnMPIon = 1;
 MPI_Comm parent_comm;
 MPI_Status status;
@@ -46,9 +46,9 @@ void overwriteEpWeather(EnergyPlusState state) {
         return;
     }
     // MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Recv(&msg, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    printf("Child %d received OAT %.2f (C) from %d of comm.\n",
-           rank, msg, status.MPI_SOURCE);
+    MPI_Recv(&msg_arr, 3, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    printf("Child %d received weather %.2f (OAT_C), %.2f (Abs_Hum kgw/kga), %.2f (Pa) from parent %d, at time %.2f(s)\n",
+           rank, msg_arr[0], msg_arr[1], msg_arr[2], status.MPI_SOURCE, currentSimTime(state));
 
 }
 

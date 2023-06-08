@@ -29,8 +29,9 @@ https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/dri
 5. (7 days + 12 hours) simulation. WRF will start and end the MPI call. As long as the number of callings from WRF is less than the number of timesteps in IDF, it's OK.
 6. WRF (send ix, iy to EnergyPlus); IDF models are tied with pairs of (ix, iy)
 
-### EnergyPlus API
-eplusout.rdd
+### EnergyPlus API vs WRF API
+
+```IDF
 Output:Variable,*,Site Outdoor Air Drybulb Temperature,hourly; !- Zone Average [C]
 Output:Variable,*,Site Outdoor Air Dewpoint Temperature,hourly; !- Zone Average [C]
 Output:Variable,*,Site Outdoor Air Wetbulb Temperature,hourly; !- Zone Average [C]
@@ -43,3 +44,9 @@ Output:Variable,*,Site Outdoor Air Density,hourly; !- Zone Average [kg/m3]
 ConvergenceLimits,
   0,                       !- Minimum System Timestep {minutes}
   25;                      !- Maximum HVAC Iterations
+```
+```fortran
+real tout(nzcanm)		!external temperature [K]
+real humout(nzcanm)		!absolute humidity [Kgwater/Kgair]
+real press(nzcanm)		!external air pressure [Pa]
+```
