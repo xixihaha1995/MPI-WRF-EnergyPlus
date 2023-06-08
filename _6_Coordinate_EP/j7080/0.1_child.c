@@ -6,6 +6,7 @@
 #include <EnergyPlus/api/state.h>
 #include <EnergyPlus/api/datatransfer.h>
 #include <EnergyPlus/api/runtime.h>
+#include <EnergyPlus/api/func.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
 
@@ -48,7 +49,10 @@ void overwriteEpWeather(EnergyPlusState state) {
     // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Recv(&msg_arr, 3, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga), %.2f (Pa) from parent %d, at time %.2f(s)\n",
-           rank, msg_arr[0], msg_arr[1], msg_arr[2], status.MPI_SOURCE, currentSimTime(state));
+           rank, msg_arr[0], msg_arr[1], msg_arr[2], status.MPI_SOURCE, 3600*currentSimTime(state));
+    
+    Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
+    printf("Child %d calculated RH = %.2f (%%)\n", rank, rh);
 
 }
 
