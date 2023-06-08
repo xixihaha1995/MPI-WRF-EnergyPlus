@@ -1,6 +1,5 @@
 **/build/
 **/EnergyPlus/
-**/python_standard_lib/
 **/ep_trivial**/
 *.so
 *.iml
