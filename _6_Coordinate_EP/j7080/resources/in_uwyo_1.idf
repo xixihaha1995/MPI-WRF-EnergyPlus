@@ -5,6 +5,10 @@ Version,
 Timestep,
   1;                                      !- Number of Timesteps per Hour
 
+ConvergenceLimits,
+  0,                       !- Minimum System Timestep {minutes}
+  25;                      !- Maximum HVAC Iterations
+
 LifeCycleCost:Parameters,
   Life Cycle Cost Parameters,             !- Name
   EndOfYear,                              !- Discounting Convention
