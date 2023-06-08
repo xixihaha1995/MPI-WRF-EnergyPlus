@@ -80,6 +80,7 @@ int main(int argc, char** argv) {
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
+    callbackBegin
     callbackEndOfSystemTimeStepAfterHVACReporting(state, endSysTimeStepHandler);
     requestVariable(state, "SITE OUTDOOR AIR DRYBULB TEMPERATURE", "ENVIRONMENT");
     requestVariable(state, "SITE OUTDOOR AIR DEWPOINT TEMPERATURE", "ENVIRONMENT");

@@ -1,12 +1,12 @@
 MPIF90 = mpif90
 MPICC = mpicc
 
-CFLAGS = -I/usr/local/EnergyPlus-23-1-0/include
-LDFLAGS = -L/usr/local/EnergyPlus-23-1-0
+CFLAGS = -I/usr/local/EnergyPlus-22-2-0/include
+LDFLAGS = -L/usr/local/EnergyPlus-22-2-0
 LDLIBS = -lenergyplusapi
 
 # Set LD_LIBRARY_PATH
-export LD_LIBRARY_PATH := /usr/local/EnergyPlus-23-1-0:$(LD_LIBRARY_PATH)
+export LD_LIBRARY_PATH := /usr/local/EnergyPlus-22-2-0:$(LD_LIBRARY_PATH)
 
 FFLAGS =
 CHILD = 0.1_child.c
