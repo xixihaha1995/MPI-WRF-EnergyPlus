@@ -24,8 +24,8 @@ for curfolder in subfolders:
 
     #  change1= C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/future_hourly_co2e_2030.csv, !- File Name
     #  change2 = C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/historical_hourly_co2e_2019.csv, !- File Name
-    change1str = "C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/future_hourly_co2e_2030.csv, !- File Name"
-    change2str = "C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/historical_hourly_co2e_2019.csv, !- File Name"
+    change1str = "C:/Users/wulic/uouwyo38/run/baseline_scenario"
+    change2str = "C:/Users/wulic/uouwyo38/run/baseline_scenario"
     #find the lines containing change1str, change it to "future_hourly_co2e_2030.csv, !- File Name"
     #find the lines containing change2str, change it to "historical_hourly_co2e_2019.csv, !- File Name"
     lines_to_add = '''\
@@ -37,6 +37,7 @@ for curfolder in subfolders:
 
     with open(source_file, 'r') as file:
         filedata = file.read()
+    #find lines containing change1str and change2str, change them to the new strings
     filedata = filedata.replace(change1str, "future_hourly_co2e_2030.csv, !- File Name")
     filedata = filedata.replace(change2str, "historical_hourly_co2e_2019.csv, !- File Name")
     #add lines_to_add to the beginning of the file
