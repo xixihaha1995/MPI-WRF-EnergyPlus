@@ -53,6 +53,13 @@ void overwriteEpWeather(EnergyPlusState state) {
     
     Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
     printf("Child %d calculated RH = %.2f (%%)\n", rank, rh);
+    setActuatorValue(state, odbActHandle, msg_arr[0]);
+    setActuatorValue(state, orhActHandle, rh);
+
+    Real64 odbSen = getVariableValue(state, odbSenHandle);
+    Real64 ohrSen = getVariableValue(state, ohrSenHandle);
+    printf("Child %d set weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga) to EnergyPlus, at time %.2f(s)\n",
+           rank, odbSen, ohrSen, 3600*currentSimTime(state));
 
 }
 
