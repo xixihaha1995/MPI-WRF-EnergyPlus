@@ -49,10 +49,10 @@ void overwriteEpWeather(EnergyPlusState state) {
     // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Recv(&msg_arr, 3, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
-        printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga), %.2f (Pa)
-        and calculated RH = %.2f (%%) from parent %d, at time %.2f(s)\n",
-           rank, msg_arr[0], msg_arr[1], msg_arr[2], rh, status.MPI_SOURCE, 3600*currentSimTime(state));
-           
+        printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga), %.2f (Pa)"
+            " and calculated RH = %.2f (%%) from parent %d, at time %.2f(s)\n",
+            rank, msg_arr[0], msg_arr[1], msg_arr[2], rh, status.MPI_SOURCE, 3600*currentSimTime(state));
+
     setActuatorValue(state, odbActHandle, msg_arr[0]);
     setActuatorValue(state, orhActHandle, rh);
 
