@@ -28,10 +28,19 @@ for curfolder in subfolders:
     change2str = "C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/historical_hourly_co2e_2019.csv, !- File Name"
     #find the lines containing change1str, change it to "future_hourly_co2e_2030.csv, !- File Name"
     #find the lines containing change2str, change it to "historical_hourly_co2e_2019.csv, !- File Name"
+    lines_to_add = '''\
+    ConvergenceLimits,
+      0,                       !- Minimum System Timestep {minutes}
+      25;                      !- Maximum HVAC Iterations
+    '''
+
+
     with open(source_file, 'r') as file:
         filedata = file.read()
     filedata = filedata.replace(change1str, "future_hourly_co2e_2030.csv, !- File Name")
     filedata = filedata.replace(change2str, "historical_hourly_co2e_2019.csv, !- File Name")
+    #add lines_to_add to the beginning of the file
+    filedata = lines_to_add + filedata
 
     saved_file = saved_folder + "\\" + "in_uwyo_" + str(curfolder) + ".idf"
     #save the modified file in saved_file

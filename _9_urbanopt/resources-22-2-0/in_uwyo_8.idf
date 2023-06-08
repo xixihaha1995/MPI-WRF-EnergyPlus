@@ -1,4 +1,7 @@
-
+    ConvergenceLimits,
+      0,                       !- Minimum System Timestep {minutes}
+      25;                      !- Maximum HVAC Iterations
+    
 Version,
   22.2;                                   !- Version Identifier
 
