@@ -6,7 +6,7 @@
 #PBS -q economy
 #PBS -j oe
 #PBS -k eod
-#PBS -l select=1:mpiprocs=6
+#PBS -l select=2:mpiprocs=36
 
 cat $PBS_NODEFILE
 set nbr_parent = 1
