@@ -1,6 +1,6 @@
 import os
 import pathlib
-import re
+import pandas as pd
 import sqlite3
 
 
@@ -24,11 +24,18 @@ def read_sql(sql_path):
     result_GJ = cursor.fetchall()
     cursor.execute(queryEnergyDemand_W)
     result_W = cursor.fetchall()
-    return result_GJ[0][1], result_W[0][1]
+    return float(result_GJ[0][1]), float(result_W[0][1])
 
 if __name__ == '__main__':
     parent_folder = r'C:\Users\wulic\uouwyo38\run\baseline_scenario'
+    buildingPerformance = {}
     for i in range(1, 39):
         curPath = parent_folder + "\\" + str(i) + "\\" + "eplusout.sql"
         curGJ,curW = read_sql(curPath)
         print(f'{i}th building: {curGJ} GJ, {curW} W')
+        buildingPerformance[i] = [curGJ, curW]
+
+    #save the buildingPerformance to a Excel file
+
+    df = pd.DataFrame.from_dict(buildingPerformance, orient='index', columns=['Cooling Energy Consumption GJ', 'Cooling Energy Demand W'])
+    df.to_excel('onlyURBANopt.xlsx')

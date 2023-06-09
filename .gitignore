@@ -21,3 +21,4 @@ log.mpirun
 .idea/workspace.xml
 _6_Coordinate_EP/j7080/mpi_app
 _6_Coordinate_EP/j7080/log.energyplus
+*.xlsx
