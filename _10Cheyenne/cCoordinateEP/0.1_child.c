@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
 
     sprintf(output_path, "/glade/scratch/lichenwu/ep_temp/ep_trivial_%d", rank+1);
-    sprintf(idfFilePath, "./resources-22-2-0/in_11.idf");
+    sprintf(idfFilePath, "./resources-22-2-0/in_uwyo_%d.idf", rank+1);
 
     char* weather_file_path = "./resources-22-2-0/USA_NY_Buffalo-Greater.Buffalo.Intl.AP.725280_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};

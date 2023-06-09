@@ -30,7 +30,7 @@ if __name__ == '__main__':
     parent_folder = r'C:\Users\wulic\uouwyo38\run\baseline_scenario'
     parent_folder = r"/glade/scratch/lichenwu/ep_temp/"
     buildingPerformance = {}
-    for i in range(1, 31):
+    for i in range(1, 39):
         curPath = parent_folder + "\\" + str(i) + "\\" + "eplusout.sql"
         curPath = parent_folder + "/" + f"ep_trivial_{i}/eplusout.sql"
         curGJ,curW = read_sql(curPath)
