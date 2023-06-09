@@ -17,6 +17,8 @@ program mpi_app
         end do
     end do
 
+    print *, "WRF boss ended"
+
 
 contains
 
