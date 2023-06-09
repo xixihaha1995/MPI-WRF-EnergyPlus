@@ -10,6 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1a74c382-24c1-4d45-8217-48d98e8c95f4" name="Changes" comment="WRF has the rights: init MPI, spawn BEMs, end MPI talks.">
+      <change afterPath="$PROJECT_DIR$/_9_urbanopt/fBatchProcessingHTML.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_9_urbanopt/gReorangeExcelRow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,6 +97,16 @@
       <workItem from="1682706724696" duration="57000" />
       <workItem from="1682706794419" duration="29601000" />
       <workItem from="1685403082750" duration="5364000" />
+      <workItem from="1685994490641" duration="649000" />
+      <workItem from="1685996764920" duration="659000" />
+      <workItem from="1686063839722" duration="5715000" />
+      <workItem from="1686085712234" duration="6185000" />
+      <workItem from="1686160719525" duration="4073000" />
+      <workItem from="1686259275470" duration="3581000" />
+      <workItem from="1686268635661" duration="1791000" />
+      <workItem from="1686288328711" duration="3293000" />
+      <workItem from="1686339575640" duration="15000" />
+      <workItem from="1686341179888" duration="3786000" />
     </task>
     <task id="LOCAL-00001" summary="basically tell compilers:&#10;how to generated shared library, name, path to find (plugin, interface to call ep)&#10;how to find the generated libray, name, path to find (ep built-in library)&#10;include the API for C (ep header files, interfaces, api)">
       <created>1682289005038</created>
@@ -181,15 +193,42 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/_9_urbanopt/newprocess.py</url>
-          <line>23</line>
+          <url>file://$PROJECT_DIR$/_9_urbanopt/aGetCoordinates.py</url>
+          <line>26</line>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/_9_urbanopt/bAssignToBlds.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/_9_urbanopt/fBatchProcessingHTML.py</url>
+          <line>35</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/_9_urbanopt/fBatchProcessingHTML.py</url>
+          <line>34</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="to_save_data" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/fortran_experiments$gReorangeExcelRow.coverage" NAME="gReorangeExcelRow Coverage Results" MODIFIED="1686344662727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
+    <SUITE FILE_PATH="coverage/fortran_experiments$fBatchProcessingHTML.coverage" NAME="fBatchProcessingHTML Coverage Results" MODIFIED="1686343573073" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
+    <SUITE FILE_PATH="coverage/fortran_experiments$bAssignToBlds.coverage" NAME="bAssignToBlds Coverage Results" MODIFIED="1686090433826" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
+    <SUITE FILE_PATH="coverage/fortran_experiments$cOrganizeIDF.coverage" NAME="cOrganizeIDF Coverage Results" MODIFIED="1686260739713" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
+    <SUITE FILE_PATH="coverage/fortran_experiments$dGetEnergyPerformance.coverage" NAME="dGetEnergyPerformance Coverage Results" MODIFIED="1686269143984" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
     <SUITE FILE_PATH="coverage/fortran_experiments$processJSON.coverage" NAME="processJSON Coverage Results" MODIFIED="1685403399770" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
-    <SUITE FILE_PATH="coverage/fortran_experiments$newprocess.coverage" NAME="newprocess Coverage Results" MODIFIED="1685405411649" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
+    <SUITE FILE_PATH="coverage/fortran_experiments$newprocess.coverage" NAME="newprocess Coverage Results" MODIFIED="1685996933198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
+    <SUITE FILE_PATH="coverage/fortran_experiments$aGetCoordinates.coverage" NAME="aGetCoordinates Coverage Results" MODIFIED="1686089245145" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
+    <SUITE FILE_PATH="coverage/fortran_experiments$eIDFUp.coverage" NAME="eIDFUp Coverage Results" MODIFIED="1686290812356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_9_urbanopt" />
   </component>
 </project>
