@@ -23,3 +23,11 @@ line 3363 - 3366
 
  ! spawn_children()
  ```
+
+ ### Notes
+
+ 1. The major different between HPC and personal computer is number of IDFs.
+ 2. Run small case on personal computer first.
+ 3. Try to manually modify the source code.
+ 4. Copy all the dependencies, *.exe, library, *.IDF, *.epw, *schedule.csv, into /WRF/test/em_real
+ 3. Module load gnu/11.2.0
