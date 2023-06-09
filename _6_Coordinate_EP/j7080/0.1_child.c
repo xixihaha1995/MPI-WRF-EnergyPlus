@@ -116,7 +116,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         wasteMPIon = 0;
         // sleep 5 seconds
         usleep(500000);
-        // MPI_Finalize();
+        MPI_Finalize();
     }
     
 }
