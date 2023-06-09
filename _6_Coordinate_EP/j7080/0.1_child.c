@@ -114,7 +114,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         printf("Child %d reached collective barrier, all my siblings here, let's end MPI. \n", rank);
         MPI_Barrier(parent_comm);
         wasteMPIon = 0;
-        MPI_Finalize();
+        // MPI_Finalize();
     }
     
 }
