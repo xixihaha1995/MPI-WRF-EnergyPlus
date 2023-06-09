@@ -1130,7 +1130,7 @@ CONTAINS
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveibui
-      integer ::  calling = 0, num_children = 4, ending_steps = (24 -1) * 20, ucm_tag = 0
+      integer ::  calling = 0, num_children = 4, ending_steps = (6 ) * 20, ucm_tag = 0
       REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
       REAL(KIND=8), DIMENSION(3) :: random_weather
       real(kind=8) :: mean_recv_waste_j
@@ -1205,10 +1205,10 @@ CONTAINS
                  &to reach collective barrier,(no more inter-communicator calls)&
                  & only WRF global setting call free and MPI_Finalize()"
           call MPI_Barrier(new_comm, ierr)
-          ! call MPI_Comm_free(new_comm, ierr)
-          ! call MPI_Comm_free(parent_comm, ierr)
+          call MPI_Comm_free(new_comm, ierr)
+          call MPI_Comm_free(parent_comm, ierr)
          
-          ! call MPI_Finalize(ierr)
+         !  call MPI_Finalize(ierr)
       end if
   end subroutine spawn_children
 
