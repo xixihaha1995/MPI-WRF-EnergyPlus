@@ -22,14 +22,10 @@ https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/dri
     c. Surrouding surface temperature (optional)
 
 ### TODO
-1. EP: set temperature and humidity
-2. hourly communication with EP
-3. 6 hour 4 dummy idfs case (only 5 hour online, WRF exit, then EnergyPlus)
-4. 6 hour 38/37 idfs case (build EnergyPlus 22-2-0)
-5. Script for energy consumption and demand over the 38/37 buildings.
-6. One day simulation for UWyo on cheyenne.
-7. WRF overrides surface temperature (averaged). [https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L30]
-8. WRF, EP, WEF+EP (T2m, Energy Consumption and Demand)
+1. ✅EP: set temperature and humidity
+2. ✅`hourly communication with EP (WRF and UP hit barrier, WRF Finalize, UP Finalize, Then UP exit)
+3. ✅Both 22-2-0 and 23-1-0 EnergyPlus should work on Cheyenne. Please make sure IDF schedule, and system pathes well configured.
+4. WRF overrides surface temperature (averaged). [https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L30]
 9. WRF (finest domain): (send ix, iy to EnergyPlus); IDF models are tied with pairs of (ix, iy)
 
 ### EnergyPlus API vs WRF API

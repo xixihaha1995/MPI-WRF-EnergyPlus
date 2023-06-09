@@ -1,7 +1,8 @@
 ### Coordinate Large Scale IDFs with WRF
 
-23-1-0 must be used for HPC consideration.
-22-2-0 inter-IDFs communication is way too slow.
+Both 22-2-0 23-1-0 should be able to be used on Cheyenne.
+If it's slow, please correct IDF schedule pathes, and associated library `python_standard_lib` in the same path as `child.exe`.
+
 ```
 module load gnu/11.2.0
 module load cmake/3.18.2
