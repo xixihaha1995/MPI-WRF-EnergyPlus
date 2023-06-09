@@ -42,3 +42,5 @@ if __name__ == '__main__':
     df = pd.DataFrame.from_dict(buildingPerformance, orient='index', columns=['Cooling Energy Consumption GJ', 'Cooling Energy Demand W'])
     # df.to_excel('onlyURBANopt.xlsx')
     df.to_excel('WRFAndURBANopt.xlsx')
+    # to csv
+    df.to_csv('WRFAndURBANopt.csv')
