@@ -28,9 +28,11 @@ def read_sql(sql_path):
 
 if __name__ == '__main__':
     parent_folder = r'C:\Users\wulic\uouwyo38\run\baseline_scenario'
+    parent_folder = r"/glade/scratch/lichenwu/ep_temp/"
     buildingPerformance = {}
     for i in range(1, 39):
         curPath = parent_folder + "\\" + str(i) + "\\" + "eplusout.sql"
+        curPath = parent_folder + "/" + f"ep_trivial_{i}/eplusout.sql"
         curGJ,curW = read_sql(curPath)
         print(f'{i}th building: {curGJ} GJ, {curW} W')
         buildingPerformance[i] = [curGJ, curW]
@@ -38,4 +40,5 @@ if __name__ == '__main__':
     #save the buildingPerformance to a Excel file
 
     df = pd.DataFrame.from_dict(buildingPerformance, orient='index', columns=['Cooling Energy Consumption GJ', 'Cooling Energy Demand W'])
-    df.to_excel('onlyURBANopt.xlsx')
+    # df.to_excel('onlyURBANopt.xlsx')
+    df.to_excel('WRFAndURBANopt.xlsx')
