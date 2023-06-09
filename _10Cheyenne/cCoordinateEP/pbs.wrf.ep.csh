@@ -2,11 +2,11 @@
 
 #PBS -N lwu4_wrf_ep
 #PBS -A WYOM0106
-#PBS -l walltime=00:15:00
+#PBS -l walltime=00:30:00
 #PBS -q regular
 #PBS -j oe
 #PBS -k eod
-#PBS -l select=2:mpiprocs=20
+#PBS -l select=2:mpiprocs=36
 
 cat $PBS_NODEFILE
 set nbr_parent = 1
