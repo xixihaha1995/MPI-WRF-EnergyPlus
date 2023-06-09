@@ -20,5 +20,5 @@ module load gnu/11.2.0
 # cp -f child.exe /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 pwd
-mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe 
+mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/em_temp/log.energyplus
 
