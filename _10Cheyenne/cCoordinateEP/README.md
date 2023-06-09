@@ -9,3 +9,14 @@ cmake -DCMAKE_INSTALL_PREFIX=/glade/u/home/lichenwu/project/gcc-built-up-ep-22-2
 make -j 10
 make install
 ```
+
+```
+phys/module_physics_init.F
+line 3363 - 3366
+ !              IF (config_flags%use_wudapt_lcz.eq.1 .and. max_utype_urb2d.le.3.0) THEN  ! new LCZ
+ !                CALL wrf_error_fatal &
+ !                ('USING URBPARM_LCZ.TBL WITH OLD 3 URBAN CLASSES. SET USE_WUDAPT_LCZ=0')
+ !              ENDIF
+
+ ! spawn_children()
+ ```
