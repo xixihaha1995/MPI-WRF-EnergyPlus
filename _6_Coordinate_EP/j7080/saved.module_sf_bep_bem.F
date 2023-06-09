@@ -1205,9 +1205,8 @@ CONTAINS
                  &to reach collective barrier,(no more inter-communicator calls)&
                  & only WRF global setting call free and MPI_Finalize()"
           call MPI_Barrier(new_comm, ierr)
-          call MPI_Comm_free(new_comm, ierr)
-          call MPI_Comm_free(parent_comm, ierr)
-         
+         !  call MPI_Comm_free(new_comm, ierr)
+         !  call MPI_Comm_free(parent_comm, ierr)
          !  call MPI_Finalize(ierr)
       end if
   end subroutine spawn_children
