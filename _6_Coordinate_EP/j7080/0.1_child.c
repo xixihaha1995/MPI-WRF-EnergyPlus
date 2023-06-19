@@ -57,7 +57,8 @@ void overwriteEpWeather(EnergyPlusState state) {
     if (status.MPI_TAG == 886)
     {
         printf("EnergyPlus(BEMs):%d received 'ending messsage 886', "
-               "to reach collective barrier, only WRF call free MPI_Finalize().\n", rank);
+               "to reach collective barrier, EP wait WRF to finalize, then EP free MPI_Finalize().\n"
+               "Then no more MPI at all on both sides.", rank);
         weatherMPIon = 0;
     }
     Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
