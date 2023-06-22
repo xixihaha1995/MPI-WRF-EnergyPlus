@@ -14,7 +14,7 @@ program mpi_app
                     random_weather(1) = 12 + int(random_data*28)
                     random_weather(2) = 0.007612 + int(random_data*0.0001)
                     random_weather(3) = 101325 + int(random_data*1000)
-                    call spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong, random_weather,mean_recv_waste_w_m2)
+                    call spawn_children(curix,curiy,curibui,dt,time_idx,xlat, xlong, random_weather,mean_recv_waste_w_m2)
                     ! print * , "mean_recv_waste_w_m2", mean_recv_waste_w_m2
                 end do
             end do
