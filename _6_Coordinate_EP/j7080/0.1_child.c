@@ -82,7 +82,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
             return;
         }
         handlesRetrieved = 1;
-        simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC_J");
+        simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
         if (simHVACSensor < 0)
         {
             printf("Error: simHVACSensor = %d\n", simHVACSensor);
