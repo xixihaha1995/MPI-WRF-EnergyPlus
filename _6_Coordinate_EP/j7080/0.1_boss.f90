@@ -9,7 +9,7 @@ program mpi_app
     do time_idx = 1, timesteps
         do curiy = 1, alliy
             do curix = 1, allix
-                do cuibul = 1, allbui
+                do curibui = 1, allbui
                     call random_number(random_data)
                     random_weather(1) = 12 + int(random_data*28)
                     random_weather(2) = 0.007612 + int(random_data*0.0001)

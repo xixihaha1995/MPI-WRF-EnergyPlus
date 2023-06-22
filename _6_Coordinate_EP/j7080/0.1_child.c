@@ -148,9 +148,9 @@ int main(int argc, char** argv) {
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
 
     sprintf(output_path, "./ep_trivial_%d", rank);
-    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_1.idf", rank+1);
+    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_1.idf");
 
-    char* weather_file_path = "./resources-22-2-0/USA_NY_Buffalo-Greater.Buffalo.Intl.AP.725280_TMY3.epw";
+    char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
     int argc_ = sizeof(sys_args) / sizeof(char*) - 1;
     printf("argc_ = %d\n", argc_);
