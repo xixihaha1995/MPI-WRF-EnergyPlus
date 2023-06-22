@@ -68,7 +68,7 @@ contains
       if (mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
             ! Forward filling for any time steps, any building types
             mean_recv_waste_w_m2 = saved_waste_w_m2
-            print *, "Forward filling curitime", curitime, "curibui", curibui, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
+            ! print *, "Forward filling curitime", curitime, "curibui", curibui, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
             return
       end if
 
@@ -77,7 +77,7 @@ contains
           return
       end if
       print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
-      print *, 'Within spawn_children xlat', xlat, 'xlong', xlong
+      print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'mean_recv_waste_w_m2', mean_recv_waste_w_m2
       print *, "Calling happening, calling", calling
       if (spawned .eqv. .false.) then
           spawned = .true.
