@@ -13,6 +13,7 @@
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1;
+Real64 uwyoBld1AreaM2 = 162.15;
 Real64 msg_arr[3] = {-1, -1, -1};
 int weatherMPIon = 1, wasteMPIon = 1;
 MPI_Comm parent_comm;
@@ -81,7 +82,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
             return;
         }
         handlesRetrieved = 1;
-        simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
+        simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC_J");
         if (simHVACSensor < 0)
         {
             printf("Error: simHVACSensor = %d\n", simHVACSensor);
@@ -99,17 +100,19 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     }
     Real64 simTimeInHours = currentSimTime(state);
     Real64 simTime = simTimeInHours * 3600;
-    Real64 simHVAC = getVariableValue(state, simHVACSensor);
+    Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
+    Real64 simHVAC_Wm2 = simHVAC_J / uwyoBld1AreaM2 / 3600;
+    
 
     if (! wasteMPIon)
     {
-        printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC = %.2f (J), \n", rank, simTime, simHVAC);
+        printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC_Wm2 = %.2f (W_m2), \n", rank, simTime, simHVAC_Wm2);
         return;
     }
 
-    MPI_Send(&simHVAC, 1, MPI_DOUBLE, status.MPI_SOURCE, 0, parent_comm);
-    printf("Child %d sent heat %.2f (J) to it, at time %.2f(s)\n",
-           rank,simHVAC, simTime);
+    MPI_Send(&simHVAC_Wm2, 1, MPI_DOUBLE, status.MPI_SOURCE, 0, parent_comm);
+    printf("Child %d sent heat %.2f (W_m2) to it, at time %.2f(s)\n",
+           rank,simHVAC_Wm2, simTime);
     
     if (!weatherMPIon) {
         printf("Child %d reached collective barrier, all my siblings here, let's end MPI. \n", rank);
@@ -145,7 +148,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
 
     sprintf(output_path, "./ep_trivial_%d", rank);
-    sprintf(idfFilePath, "./resources-22-2-0/in_uwyo_%d.idf", rank+1);
+    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_1.idf", rank+1);
 
     char* weather_file_path = "./resources-22-2-0/USA_NY_Buffalo-Greater.Buffalo.Intl.AP.725280_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};

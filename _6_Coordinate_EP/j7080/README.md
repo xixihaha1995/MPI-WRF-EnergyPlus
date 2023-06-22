@@ -1,16 +1,3 @@
-### Average different type of buildings in an urban class
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1470
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1620
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1726
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1773
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1816
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L2835
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L4192
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L2214
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1552
-https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L5336
-https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/drivers/wrf/module_sf_noahmpdrv.F#L3737
-
 ### Critical physical process of UCBEM
 
 1. Urban climate
@@ -20,28 +7,6 @@ https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/dri
     a. Urban weather.
     b. shading
     c. Surrouding surface temperature (optional)
-
-### Detailed Design
-
-1. How to get the actual location (especially longitude)?
-The variables xlat and xlong can be passed to physics module. Please see the example in `phys/module_radiation_driver.F`, where you can find that the lat/lon information are passed to the subroutine and used later in various radiation schemes.
-2. The following variables should also be backtracked: 
-The spatial resolution? The temporal resolution?
-3. The following illustrates `how the BEM module is initialize and computed`. For example, how `Thermal conductivity of roof [ J m{-1} s{-1} K{-1} ]` is defined and used?
-a. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/run/URBPARM_LCZ.TBL#L262
-b. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L5139
-c. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L2033
-d. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1726
-f. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L729
-g. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L949
-
-
-### TODO
-1. ✅EP: set temperature and humidity
-2. ✅`hourly communication with EP (WRF and UP hit barrier, WRF Finalize, UP Finalize, Then UP exit)
-3. ✅Both 22-2-0 and 23-1-0 EnergyPlus should work on Cheyenne. Please make sure IDF schedule, and system pathes well configured.
-4. WRF overrides surface temperature (averaged). [https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L30]
-9. WRF (finest domain): (send ix, iy to EnergyPlus); IDF models are tied with pairs of (ix, iy)
 
 ### EnergyPlus API vs WRF API
 
@@ -64,3 +29,70 @@ real tout(nzcanm)		!external temperature [K]
 real humout(nzcanm)		!absolute humidity [Kgwater/Kgair]
 real press(nzcanm)		!external air pressure [Pa]
 ```
+
+### Average different type of buildings in an urban class
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1470
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1620
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1726
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1773
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1816
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L2835
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L4192
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L2214
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1552
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L5336
+https://github.com/NCAR/noahmp/blob/3be0b2860dab167006a0b3c4822e234ca253c3df/drivers/wrf/module_sf_noahmpdrv.F#L3737
+
+### Detailed Design
+
+1. How to get the actual location (especially longitude)?
+Done. The `xlat` and `xlong` are already passed from `surface_driver` all the way to `subroutine BEP_BEM()`.
+2. The following variables should also be backtracked: 
+The spatial resolution? The temporal resolution?
+3. The following illustrates `how the BEM module is initialized and computed`. For example, how `Thermal conductivity of roof [ J m{-1} s{-1} K{-1} ]` is defined and used?
+a. 
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/run/URBPARM_LCZ.TBL#L262
+https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/run/URBPARM_LCZ.TBL#L426
+b. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L5139
+c. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L2033
+d. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L1726
+f. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L729
+g. https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L949
+
+### Software Implementation TODO
+1. ✅EP: set temperature and humidity
+2. ✅`hourly communication with EP (WRF and UP hit barrier, WRF Finalize, UP Finalize, Then UP exit)
+3. ✅Both 22-2-0 and 23-1-0 EnergyPlus should work on Cheyenne. Please make sure IDF schedule, and system pathes well configured.
+4. ✅WRF (finest domain): (send ix, iy to EnergyPlus); 
+5. WRF overrides surface temperature (averaged). [https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bem.F#L30]
+6. IDF models are tied with pairs of (ix, iy)
+
+### Preliminary Study Report
+
+We want to evaluate the impact of coupling methods on building energy consumption.
+The followings are potential tuning options:
+-1. fix the finest domain calling logics, calling frequencies 
+  a. EnergyPlus is fixed at hourly simulation.
+  b. As long as the finest domain within WRF, calls the EP module hourly (such as 6.67s * 540 = 3600s = 1 hr)
+0. Waste heat and surface temperatures, units conversion.
+The direct outputs from `subroutine BEM()` is `sflev1D sensible heat flux due to a.c. system [W]` 
+or `hsout sensible heat emitted outside the floor[W]`, which is calculated from `Air conditioned floor area[m2]`, where Af = bw * bl, both are from the `URBPARM_LCZ.tbl`
+But they also do nomalization at: https://github.com/wrf-model/WRF/blob/21c72141142fc6c8d203d2bf79f1990e45a0aef8/phys/module_sf_bep_bem.F#L3028
+The kick-start design of waste heat exchange:
+Within one urban class grid, no matter how much its resolution are 10 km, or 100m, the actual total waste heat will be normalized first, then converted to WRF virtual urban grid footprint.
+
+0.1. Get the averaged building surface temperature (shading or sunlit?)
+Answer: 
+One urban class > multiple actual buildings > virtual LCZ building (LCZ_1, AF = 12 * 12 = 144 m2)
+Averaged heat performance (W/m2) * virtual building footprint (144 m2) = W (normalized waste heat in urban class)
+
+Overall, the novelty of this study:
+a. Compared with WRF, more detailed BEM.
+b. Compared with VCWG+EP, real-time real-large urban climate model will be embedded with Urban Building Energy Model.
+The real question is whether the current implementation a good urban climate model for large-community-scale BEM or not.
+0.2 Dummy cases for preliminary case study: 
+one urban class + one building (normalized waste heat, surface temperature)
+// the above should be enough to see the coupling method impacts
+0.3. The visualization of calculated temperatures. Pretty much, I need to pinpoint the urban temperature
+0.4. Vertial resolution
+0.5. Horizontal resolution
