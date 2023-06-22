@@ -37,7 +37,7 @@ contains
       real(kind=8) :: mean_recv_waste_w_m2
       real(kind=8) :: saved_waste_w_m2 = 0
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., turnMPIon = .true.
+      logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
       ALLOCATE (received_data(num_children))
 
@@ -56,6 +56,9 @@ contains
       if (curitime /= saveitime) then
             calling = calling + 1
             saveitime = curitime
+            hourlyUpdate = .true.
+        else
+            hourlyUpdate = .false.
       end if
       
       ! print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
@@ -63,7 +66,14 @@ contains
      
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
       if (mod(calling,540) /= 0) then
-        !   print *, "calling:",calling,"% 540 /= 0, current building types", curibui, "reteriving saved_waste_w_m2", saved_waste_w_m2
+            ! Forward filling for any time steps, any building types
+            mean_recv_waste_w_m2 = saved_waste_w_m2
+            return
+      end if
+
+      !if not hourlyUpdate, sibling bui reterive the stored waste_heat, then return
+      if (hourlyUpdate .eqv. .false.) then
+          !print *, "hourlyUpdate is false, no more MPI calls"
           mean_recv_waste_w_m2 = saved_waste_w_m2
           return
       end if
@@ -112,8 +122,7 @@ contains
 
       if (ucm_tag == 886) then
          print *, "WRF (Parent(s)) ending messsage 886 sent, &
-                 &to reach collective barrier,(no more inter-communicator calls)&
-                 & only WRF global setting call free and MPI_Finalize()"
+                 &to reach collective barrier,MPI about to end, no more inter-communicator calls."
           call MPI_Barrier(new_comm, ierr)
           ! call MPI_Comm_free(new_comm, ierr)
           ! call MPI_Comm_free(parent_comm, ierr)
