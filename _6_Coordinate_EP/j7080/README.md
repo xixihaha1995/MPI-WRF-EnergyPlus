@@ -1,3 +1,7 @@
+### General workflow
+
+ln -sf ../../../WPS/met_em.d01.2016-10* .
+
 ### Critical physical process of UCBEM
 
 1. Urban climate
