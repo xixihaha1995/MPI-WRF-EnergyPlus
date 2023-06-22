@@ -1770,9 +1770,13 @@ CONTAINS
             random_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             random_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
-            call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, mean_recv_waste_w_m2)
-            mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * mean_recv_waste_w_m2
-            print *, 'WRF BEM sflev1D(w)', sflev1D(1:6), 'EP waste heat(w)', mean_recv_waste_w
+            if (41.30864 .gt. xlat .and. -105.5866 .gt. xlong) then 
+               call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, mean_recv_waste_w_m2)
+               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * mean_recv_waste_w_m2
+               print *, 'EP waste heat(w)', mean_recv_waste_w
+               print *, 'WRF twb1D wall surface temp[k]', twb1D
+               print *, 'WRF BEM sflev1D(w) due to a.c.', sflev1D(1:7)
+            endif
          endif
 !
 !Temporal modifications
