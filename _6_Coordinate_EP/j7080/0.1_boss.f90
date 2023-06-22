@@ -68,7 +68,7 @@ contains
       if (mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
             ! Forward filling for any time steps, any building types
             mean_recv_waste_w_m2 = saved_waste_w_m2
-            print *, "Forward filling curitime", curitime, "curibui", curibui
+            print *, "Forward filling curitime", curitime, "curibui", curibui, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
             return
       end if
 
