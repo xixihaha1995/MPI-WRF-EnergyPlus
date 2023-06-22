@@ -30,7 +30,7 @@ contains
       implicit none
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-      integer, save :: new_comm,  saveix, saveiy, saveibui, saveitime = -1
+      integer, save :: new_comm,  saveix, saveiy, saveitime = -1
       integer ::  calling = 0, num_children = 1, ending_steps = (6 ) * 540, ucm_tag = 0
       REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
       REAL(KIND=8), DIMENSION(3) :: random_weather
@@ -46,12 +46,10 @@ contains
       if (calling == 0) then
           saveix = curix
           saveiy = curiy
-          saveibui = curibui
       end if
 
       !if curix and curiy are not the same as saveix and saveiy, then return
       if (curix /= saveix .or. curiy /= saveiy) then
-          !print *, "curix /= saveix .or. curiy /= saveiy .or. curibui /= saveibui, return"
           return
       end if
     
@@ -65,7 +63,7 @@ contains
      
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
       if (mod(calling,540) /= 0) then
-          print *, "calling is not % 540, current building types", curibui, "reteriving saved_waste_w_m2", saved_waste_w_m2
+          print *, "calling:",calling,is not % 540, current building types", curibui, "reteriving saved_waste_w_m2", saved_waste_w_m2
           mean_recv_waste_w_m2 = saved_waste_w_m2
           return
       end if
