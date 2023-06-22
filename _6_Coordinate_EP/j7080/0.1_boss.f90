@@ -63,7 +63,7 @@ contains
      
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
       if (mod(calling,540) /= 0) then
-          print *, "calling:",calling,"% 540 /= 0, current building types", curibui, "reteriving saved_waste_w_m2", saved_waste_w_m2
+        !   print *, "calling:",calling,"% 540 /= 0, current building types", curibui, "reteriving saved_waste_w_m2", saved_waste_w_m2
           mean_recv_waste_w_m2 = saved_waste_w_m2
           return
       end if
