@@ -218,8 +218,8 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         int num = midLen / 4;
         avgMidVal[i] /= num;
         printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
-        printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
         printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
+        printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
     }
 
     free(tempMidVal);
