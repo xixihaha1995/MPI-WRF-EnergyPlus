@@ -31,7 +31,7 @@ int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
 GeoUWyo uwyo1 = {
     .footPrintM2 = 162.15,
     .bot = {8, 20, 26, 14},
-    .mid = midValues,
+    .mid = midNames,
     .top = {98, 110, 116, 104}
 };
 
@@ -41,7 +41,9 @@ GeoUWyo uwyo1 = {
 // one is used to get surface variable value.
 
 void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
-    requestVariable(state, "Surface Outside Face Temperature", sprintf("Surface %d", geoUWyo.bot[0]));
+    char surfaceName[100];
+    sprintf(surfaceName, "Surface %d", geoUWyo.bot[0]);
+    requestVariable(state, "Surface Outside Face Temperature", surfaceName);
 }
 
 void overwriteEpWeather(EnergyPlusState state) {
