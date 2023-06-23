@@ -88,6 +88,8 @@ SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
         surHandles.botHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
         sprintf(surfaceName, "Surface %d", geoUWyo.top[i]);
         surHandles.topHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
+        printf("surHandles.botHandle[%d] = %d, surHandles.topHandle[%d] = %d\n",
+               i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
         if (surHandles.botHandle[i] < 0 || surHandles.topHandle[i] < 0) {
             printf("Error: surHandles.botHandle[%d] = %d, surHandles.topHandle[%d] = %d\n",
                    i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
