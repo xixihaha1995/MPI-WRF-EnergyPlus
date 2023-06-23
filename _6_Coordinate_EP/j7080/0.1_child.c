@@ -44,6 +44,7 @@ SurfaceValues surValues;
 
 int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
 int midLen = sizeof(midNames) / sizeof(midNames[0]);
+Real64* tempMidVal;
 
 GeoUWyo uwyo1 = {
     .footPrintM2 = 162.15,
@@ -113,7 +114,7 @@ SurfaceValues getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
         surValues.botVal[i] = getVariableValue(state, surHandles.botHandle[i]);
         surValues.topVal[i] = getVariableValue(state, surHandles.topHandle[i]);
     }
-    Real64* tempMidVal = malloc(midLen * sizeof(Real64));
+    tempMidVal = malloc(midLen * sizeof(Real64));
     for (int i = 0; i < midLen; i++) {
         Real64 midVal = getVariableValue(state, surHandles.midHandle[i]);
         tempMidVal[i] = midVal;
