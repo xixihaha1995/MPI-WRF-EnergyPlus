@@ -33,6 +33,3 @@ ln -sf  GEOGRID.TBL.ARW_LCZ GEOGRID.TBL
 wget "https://stratus.rda.ucar.edu/ds083.2/grib2/2023/2023.05/fnl_20230501_06_00.grib2"
 ln -sf ungrib/Variable_Tables/Vtable.GFS Vtable
 ./link_grib.csh ../DATA/matthew/fnl
-
-
-
