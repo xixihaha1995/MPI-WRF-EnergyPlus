@@ -19,6 +19,31 @@ int weatherMPIon = 1, wasteMPIon = 1;
 MPI_Comm parent_comm;
 MPI_Status status;
 
+typedef struct {
+    float footPrintM2;
+    int bot[4];
+    int* mid;
+    int top[4];
+} GeoUWyo;
+
+int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
+
+GeoUWyo uwyo1 = {
+    .footPrintM2 = 162.15,
+    .bot = {8, 20, 26, 14},
+    .mid = midValues,
+    .top = {98, 110, 116, 104}
+};
+
+// I'd like add three more functions related with GeoUWyo1 surfaces,
+// one is used to request the surface variables
+// one is used to get surface handle, and check if it is valid
+// one is used to get surface variable value.
+
+void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
+    requestVariable(state, "Surface Outside Face Temperature", sprintf("Surface %d", geoUWyo.bot[0]));
+}
+
 void overwriteEpWeather(EnergyPlusState state) {
     if (weatherHandleRetrieved == 0) {
         // if (!apiDataFullyReady(state)) {
@@ -146,6 +171,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
+    requestSur(state, uwyo1);
 
     sprintf(output_path, "./ep_trivial_%d", rank);
     sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_1.idf");
