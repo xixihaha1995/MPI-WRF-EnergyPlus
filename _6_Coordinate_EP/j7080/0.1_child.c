@@ -119,6 +119,8 @@ SurfaceValues getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
     int midLen = sizeof(surHandles.midHandle) / sizeof(surHandles.midHandle[0]);
     for (int i = 0; i < midLen; i++) {
         printf("Getsurval surHandles.midHandle[%d] = %d\n", i, surHandles.midHandle[i]);
+        Real64 midVal = getVariableValue(state, surHandles.midHandle[i]);
+        printf("Getsurval midVal = %f\n", midVal);
         surValues.midVal[i] = getVariableValue(state, surHandles.midHandle[i]);
         printf("Getsurval surValues.midVal[%d] = %f\n", i, surValues.midVal[i]);
     }
