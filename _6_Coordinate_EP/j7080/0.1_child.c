@@ -212,11 +212,11 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
     Real64 avgMidVal[4];
     for (int i = 0; i < midLen; i++) {
-        printf("Mid surface %d temperature = %.2f (C)\n", i, surValues.midVal[i]);
         avgMidVal[i % 4] += surValues.midVal[i];
     }
     for (int i = 0; i < 4; i++) {
-        avgMidVal[i] /= 4;
+        int num = midLen / 4;
+        avgMidVal[i] /= num;
         printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
         printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
         printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
