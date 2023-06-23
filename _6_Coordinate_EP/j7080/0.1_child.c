@@ -211,18 +211,18 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_Wm2 = simHVAC_J / uwyoBld1AreaM2 / 3600;
 
-    surValues = getSurVal(state, surHandles);
-    Real64 botSurTemp = (surValues.botVal[0] + surValues.botVal[1] + surValues.botVal[2] + surValues.botVal[3]) / 4;
-    Real64 topSurTemp = (surValues.topVal[0] + surValues.topVal[1] + surValues.topVal[2] + surValues.topVal[3]) / 4;
-    int midLen = sizeof(surHandles.midHandle) / sizeof(surHandles.midHandle[0]);
-    Real64 midSurTemp = 0;
-    for (int i = 0; i < midLen; i++) {
-        midSurTemp += surValues.midVal[i];
-    }
-    midSurTemp /= midLen;
+    // surValues = getSurVal(state, surHandles);
+    // Real64 botSurTemp = (surValues.botVal[0] + surValues.botVal[1] + surValues.botVal[2] + surValues.botVal[3]) / 4;
+    // Real64 topSurTemp = (surValues.topVal[0] + surValues.topVal[1] + surValues.topVal[2] + surValues.topVal[3]) / 4;
+    // int midLen = sizeof(surHandles.midHandle) / sizeof(surHandles.midHandle[0]);
+    // Real64 midSurTemp = 0;
+    // for (int i = 0; i < midLen; i++) {
+    //     midSurTemp += surValues.midVal[i];
+    // }
+    // midSurTemp /= midLen;
 
-    printf("Surfaces: botSurTemp = %.2f (C), topSurTemp = %.2f (C), midSurTemp = %.2f (C)\n",
-           botSurTemp, topSurTemp, midSurTemp);
+    // printf("Surfaces: botSurTemp = %.2f (C), topSurTemp = %.2f (C), midSurTemp = %.2f (C)\n",
+    //        botSurTemp, topSurTemp, midSurTemp);
     
 
     if (! wasteMPIon)
