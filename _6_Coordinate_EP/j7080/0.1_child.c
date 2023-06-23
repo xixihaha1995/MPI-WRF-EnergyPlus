@@ -73,7 +73,6 @@ void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
         sprintf(surfaceName, "Surface %d", geoUWyo.top[i]);
         requestVariable(state, "Surface Outside Face Temperature", surfaceName);
     }
-    int midLen = sizeof(geoUWyo.mid) / sizeof(geoUWyo.mid[0]);
     for (int i = 0; i < midLen; i++) {
         sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
         requestVariable(state, "Surface Outside Face Temperature", surfaceName);
@@ -95,7 +94,6 @@ SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
             exit(1);
         }
     }
-    int midLen = sizeof(geoUWyo.mid) / sizeof(geoUWyo.mid[0]);
     for (int i = 0; i < midLen; i++) {
         sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
         surHandles.midHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
@@ -211,19 +209,19 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_Wm2 = simHVAC_J / uwyoBld1AreaM2 / 3600;
 
     surValues = getSurVal(state, surHandles);
-    Real64 botSurTemp = (surValues.botVal[0] + surValues.botVal[1] + surValues.botVal[2] + surValues.botVal[3]) / 4;
-    Real64 topSurTemp = (surValues.topVal[0] + surValues.topVal[1] + surValues.topVal[2] + surValues.topVal[3]) / 4;
-    int midLen = sizeof(surHandles.midHandle) / sizeof(surHandles.midHandle[0]);
-    Real64 midSurTemp = 0;
+    // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
+    Real64 avgMidVal[4];
     for (int i = 0; i < midLen; i++) {
-        midSurTemp += surValues.midVal[i];
+        avgMidVal[i / 4] += surValues.midVal[i];
     }
-    midSurTemp /= midLen;
+    for (int i = 0; i < 4; i++) {
+        avgMidVal[i] /= 4;
+        printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
+        printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
+        printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
+    }
 
-    printf("Surfaces: botSurTemp = %.2f (C), topSurTemp = %.2f (C), midSurTemp = %.2f (C)\n",
-           botSurTemp, topSurTemp, midSurTemp);
     free(tempMidVal);
-
     if (! wasteMPIon)
     {
         printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC_Wm2 = %.2f (W_m2), \n", rank, simTime, simHVAC_Wm2);
