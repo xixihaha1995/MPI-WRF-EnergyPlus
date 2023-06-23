@@ -113,6 +113,8 @@ SurfaceValues getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
     // This function is used to iterate bot, mid, top surfaces. get their values
     SurfaceValues surValues;
     for (int i = 0; i < 4; i++) {
+        printf("getSurVal surHandles.botHandle[%d] = %d, surHandles.topHandle[%d] = %d\n",
+               i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
         surValues.botVal[i] = getVariableValue(state, surHandles.botHandle[i]);
         surValues.topVal[i] = getVariableValue(state, surHandles.topHandle[i]);
     }
@@ -211,7 +213,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_Wm2 = simHVAC_J / uwyoBld1AreaM2 / 3600;
 
-    // surValues = getSurVal(state, surHandles);
+    surValues = getSurVal(state, surHandles);
     // Real64 botSurTemp = (surValues.botVal[0] + surValues.botVal[1] + surValues.botVal[2] + surValues.botVal[3]) / 4;
     // Real64 topSurTemp = (surValues.topVal[0] + surValues.topVal[1] + surValues.topVal[2] + surValues.topVal[3]) / 4;
     // int midLen = sizeof(surHandles.midHandle) / sizeof(surHandles.midHandle[0]);
