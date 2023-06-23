@@ -10,6 +10,25 @@
 
 #define MPI_MAX_PROCESSOR_NAME 128
 
+typedef struct {
+    float footPrintM2;
+    int bot[4];
+    int* mid;
+    int top[4];
+} GeoUWyo;
+
+typedef struct {
+    int botHandle[4];
+    int* midHandle;
+    int topHandle[4];
+} SurfaceHandles;
+
+typedef struct {
+    Real64 botVal[4];
+    Real64* midVal;
+    Real64 topVal[4];
+} SurfaceValues;
+
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1;
@@ -18,13 +37,10 @@ Real64 msg_arr[3] = {-1, -1, -1};
 int weatherMPIon = 1, wasteMPIon = 1;
 MPI_Comm parent_comm;
 MPI_Status status;
+SurfaceHandles surHandles;
+SurfaceValues surValues;
 
-typedef struct {
-    float footPrintM2;
-    int bot[4];
-    int* mid;
-    int top[4];
-} GeoUWyo;
+
 
 int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
 
@@ -35,15 +51,75 @@ GeoUWyo uwyo1 = {
     .top = {98, 110, 116, 104}
 };
 
+
+
 // I'd like add three more functions related with GeoUWyo1 surfaces,
 // one is used to request the surface variables
 // one is used to get surface handle, and check if it is valid
 // one is used to get surface variable value.
 
 void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
+    // char surfaceName[100];
+    // sprintf(surfaceName, "Surface %d", geoUWyo.bot[0]);
+    // requestVariable(state, "Surface Outside Face Temperature", surfaceName);
+    // This function is used to iterate bot, mid, top surfaces. request them
+
     char surfaceName[100];
-    sprintf(surfaceName, "Surface %d", geoUWyo.bot[0]);
-    requestVariable(state, "Surface Outside Face Temperature", surfaceName);
+    for (int i = 0; i < 4; i++) {
+        sprintf(surfaceName, "Surface %d", geoUWyo.bot[i]);
+        requestVariable(state, "Surface Outside Face Temperature", surfaceName);
+        sprintf(surfaceName, "Surface %d", geoUWyo.top[i]);
+        requestVariable(state, "Surface Outside Face Temperature", surfaceName);
+    }
+    int midLen = sizeof(geoUWyo.mid) / sizeof(geoUWyo.mid[0]);
+    for (int i = 0; i < midLen; i++) {
+        sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
+        requestVariable(state, "Surface Outside Face Temperature", surfaceName);
+    }
+    printf("requestSur() is called\n");
+}
+
+SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
+    // This function is used to iterate bot, mid, top surfaces. get their handles
+    SurfaceHandles surHandles;
+    char surfaceName[100];
+    for (int i = 0; i < 4; i++) {
+        sprintf(surfaceName, "Surface %d", geoUWyo.bot[i]);
+        surHandles.botHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
+        sprintf(surfaceName, "Surface %d", geoUWyo.top[i]);
+        surHandles.topHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
+        if (surHandles.botHandle[i] < 0 || surHandles.topHandle[i] < 0) {
+            printf("Error: surHandles.botHandle[%d] = %d, surHandles.topHandle[%d] = %d\n",
+                   i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
+            exit(1);
+        }
+    }
+    int midLen = sizeof(geoUWyo.mid) / sizeof(geoUWyo.mid[0]);
+    for (int i = 0; i < midLen; i++) {
+        sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
+        surHandles.midHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
+        if (surHandles.midHandle[i] < 0) {
+            printf("Error: surHandles.midHandle[%d] = %d\n", i, surHandles.midHandle[i]);
+            exit(1);
+        }
+    }
+    printf("getSurHandle() is called\n");
+    return surHandles;
+}
+
+SurfaceValues getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
+    // This function is used to iterate bot, mid, top surfaces. get their values
+    SurfaceValues surValues;
+    for (int i = 0; i < 4; i++) {
+        surValues.botVal[i] = getVariableValue(state, surHandles.botHandle[i]);
+        surValues.topVal[i] = getVariableValue(state, surHandles.topHandle[i]);
+    }
+    int midLen = sizeof(surHandles.midHandle) / sizeof(surHandles.midHandle[0]);
+    for (int i = 0; i < midLen; i++) {
+        surValues.midVal[i] = getVariableValue(state, surHandles.midHandle[i]);
+    }
+    printf("getSurVal() is called\n");
+    return surValues;
 }
 
 void overwriteEpWeather(EnergyPlusState state) {
@@ -57,6 +133,8 @@ void overwriteEpWeather(EnergyPlusState state) {
         orhActHandle = getActuatorHandle(state, "Weather Data", "Outdoor Relative Humidity", "ENVIRONMENT");
         odbSenHandle = getVariableHandle(state, "SITE OUTDOOR AIR DRYBULB TEMPERATURE", "ENVIRONMENT");
         ohrSenHandle = getVariableHandle(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
+
+        surHandles = getSurHandle(state, uwyo1);
 
         if (odbActHandle < 0 || orhActHandle < 0 || odbSenHandle < 0 || ohrSenHandle < 0)
         {
@@ -129,6 +207,19 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simTime = simTimeInHours * 3600;
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_Wm2 = simHVAC_J / uwyoBld1AreaM2 / 3600;
+
+    surValues = getSurVal(state, surHandles);
+    Real64 botSurTemp = (surValues.botVal[0] + surValues.botVal[1] + surValues.botVal[2] + surValues.botVal[3]) / 4;
+    Real64 topSurTemp = (surValues.topVal[0] + surValues.topVal[1] + surValues.topVal[2] + surValues.topVal[3]) / 4;
+    int midLen = sizeof(surHandles.midHandle) / sizeof(surHandles.midHandle[0]);
+    Real64 midSurTemp = 0;
+    for (int i = 0; i < midLen; i++) {
+        midSurTemp += surValues.midVal[i];
+    }
+    midSurTemp /= midLen;
+
+    printf("Surfaces: botSurTemp = %.2f (C), topSurTemp = %.2f (C), midSurTemp = %.2f (C)\n",
+           botSurTemp, topSurTemp, midSurTemp);
     
 
     if (! wasteMPIon)
