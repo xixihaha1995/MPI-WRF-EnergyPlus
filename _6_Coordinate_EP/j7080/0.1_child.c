@@ -113,14 +113,14 @@ SurfaceValues getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
     // This function is used to iterate bot, mid, top surfaces. get their values
     SurfaceValues surValues;
     for (int i = 0; i < 4; i++) {
-        printf("getSurVal surHandles.botHandle[%d] = %d, surHandles.topHandle[%d] = %d\n",
-               i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
         surValues.botVal[i] = getVariableValue(state, surHandles.botHandle[i]);
         surValues.topVal[i] = getVariableValue(state, surHandles.topHandle[i]);
     }
     int midLen = sizeof(surHandles.midHandle) / sizeof(surHandles.midHandle[0]);
     for (int i = 0; i < midLen; i++) {
+        printf("Getsurval surHandles.midHandle[%d] = %d\n", i, surHandles.midHandle[i]);
         surValues.midVal[i] = getVariableValue(state, surHandles.midHandle[i]);
+        printf("Getsurval surValues.midVal[%d] = %f\n", i, surValues.midVal[i]);
     }
     printf("getSurVal() is called\n");
     return surValues;
