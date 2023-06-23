@@ -136,7 +136,6 @@ void overwriteEpWeather(EnergyPlusState state) {
         odbSenHandle = getVariableHandle(state, "SITE OUTDOOR AIR DRYBULB TEMPERATURE", "ENVIRONMENT");
         ohrSenHandle = getVariableHandle(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
 
-        surHandles = getSurHandle(state, uwyo1);
 
         if (odbActHandle < 0 || orhActHandle < 0 || odbSenHandle < 0 || ohrSenHandle < 0)
         {
@@ -190,6 +189,8 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
+        surHandles = getSurHandle(state, uwyo1);
+        
         if (simHVACSensor < 0)
         {
             printf("Error: simHVACSensor = %d\n", simHVACSensor);
