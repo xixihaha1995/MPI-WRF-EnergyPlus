@@ -229,9 +229,9 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     }
 
     float data[performanc_length];
-    // data[0] = uwyo1.footPrintM2;
-    data[0] = -66.0;
-    data[1] = (float) simHVAC_W;
+    data[0] = uwyo1.footPrintM2;
+    data[1] = -66.0;
+    // data[1] = (float) simHVAC_W;
     // bot 4, mid 4, top 4
     for (int i = 0; i < 4; i++) {
         data[i + 2] = (float) (surValues.botVal[i] + 273.15);
