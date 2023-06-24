@@ -32,10 +32,11 @@ contains
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
       integer ::  calling = 0, ending_steps = (6 ) * 540, ucm_tag = 0
-      integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3
+      integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: random_weather
       real :: mean_recv_waste_w_m2
+      real, dimension(wrfNeedLen) :: wM2_12K;
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
@@ -110,7 +111,11 @@ contains
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
       mean_recv_waste_w_m2 = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
-      print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
+      wM2_12K(1) = mean_recv_waste_w_m2
+      ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
+      wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
+    !   print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
+      print *, "WRF (Parent(s)) wM2_12K", wM2_12K
 
 
       if (ucm_tag == 886) then
