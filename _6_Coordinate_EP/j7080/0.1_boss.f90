@@ -114,7 +114,7 @@ contains
           call MPI_Sendrecv(random_weather, 3, MPI_REAL8, child_idx - 1, ucm_tag, &
                   received_data(child_idx)%areaHeatTemp, 1, MPI_REAL8, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
-      mean_recv_waste_w_m2 = sum(received_data%areaHeatTemp(:)) / num_children
+      mean_recv_waste_w_m2 = sum(received_data(:)%areaHeatTemp) / num_children
       saved_waste_w_m2 = mean_recv_waste_w_m2
       !print *, "WRF (Parent(s)) received_data (waste heat J)", received_data, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
 
