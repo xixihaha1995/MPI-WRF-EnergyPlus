@@ -20,8 +20,9 @@ program mpi_app
                     random_weather(3) = 101325 + int(random_data*1000)
                     call spawn_children(curix,curiy,curibui,dt,time_idx,xlat, xlong, random_weather,wM2_12K)
                     wrfWaste(1:7) = wM2_12K(1)
-                    tempValues = wM2_12K(2:13)
-                    wrfSurface(:,10, 1:3) = reshape(tempValues, (/4,1,3/))
+                    do i = 1, 3
+                        wrfSurface(:,10, i) = wM2_12K(2+(i-1)*4:5+(i-1)*4)
+                    end do
                 end do
             end do
         end do
