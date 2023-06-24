@@ -2,7 +2,8 @@ program mpi_app
     integer :: time_idx, timesteps = 6 * 540, allix = 3, alliy =3, allbui = 2, curix, curiy, curibui, curitime = 1
     integer :: ierr
     real, dimension (3) :: random_weather ! oat_c, abs_hum_kgw_kga, pressure_pa
-    real :: mean_recv_waste_w_m2, random_data
+    real :: random_data
+    real, dimension(13) :: wM2_12K;
     real :: dt = 6.67, xlat = 41.30, xlong = -105.59
 
 
@@ -14,8 +15,7 @@ program mpi_app
                     random_weather(1) = 12 + int(random_data*28)
                     random_weather(2) = 0.007612 + int(random_data*0.0001)
                     random_weather(3) = 101325 + int(random_data*1000)
-                    call spawn_children(curix,curiy,curibui,dt,time_idx,xlat, xlong, random_weather,mean_recv_waste_w_m2)
-                    ! print * , "mean_recv_waste_w_m2", mean_recv_waste_w_m2
+                    call spawn_children(curix,curiy,curibui,dt,time_idx,xlat, xlong, random_weather,wM2_12K)
                 end do
             end do
         end do
@@ -26,7 +26,7 @@ program mpi_app
 
 contains
 
- subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,random_weather,mean_recv_waste_w_m2)
+ subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,random_weather,wM2_12K)
       implicit none
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
@@ -35,15 +35,14 @@ contains
       integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: random_weather
-      real :: mean_recv_waste_w_m2
-      real, dimension(wrfNeedLen) :: wM2_12K;
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
+    !   output variables
+      real, dimension(wrfNeedLen) :: wM2_12K;
 
 
-
-      !ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, mean_recv_waste_w_m2
+      !ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K
 
       if (calling == 0) then
           saveix = curix
@@ -69,7 +68,7 @@ contains
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
       if (mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
             ! Forward filling for any time steps, any building types
-            ! print *, "Forward filling curitime", curitime, "curibui", curibui, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
+            ! print *, "Forward filling curitime", curitime, "curibui", curibui, "wM2_12K", wM2_12K
             return
       end if
 
@@ -78,7 +77,7 @@ contains
           return
       end if
     !   print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
-    !   print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'mean_recv_waste_w_m2', mean_recv_waste_w_m2
+    !   print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'wM2_12K', wM2_12K
     !   print *, "Calling happening, calling", calling
       if (spawned .eqv. .false.) then
           spawned = .true.
@@ -110,11 +109,10 @@ contains
           call MPI_Sendrecv(random_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
-      mean_recv_waste_w_m2 = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
-      wM2_12K(1) = mean_recv_waste_w_m2
+      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
       wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
-    !   print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
+      print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
       print *, "WRF (Parent(s)) wM2_12K", wM2_12K
 
 
