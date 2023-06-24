@@ -32,9 +32,9 @@ contains
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
       integer ::  calling = 0, ending_steps = (6 ) * 540, ucm_tag = 0
-      integer, parameter ::  num_children = 1, performance_length = 1
+      integer, parameter ::  num_children = 1, performance_length = 2, weatherLength = 3
       real(kind = 8), dimension(num_children, performance_length) :: received_data
-      REAL(KIND=8), DIMENSION(3) :: random_weather
+      REAL(KIND=8), DIMENSION(weatherLength) :: random_weather
       REAL (KIND=8), DIMENSION(num_children) :: temp_areaHeatTemp
       real(kind=8) :: mean_recv_waste_w_m2
       real(kind=8) :: saved_waste_w_m2 = 0
@@ -109,10 +109,10 @@ contains
       end if
 
       do child_idx = 1, num_children
-          call MPI_Sendrecv(random_weather, 3, MPI_REAL8, child_idx - 1, ucm_tag, &
+          call MPI_Sendrecv(random_weather, weatherLength, MPI_REAL8, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL8, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
-      mean_recv_waste_w_m2 = sum(received_data(:, 1)) / num_children
+      mean_recv_waste_w_m2 = sum(received_data(:, 2)) / num_children
       saved_waste_w_m2 = mean_recv_waste_w_m2
       print *, "WRF (Parent(s)) received_data (waste heat J)", received_data, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
 
