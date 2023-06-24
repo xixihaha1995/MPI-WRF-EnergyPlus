@@ -1791,13 +1791,14 @@ CONTAINS
                call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1)
                print *, 'EP waste heat(w)', mean_recv_waste_w
+               print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                ! override the first 3 values of sflev1D with mean_recv_waste_w
                ! override the first 12 values of twb1D with wM2_12K
-               sflev1D(1:3) = mean_recv_waste_w
-               do wrfFlrIdx = 1, 3
-                  twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
-               end do
+               ! sflev1D(1:3) = mean_recv_waste_w
+               ! do wrfFlrIdx = 1, 3
+               !    twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
+               ! end do
                print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
 
