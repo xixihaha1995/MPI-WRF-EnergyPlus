@@ -39,7 +39,12 @@ contains
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
+      type :: ChildData
+        real(kind=8) :: areaHeatTemp(1)
+      end type
       ALLOCATE (received_data(num_children))
+
+
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, mean_recv_waste_w_m2
 
