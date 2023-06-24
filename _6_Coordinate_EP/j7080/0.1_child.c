@@ -31,8 +31,7 @@ typedef struct {
 
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
-int rank = -1;
-Real64 uwyoBld1AreaM2 = 162.15;
+int rank = -1, performanc_length =14;
 Real64 msg_arr[3] = {-1, -1, -1};
 int weatherMPIon = 1, wasteMPIon = 1;
 MPI_Comm parent_comm;
@@ -206,7 +205,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simTimeInHours = currentSimTime(state);
     Real64 simTime = simTimeInHours * 3600;
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
-    Real64 simHVAC_Wm2 = simHVAC_J / uwyoBld1AreaM2 / 3600;
+    Real64 simHVAC_W = simHVAC_J/ 3600;
 
     surValues = getSurVal(state, surHandles);
     // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
@@ -225,17 +224,23 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     free(tempMidVal);
     if (! wasteMPIon)
     {
-        printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC_Wm2 = %.2f (W_m2), \n", rank, simTime, simHVAC_Wm2);
+        printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC_W = %.2f (W), \n", rank, simTime, simHVAC_W);
         return;
     }
 
-    Real64 data[2];
+    Real64 data[performanc_length];
     data[0] = (Real64) uwyo1.footPrintM2;
-    data[1] = simHVAC_Wm2;
+    data[1] = simHVAC_W;
+    // bot 4, mid 4, top 4
+    for (int i = 0; i < 4; i++) {
+        data[i + 2] = surValues.botVal[i] + 273.15;
+        data[i + 6] = avgMidVal[i] + 273.15;
+        data[i + 10] = surValues.topVal[i] + 273.15;
+    }
 
-    MPI_Send(&data, 2, MPI_DOUBLE,status.MPI_SOURCE, 0, parent_comm);
-    printf("Child %d sent heat %.2f (W_m2) to it, at time %.2f(s)\n",
-           rank,simHVAC_Wm2, simTime);
+    MPI_Send(&data, performanc_length, MPI_DOUBLE,status.MPI_SOURCE, 0, parent_comm);
+    printf("Child %d sent heat %.2f (W) to it, at time %.2f(s)\n",
+           rank,simHVAC_W, simTime);
     
     if (!weatherMPIon) {
         printf("Child %d reached collective barrier, all my siblings here, let's end MPI. \n", rank);
