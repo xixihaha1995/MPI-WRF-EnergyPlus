@@ -230,7 +230,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     }
 
     Real64 data[2];
-    data[0] = (Real64) uwyo1.footprintM2;
+    data[0] = (Real64) uwyo1.footPrintM2;
     data[1] = simHVAC_Wm2;
 
     MPI_Send(&data, 2, MPI_DOUBLE,status.MPI_SOURCE, 0, parent_comm);
