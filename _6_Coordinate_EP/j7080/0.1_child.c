@@ -32,7 +32,7 @@ typedef struct {
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1, performanc_length =14;
-Real64 msg_arr[3] = {-1, -1, -1};
+float msg_arr[3] = {-1, -1, -1};
 int weatherMPIon = 1, wasteMPIon = 1;
 MPI_Comm parent_comm;
 MPI_Status status;
@@ -156,7 +156,7 @@ void overwriteEpWeather(EnergyPlusState state) {
         return;
     }
     // MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Recv(&msg_arr, 3, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     if (status.MPI_TAG == 886)
     {
         printf("EnergyPlus(BEMs):%d received 'ending messsage 886', "
@@ -238,7 +238,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         data[i + 10] = surValues.topVal[i] + 273.15;
     }
 
-    MPI_Send(&data, performanc_length, MPI_DOUBLE,status.MPI_SOURCE, 0, parent_comm);
+    MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent heat %.2f (W) to it, at time %.2f(s)\n",
            rank,simHVAC_W, simTime);
     

@@ -1,8 +1,8 @@
 program mpi_app
     integer :: time_idx, timesteps = 6 * 540, allix = 3, alliy =3, allbui = 2, curix, curiy, curibui, curitime = 1
     integer :: ierr
-    real(kind=8), dimension (3) :: random_weather ! oat_c, abs_hum_kgw_kga, pressure_pa
-    real(kind=8) :: mean_recv_waste_w_m2, random_data
+    real, dimension (3) :: random_weather ! oat_c, abs_hum_kgw_kga, pressure_pa
+    real :: mean_recv_waste_w_m2, random_data
     real :: dt = 6.67, xlat = 41.30, xlong = -105.59
 
 
@@ -33,11 +33,9 @@ contains
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
       integer ::  calling = 0, ending_steps = (6 ) * 540, ucm_tag = 0
       integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3
-      real(kind = 8), dimension(num_children, performance_length) :: received_data
-      REAL(KIND=8), DIMENSION(weatherLength) :: random_weather
-      REAL (KIND=8), DIMENSION(num_children) :: temp_areaHeatTemp
-      real(kind=8) :: mean_recv_waste_w_m2
-      real(kind=8) :: saved_waste_w_m2 = 0
+      real, dimension(num_children, performance_length) :: received_data
+      REAL, DIMENSION(weatherLength) :: random_weather
+      real :: mean_recv_waste_w_m2
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
@@ -70,7 +68,6 @@ contains
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
       if (mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
             ! Forward filling for any time steps, any building types
-            mean_recv_waste_w_m2 = saved_waste_w_m2
             ! print *, "Forward filling curitime", curitime, "curibui", curibui, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
             return
       end if
@@ -109,11 +106,10 @@ contains
       end if
 
       do child_idx = 1, num_children
-          call MPI_Sendrecv(random_weather, weatherLength, MPI_REAL8, child_idx - 1, ucm_tag, &
-                  received_data(child_idx, :), performance_length,MPI_REAL8, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
+          call MPI_Sendrecv(random_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+                  received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
-      mean_recv_waste_w_m2 = sum(received_data(:, 2)) / num_children
-      saved_waste_w_m2 = mean_recv_waste_w_m2
+      mean_recv_waste_w_m2 = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
       print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
 
 
