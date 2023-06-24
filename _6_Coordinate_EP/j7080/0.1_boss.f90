@@ -19,7 +19,7 @@ program mpi_app
                     random_weather(2) = 0.007612 + int(random_data*0.0001)
                     random_weather(3) = 101325 + int(random_data*1000)
                     call spawn_children(curix,curiy,curibui,dt,time_idx,xlat, xlong, random_weather,wM2_12K)
-                    if (wM2_12K(1) == -66) then 
+                    if (wM2_12K(1) < 0) then 
                         continue
                     end if
                     wrfWaste(1:7) = wM2_12K(1)
