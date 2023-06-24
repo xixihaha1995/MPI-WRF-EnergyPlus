@@ -39,7 +39,7 @@ contains
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
       type :: ChildData
-        real(kind=8) :: areaHeatTemp(1)
+        real(kind=8), dimension, allocatable :: areaHeatTemp(1)
       end type
       type(ChildData), dimension(:), allocatable :: received_data
       ALLOCATE (received_data(num_children))
