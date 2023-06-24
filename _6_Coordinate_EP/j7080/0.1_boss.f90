@@ -3,10 +3,10 @@ program mpi_app
     integer :: ierr
     real, dimension (3) :: random_weather ! oat_c, abs_hum_kgw_kga, pressure_pa
     real :: random_data
-    real, dimension(13) :: wM2_12K;
-    real, dimension(18) :: wrfWaste;
-    real, dimension(4,10,18) :: wrfSurface;
-    real, dimension(4,1,3) :: reshapeSurface;
+    real, dimension(13) :: wM2_12K
+    real, dimension(18) :: wrfWaste
+    real, dimension(4,10,18) :: wrfSurface
+    real, dimension(12) :: tempValues
     real :: dt = 6.67, xlat = 41.30, xlong = -105.59
 
 
@@ -20,8 +20,8 @@ program mpi_app
                     random_weather(3) = 101325 + int(random_data*1000)
                     call spawn_children(curix,curiy,curibui,dt,time_idx,xlat, xlong, random_weather,wM2_12K)
                     wrfWaste(1:7) = wM2_12K(1)
-                    reshapeSurface = reshape(wM2_12K(2:13), (/4,1,3/))
-                    wrfSurface(:,10, 1:3) = reshapeSurface
+                    tempValues = wM2_12K(2:13)
+                    wrfSurface(:,10, 1:3) = reshape(tempValues, (/4,1,3/))
                 end do
             end do
         end do
