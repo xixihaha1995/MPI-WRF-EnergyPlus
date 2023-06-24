@@ -79,9 +79,9 @@ contains
           !print *, "turnMPIon is false, no more MPI calls"
           return
       end if
-      print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
-      print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'mean_recv_waste_w_m2', mean_recv_waste_w_m2
-      print *, "Calling happening, calling", calling
+    !   print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
+    !   print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'mean_recv_waste_w_m2', mean_recv_waste_w_m2
+    !   print *, "Calling happening, calling", calling
       if (spawned .eqv. .false.) then
           spawned = .true.
           call MPI_Initialized(initedMPI, ierr)
@@ -114,7 +114,7 @@ contains
       end do
       mean_recv_waste_w_m2 = sum(received_data(:, 1)) / num_children
       saved_waste_w_m2 = mean_recv_waste_w_m2
-      !print *, "WRF (Parent(s)) received_data (waste heat J)", received_data, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
+      print *, "WRF (Parent(s)) received_data (waste heat J)", received_data, "mean_recv_waste_w_m2", mean_recv_waste_w_m2
 
 
       if (ucm_tag == 886) then
