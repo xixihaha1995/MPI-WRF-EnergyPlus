@@ -228,14 +228,14 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         return;
     }
 
-    Real64 data[performanc_length];
-    data[0] = (Real64) uwyo1.footPrintM2;
-    data[1] = simHVAC_W;
+    float data[performanc_length];
+    data[0] = uwyo1.footPrintM2;
+    data[1] = (float) simHVAC_W;
     // bot 4, mid 4, top 4
     for (int i = 0; i < 4; i++) {
-        data[i + 2] = surValues.botVal[i] + 273.15;
-        data[i + 6] = avgMidVal[i] + 273.15;
-        data[i + 10] = surValues.topVal[i] + 273.15;
+        data[i + 2] = (float) (surValues.botVal[i] + 273.15);
+        data[i + 6] = (float) (avgMidVal[i] + 273.15);
+        data[i + 10] = (float) (surValues.topVal[i] + 273.15);
     }
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
