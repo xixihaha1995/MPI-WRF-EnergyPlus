@@ -1125,95 +1125,105 @@ CONTAINS
       return
    end subroutine BEP_BEM
 
-   subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,random_weather,mean_recv_waste_j)
+   subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,random_weather,wM2_12K)
       implicit none
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-      integer, save :: new_comm,  saveix, saveiy, saveibui
-      integer ::  calling = 0, num_children = 1, ending_steps = (6 ) * 540, ucm_tag = 0
-      REAL(KIND=8), DIMENSION(:), ALLOCATABLE :: received_data
-      REAL(KIND=8), DIMENSION(3) :: random_weather
-      real(kind=8) :: mean_recv_waste_j
+      integer, save :: new_comm,  saveix, saveiy, saveitime = -1
+      integer ::  calling = 0, ending_steps = (24 ) * 540, ucm_tag = 0
+      integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
+      real, dimension(num_children, performance_length) :: received_data
+      REAL, DIMENSION(weatherLength) :: random_weather
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., turnMPIon = .true.
+      logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
-      ALLOCATE (received_data(num_children))
+    !   output variables
+      real, dimension(wrfNeedLen) :: wM2_12K;
 
-      !ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, mean_recv_waste_j
+
+      !ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K
 
       if (calling == 0) then
-            saveix = curix
-            saveiy = curiy
-            saveibui = curibui
+          saveix = curix
+          saveiy = curiy
       end if
 
       !if curix and curiy are not the same as saveix and saveiy, then return
-      if (curix /= saveix .or. curiy /= saveiy .or. curibui /= saveibui) then
-            !print *, "curix /= saveix .or. curiy /= saveiy .or. curibui /= saveibui, return"
-            return
+      if (curix /= saveix .or. curiy /= saveiy) then
+          return
       end if
-
-      calling = calling + 1
+    
+      if (curitime /= saveitime) then
+            calling = calling + 1
+            saveitime = curitime
+            hourlyUpdate = .true.
+        else
+            hourlyUpdate = .false.
+      end if
+      
       ! print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
       ! print *, "curibui", curibui, "curitime", curitime
-      
+     
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
-      if (mod(calling,540) /= 0) then
-            !print *, "calling is not % 540, return"
+      if (mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
+            ! Forward filling for any time steps, any building types
+            ! print *, "Forward filling curitime", curitime, "curibui", curibui, "wM2_12K", wM2_12K
             return
       end if
 
       if (turnMPIon .eqv. .false.) then
-            !print *, "turnMPIon is false, no more MPI calls"
-            return
+          !print *, "turnMPIon is false, no more MPI calls"
+          return
       end if
-      print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
-      print *, 'Within spawn_children xlat', xlat, 'xlong', xlong
-      print *, "Calling happening, calling", calling
+    !   print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
+    !   print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'wM2_12K', wM2_12K
+    !   print *, "Calling happening, calling", calling
       if (spawned .eqv. .false.) then
-            spawned = .true.
-            call MPI_Initialized(initedMPI, ierr)
-            if (.not. initedMPI) then
-               print *, "MPI not initialized, initializing"
-               call MPI_Init(ierr)
-            end if
+          spawned = .true.
+          call MPI_Initialized(initedMPI, ierr)
+          if (.not. initedMPI) then
+              print *, "MPI not initialized, initializing"
+              call MPI_Init(ierr)
+          end if
 
-            call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
-            call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-            !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
+          call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+          call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
+          !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
 
-            call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
-            command = "./child.exe"
-            call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
+          call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
+          command = "./child.exe"
+          call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
                   0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
-            !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
+          !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
       end if
 
       if (calling > ending_steps - 1) then
-            ucm_tag = 886
-            turnMPIon = .false.
+          ucm_tag = 886
+          turnMPIon = .false.
       else
-            ucm_tag = 0
+          ucm_tag = 0
       end if
 
       do child_idx = 1, num_children
-            call MPI_Sendrecv(random_weather, 3, MPI_REAL8, child_idx - 1, ucm_tag, &
-                  received_data(child_idx), 1, MPI_REAL8, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
+          call MPI_Sendrecv(random_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+                  received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
-      mean_recv_waste_j = sum(received_data)/num_children
-      !print *, "WRF (Parent(s)) received_data (waste heat J)", received_data, "mean_recv_waste_j", mean_recv_waste_j
+      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
+      ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
+      wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
+      print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
+      print *, "WRF (Parent(s)) wM2_12K", wM2_12K
 
 
       if (ucm_tag == 886) then
          print *, "WRF (Parent(s)) ending messsage 886 sent, &
-                  &to reach collective barrier,(no more inter-communicator calls)&
-                  & only WRF global setting call free and MPI_Finalize()"
-            call MPI_Barrier(new_comm, ierr)
-            ! call MPI_Comm_free(new_comm, ierr)
-            ! call MPI_Comm_free(parent_comm, ierr)
-         !  call MPI_Finalize(ierr)
+                 &to reach collective barrier,MPI about to end, no more inter-communicator calls."
+          call MPI_Barrier(new_comm, ierr)
+          ! call MPI_Comm_free(new_comm, ierr)
+          ! call MPI_Comm_free(parent_comm, ierr)
+        !   call MPI_Finalize(ierr)
       end if
-   end subroutine spawn_children
+  end subroutine spawn_children
 
 
 
@@ -1530,8 +1540,9 @@ CONTAINS
       real tr_av(ndm, nz_um)
       real tr_avb(ndm, nbui_max)
       real sfr_avb(ndm, nbui_max)
-      real(kind=8) :: mean_recv_waste_w_m2, mean_recv_waste_w
-      real(kind=8), dimension(3) :: random_weather
+      real :: mean_recv_waste_w
+      real, dimension(3) :: random_weather
+      real, dimension(13) :: wM2_12K;
 ! ----------------------------------------------------------------------
 ! END VARIABLES DEFINITIONS
 ! ----------------------------------------------------------------------
@@ -1771,11 +1782,12 @@ CONTAINS
             random_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
             if (41.30864 .gt. xlat .and. -105.5866 .gt. xlong) then 
-               call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, mean_recv_waste_w_m2)
-               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * mean_recv_waste_w_m2
+               call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K)
+               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1)
                print *, 'EP waste heat(w)', mean_recv_waste_w
-               print *, 'WRF twb1D wall surface temp[k]', twb1D
                print *, 'WRF BEM sflev1D(w) due to a.c.', sflev1D(1:7)
+               print *, 'EP 12 surface[K]', wM2_12K(2:13)
+               print *, 'WRF twb1D wall surface temp[k],  twb1d(:,10, 1:8)', twb1D(:,10, 1:3)
             endif
          endif
 !
