@@ -11,11 +11,6 @@
 #define MPI_MAX_PROCESSOR_NAME 128
 
 typedef struct {
-    float areaM2;
-    float simHVAC_Wm2;
-} Tuple;
-
-typedef struct {
     float footPrintM2;
     int bot[4];
     int* mid;
@@ -233,11 +228,12 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC_Wm2 = %.2f (W_m2), \n", rank, simTime, simHVAC_Wm2);
         return;
     }
-    Tuple tuple;
-    tuple.areaM2 = uwyo1.footPrintM2;
-    tuple.simHVAC_Wm2 = (float) simHVAC_Wm2;
 
-    MPI_Send(&tuple, sizeof(Tuple), MPI_BYTE, status.MPI_SOURCE, 0, parent_comm);
+    Real64 data[2];
+    data[0] = (Real64) uwyo1.footprintM2;
+    data[1] = simHVAC_Wm2;
+
+    MPI_Send(&data, 2, MPI_DOUBLE,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent heat %.2f (W_m2) to it, at time %.2f(s)\n",
            rank,simHVAC_Wm2, simTime);
     
