@@ -1781,7 +1781,8 @@ CONTAINS
             random_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             random_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
-            if (41.30864 .gt. xlat .and. -105.5866 .gt. xlong) then 
+            print *, 'Curr xlat, xlong', xlat, xlong
+            if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
                call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1)
                print *, 'EP waste heat(w)', mean_recv_waste_w
