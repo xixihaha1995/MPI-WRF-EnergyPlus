@@ -37,7 +37,7 @@ program mpi_app
 
 contains
 
- subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,random_weather,wM2_12K)
+ subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,wrf_weather,wM2_12K)
       implicit none
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
@@ -45,7 +45,7 @@ contains
       integer ::  calling = 0, ending_steps = (24 ) * 540, ucm_tag = 0
       integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       real, dimension(num_children, performance_length) :: received_data
-      REAL, DIMENSION(weatherLength) :: random_weather
+      REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
@@ -54,7 +54,7 @@ contains
 
 
 
-      !ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K
+      !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
       if (calling == 0) then
             saveix = curix
@@ -120,7 +120,7 @@ contains
       end if
 
       do child_idx = 1, num_children
-          call MPI_Sendrecv(random_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+          call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
       wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))

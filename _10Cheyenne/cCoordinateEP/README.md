@@ -81,11 +81,13 @@ cp nested24.namelist.input ~/project/NWP/WRF/test/em_real/namelist.input
 
 cdw
 cd WPS/
+ln -sf ungrib/Variable_Tables/Vtable.GFS Vtable
+./link_grid.csh ../DATA/fnl
 ./ungrib.exe
 ./geogrid.exe
 ./metgrid.exe
 cd ../WRF/test/em_real/
-ln -sf ../../../WPS/met_em.d0* 
+ln -sf ../../../WPS/met_em.d0* .
 ./real.exe
 qsub pbs.wrf.ep.csh
 ```

@@ -1125,7 +1125,7 @@ CONTAINS
       return
    end subroutine BEP_BEM
 
-   subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,random_weather,wM2_12K)
+   subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,wrf_weather,wM2_12K)
       implicit none
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
@@ -1133,23 +1133,22 @@ CONTAINS
       integer ::  calling = 0, ending_steps = (24 ) * 540, ucm_tag = 0
       integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       real, dimension(num_children, performance_length) :: received_data
-      REAL, DIMENSION(weatherLength) :: random_weather
+      REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
     !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
- 
 
 
 
-      !ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K
+      !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
       if (calling == 0) then
-          saveix = curix
-          saveiy = curiy
-          wM2_12K = 300
-          wM2_12K(1) = 0
+            saveix = curix
+            saveiy = curiy
+            wM2_12K = 300
+            wM2_12K(1) = 0
       end if
 
       !if curix and curiy are not the same as saveix and saveiy, then return
@@ -1209,7 +1208,7 @@ CONTAINS
       end if
 
       do child_idx = 1, num_children
-          call MPI_Sendrecv(random_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+          call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
       wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
@@ -1545,7 +1544,7 @@ CONTAINS
       real tr_avb(ndm, nbui_max)
       real sfr_avb(ndm, nbui_max)
       real :: mean_recv_waste_w
-      real, dimension(3) :: random_weather
+      real, dimension(3) :: wrf_weather
       real, dimension(13) :: wM2_12K;
       integer wrfFlrIdx
 ! ----------------------------------------------------------------------
@@ -1782,23 +1781,23 @@ CONTAINS
                   sfvlev1D, lfvlev1D, hfgrb(1, ibui), tr_avb(1, ibui), &
                   tpv(ibui), sfpv(ibui), sfr_indoor(ibui))
             !print*,"tmp_u",tmp_u,"nonzero",COUNT(tmp_u /= 0.0)
-            random_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
-            random_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
-            random_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
+            wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
+            wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
+            wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
                print *, 'Curr xlat, xlong', xlat, xlong
-               call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K)
+               call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1)
                print *, 'EP waste heat(w)', mean_recv_waste_w
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                ! override the first 3 values of sflev1D with mean_recv_waste_w
                ! override the first 12 values of twb1D with wM2_12K
-               ! sflev1D(1:3) = mean_recv_waste_w
-               ! do wrfFlrIdx = 1, 3
-               !    twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
-               ! end do
+               sflev1D(1:3) = mean_recv_waste_w
+               do wrfFlrIdx = 1, 3
+                  twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
+               end do
                print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
 
