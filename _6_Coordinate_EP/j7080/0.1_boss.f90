@@ -23,6 +23,10 @@ program mpi_app
                     do i = 1, 3
                         wrfSurface(:,10, i) = wM2_12K(2+(i-1)*4:5+(i-1)*4)
                     end do
+                    print *, 'wM2_12K', wM2_12K
+                    print *, "wrfWaste(1:7)", wrfWaste(1:7)
+                    print *, "wrfSurface(:,10,1:3)", wrfSurface(:,10,1:3)
+                    
                 end do
             end do
         end do
