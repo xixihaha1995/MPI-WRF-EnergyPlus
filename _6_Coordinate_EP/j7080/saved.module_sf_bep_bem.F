@@ -1139,8 +1139,7 @@ CONTAINS
       character(len=50) :: command
     !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
-      wM2_12K = 300
-      wM2_12K(1) = 0
+ 
 
 
 
@@ -1149,6 +1148,8 @@ CONTAINS
       if (calling == 0) then
           saveix = curix
           saveiy = curiy
+          wM2_12K = 300
+          wM2_12K(1) = 0
       end if
 
       !if curix and curiy are not the same as saveix and saveiy, then return
