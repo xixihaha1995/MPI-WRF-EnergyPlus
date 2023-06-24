@@ -1793,7 +1793,8 @@ CONTAINS
                ! override the first 3 values of sflev1D with mean_recv_waste_w
                ! override the first 12 values of twb1D with wM2_12K
                sflev1D(1:3) = mean_recv_waste_w
-               twb1D(:,10, 1:3) = wM2_12K(2:13)
+               do myidx = 1, 3
+                  twb1d(:,10, myidx) = wM2_12K(2+(myidx-1)*4:5+(myidx-1)*4)
                print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
 
