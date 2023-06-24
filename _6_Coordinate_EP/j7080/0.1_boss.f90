@@ -19,7 +19,7 @@ program mpi_app
                     random_weather(2) = 0.007612 + int(random_data*0.0001)
                     random_weather(3) = 101325 + int(random_data*1000)
                     call spawn_children(curix,curiy,curibui,dt,time_idx,xlat, xlong, random_weather,wM2_12K)
-                    if (wM2_12K(1) .eqv. -66) then 
+                    if (wM2_12K(1) == -66) then 
                         continue
                     end if
                     wrfWaste(1:7) = wM2_12K(1)
@@ -83,7 +83,7 @@ contains
       ! print *, "curibui", curibui, "curitime", curitime
      
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
-      if (calling .eqv. 1 .or. mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
+      if (calling == 1 .or. mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
             ! Forward filling for any time steps, any building types
             ! print *, "Forward filling curitime", curitime, "curibui", curibui, "wM2_12K", wM2_12K
             return
