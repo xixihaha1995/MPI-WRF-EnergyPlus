@@ -39,7 +39,8 @@ contains
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
     !   output variables
-      real, dimension(wrfNeedLen) :: wM2_12K = 300
+      real, dimension(wrfNeedLen) :: wM2_12K
+      wM2_12K = 300
       wM2_12K(1) = 0
 
 
