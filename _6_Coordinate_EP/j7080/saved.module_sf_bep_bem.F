@@ -1138,7 +1138,8 @@ CONTAINS
       logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
       character(len=50) :: command
     !   output variables
-      real, dimension(wrfNeedLen) :: wM2_12K;
+      real, dimension(wrfNeedLen) :: wM2_12K = 300
+      wM2_12K(1) = 0
 
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K
@@ -1781,14 +1782,19 @@ CONTAINS
             random_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             random_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
-            print *, 'Curr xlat, xlong', xlat, xlong
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
+               print *, 'Curr xlat, xlong', xlat, xlong
                call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,random_weather, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1)
                print *, 'EP waste heat(w)', mean_recv_waste_w
-               print *, 'WRF BEM sflev1D(w) due to a.c.', sflev1D(1:7)
-               print *, 'EP 12 surface[K]', wM2_12K(2:13)
-               print *, 'WRF twb1D wall surface temp[k],  twb1d(:,10, 1:8)', twb1D(:,10, 1:3)
+               print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+               ! override the first 3 values of sflev1D with mean_recv_waste_w
+               ! override the first 12 values of twb1D with wM2_12K
+               sflev1D(1:3) = mean_recv_waste_w
+               twb1D(:,10, 1:3) = wM2_12K(2:13)
+               print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
+               print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+
             endif
          endif
 !
