@@ -10,5 +10,6 @@ export EM_REAL='/glade/work/lichenwu/NWP/WRF/test/em_real'
 #export LD_LIBRARY_PATH=/glade/u/home/lichenwu/project/EnergyPlus-22-1-0:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/glade/u/home/lichenwu/project/gcc_built_ep_23_1_0:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/glade/u/home/lichenwu/project/gcc-built-up-ep-22-2-0:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/glade/u/home/lichenwu/project/gcc-built-up-ep-23-1-0:$LD_LIBRARY_PATH
 export PATH=/glade/u/apps/ch/opt/ncarcompilers/0.5.0/intel/19.1.1:$PATH
 export PATH=/glade/u/home/lichenwu/.local/bin:$PATH

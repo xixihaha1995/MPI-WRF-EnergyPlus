@@ -4,8 +4,8 @@ MPICC = mpicc
 # CFLAGS=-I/glade/u/home/lichenwu/project/building-ep-22-2-0/EnergyPlus-22.2.0/src/
 # LDFLAGS=-L/glade/u/home/lichenwu/project/gcc-built-up-ep-22-2-0
 
-CFLAGS=-I/glade/u/home/lichenwu/project/building_ep23-1-0/EnergyPlus-23.1.0/src/
-LDFLAGS=-L/glade/u/home/lichenwu/project/gcc_built_ep_23_1_0
+CFLAGS=-I/glade/u/home/lichenwu/project/building-ep23-1-0/EnergyPlus-23.1.0/src/
+LDFLAGS=-L/glade/u/home/lichenwu/project/gcc-built-up-ep-23-1-0
 LDLIBS = -lenergyplusapi
 # Set LD_LIBRARY_PATH
 # export LD_LIBRARY_PATH := /glade/u/home/lichenwu/project/gcc-built-up-ep-22-2-0:$(LD_LIBRARY_PATH)
