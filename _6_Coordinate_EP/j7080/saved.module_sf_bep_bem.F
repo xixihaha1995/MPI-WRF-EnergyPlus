@@ -1778,8 +1778,8 @@ CONTAINS
                   !offline; one way coupling from WRF -> EP
                   continue
                end if
-               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1)
-               print *, 'EP waste heat(w)', mean_recv_waste_w
+               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3
+               print *, 'EP waste heat(w) for one room', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                ! override the first 3 values of sflev1D with mean_recv_waste_w
