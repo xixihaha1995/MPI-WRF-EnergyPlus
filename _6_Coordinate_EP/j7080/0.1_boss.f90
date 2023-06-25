@@ -68,22 +68,16 @@ contains
       end if
 
       !if curix and curiy are not the same as saveix and saveiy, then return
-      if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
+      !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
+      !if calling is not 1
+      if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime .or. mod(calling,540) /= 0) then
           return
       end if
 
         calling = calling + 1
         saveitime = curitime
      
-      !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
-      !if calling is not 1
-      if (calling /= 1) then
-        if ( mod(calling,540) /= 0) then
-                ! Forward filling for any time steps, any building types
-                ! print *, "Forward filling curitime", curitime, "curibui", curibui, "wM2_12K", wM2_12K
-                return
-        end if
-      end if
+
 
       if (turnMPIon .eqv. .false.) then
           !print *, "turnMPIon is false, no more MPI calls"
