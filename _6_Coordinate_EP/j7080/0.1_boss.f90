@@ -45,12 +45,12 @@ contains
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
-      integer ::  calling = 0, ending_steps = (23 ) * 540, ucm_tag = 0
+      integer ::  calling = 0, ending_steps = (24 ) * 540, ucm_tag = 0
       integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
+      logical :: initedMPI, spawned = .false., turnMPIon = .true.
       character(len=50) :: command
     !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
@@ -74,9 +74,8 @@ contains
       if (curitime /= saveitime) then
             calling = calling + 1
             saveitime = curitime
-            hourlyUpdate = .true.
         else
-            hourlyUpdate = .false.
+            return
       end if
       
       ! print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
@@ -85,7 +84,7 @@ contains
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
       !if calling is not 1
       if (calling /= 1) then
-        if ( mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
+        if ( mod(calling,540) /= 0) then
                 ! Forward filling for any time steps, any building types
                 ! print *, "Forward filling curitime", curitime, "curibui", curibui, "wM2_12K", wM2_12K
                 return
