@@ -67,10 +67,8 @@ contains
             wM2_12K(1) = 0
       end if
 
-      !if curix and curiy are not the same as saveix and saveiy, then return
-      !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
-      !if calling is not 1
-      if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
+      !saveix, saveiy, first building height call, not the last step
+      if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime .or. turnMPIon .eqv. .false.) then
           return
       else 
         calling = calling + 1
@@ -80,11 +78,6 @@ contains
         end if
       end if
 
-
-      if (turnMPIon .eqv. .false.) then
-          !print *, "turnMPIon is false, no more MPI calls"
-          return
-      end if
     !   print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
     !   print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'wM2_12K', wM2_12K
     !   print *, "Calling happening, calling", calling
