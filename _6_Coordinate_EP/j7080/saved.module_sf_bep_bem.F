@@ -1130,12 +1130,12 @@ CONTAINS
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
-      integer ::  calling = 0, ending_steps = (24 ) * 540, ucm_tag = 0
+      integer ::  calling = 0, ending_steps = (23 ) * 540, ucm_tag = 0
       integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., turnMPIon = .true., hourlyUpdate = .false.
+      logical :: initedMPI, spawned = .false., turnMPIon = .true.
       character(len=50) :: command
     !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
@@ -1144,43 +1144,29 @@ CONTAINS
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
-      if (calling == 0) then
+        if (calling == 0) then
             saveix = curix
             saveiy = curiy
             wM2_12K = 300
             wM2_12K(1) = 0
-      end if
+        end if
 
-      !if curix and curiy are not the same as saveix and saveiy, then return
-      if (curix /= saveix .or. curiy /= saveiy) then
-          return
-      end if
-    
-      if (curitime /= saveitime) then
+      !saveix, saveiy, first building height call, not the last step
+        if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
+            return
+        else 
             calling = calling + 1
             saveitime = curitime
-            hourlyUpdate = .true.
-        else
-            hourlyUpdate = .false.
-      end if
-      
-      ! print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
-      ! print *, "curibui", curibui, "curitime", curitime
-     
-      !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
-      if (mod(calling,540) /= 0 .or. hourlyUpdate .eqv. .true.) then
-            ! Forward filling for any time steps, any building types
-            ! print *, "Forward filling curitime", curitime, "curibui", curibui, "wM2_12K", wM2_12K
-            return
-      end if
+            if (calling /= 1 .and. mod(calling,540) /= 0) then
+                return
+            end if
+        end if
 
-      if (turnMPIon .eqv. .false.) then
-          !print *, "turnMPIon is false, no more MPI calls"
-          return
-      end if
-    !   print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
-    !   print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'wM2_12K', wM2_12K
-    !   print *, "Calling happening, calling", calling
+        if (turnMPIon .eqv. .false.) then
+        !print *, "turnMPIon is false, no more MPI calls"
+            return
+        end if
+
       if (spawned .eqv. .false.) then
           spawned = .true.
           call MPI_Initialized(initedMPI, ierr)
@@ -1788,6 +1774,10 @@ CONTAINS
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
                print *, 'Curr xlat, xlong', xlat, xlong
                call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K)
+               if (wM2_12K(1) < 0) then 
+                  !offline; one way coupling from WRF -> EP
+                  continue
+               end if
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1)
                print *, 'EP waste heat(w)', mean_recv_waste_w
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
