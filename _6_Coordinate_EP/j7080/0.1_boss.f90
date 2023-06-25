@@ -11,7 +11,7 @@ program mpi_app
 
 
     do time_idx = 1, timesteps
-    print *, "WRF time_idx", time_idx
+    ! print *, "WRF time_idx", time_idx
         do curiy = 1, alliy
             do curix = 1, allix
                 do curibui = 1, allbui
@@ -68,19 +68,12 @@ contains
       end if
 
       !if curix and curiy are not the same as saveix and saveiy, then return
-      if (curix /= saveix .or. curiy /= saveiy) then
+      if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
           return
       end if
-     
-      if (curitime /= saveitime) then
-            calling = calling + 1
-            saveitime = curitime
-        else
-            return
-      end if
-      
-      ! print *, "calling spawn_children() counts:", calling, "curix", curix, "curiy", curiy
-      ! print *, "curibui", curibui, "curitime", curitime
+
+        calling = calling + 1
+        saveitime = curitime
      
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
       !if calling is not 1
