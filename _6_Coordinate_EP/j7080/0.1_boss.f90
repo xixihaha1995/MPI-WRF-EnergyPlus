@@ -71,7 +71,7 @@ contains
           return
       end if
      
-     print *, "my calling", calling
+     print *, "my calling", calling, "curitime", curitime, "saveitime", saveitime
       if (curitime /= saveitime) then
             calling = calling + 1
             saveitime = curitime
