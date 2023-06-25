@@ -72,10 +72,12 @@ contains
       !if calling is not 1
       if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime .or. mod(calling,540) /= 0) then
           return
-      end if
-
+      else 
         calling = calling + 1
         saveitime = curitime
+      end if
+
+
      
 
 
