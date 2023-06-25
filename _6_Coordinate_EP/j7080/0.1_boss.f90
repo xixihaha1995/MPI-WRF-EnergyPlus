@@ -70,15 +70,15 @@ contains
       !if curix and curiy are not the same as saveix and saveiy, then return
       !if calling is % 540, for 6.667s per step; 540 steps for one hour, then carry on, otherwise return
       !if calling is not 1
-      if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime .or. mod(calling,540) /= 0) then
+      if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
           return
       else 
         calling = calling + 1
         saveitime = curitime
+        if (calling /= 1 .and. mod(calling,540) /= 0) then
+            return
+        end if
       end if
-
-
-     
 
 
       if (turnMPIon .eqv. .false.) then
