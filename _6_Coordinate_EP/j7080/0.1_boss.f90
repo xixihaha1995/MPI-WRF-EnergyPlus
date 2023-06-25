@@ -60,32 +60,29 @@ contains
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
-      if (calling == 0) then
+        if (calling == 0) then
             saveix = curix
             saveiy = curiy
             wM2_12K = 300
             wM2_12K(1) = 0
-      end if
+        end if
 
       !saveix, saveiy, first building height call, not the last step
-      if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
-          return
-      else 
-        calling = calling + 1
-        saveitime = curitime
-        if (calling /= 1 .and. mod(calling,540) /= 0) then
+        if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
             return
+        else 
+            calling = calling + 1
+            saveitime = curitime
+            if (calling /= 1 .and. mod(calling,540) /= 0) then
+                return
+            end if
         end if
-      end if
+
         if (turnMPIon .eqv. .false.) then
         !print *, "turnMPIon is false, no more MPI calls"
             return
         end if
 
-
-    !   print *, 'Within spawn_children curix', curix, 'curiy', curiy, 'curibui', curibui, 'dt',dt, 'curitime', curitime
-    !   print *, 'Within spawn_children xlat', xlat, 'xlong', xlong, 'wM2_12K', wM2_12K
-    !   print *, "Calling happening, calling", calling
       if (spawned .eqv. .false.) then
           spawned = .true.
           call MPI_Initialized(initedMPI, ierr)
@@ -111,8 +108,6 @@ contains
       else
           ucm_tag = 0
       end if
-    
-      print *, "my calling", calling, "curitime", curitime, "saveitime", saveitime
 
       do child_idx = 1, num_children
           call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
