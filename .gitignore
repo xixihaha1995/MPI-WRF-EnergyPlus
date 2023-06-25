@@ -1,6 +1,6 @@
 **/build/
 **/EnergyPlus/
-**/ep_trivial**/
+**/**ep_trivial**/
 *.so
 *.iml
 *.o
@@ -22,3 +22,4 @@ log.mpirun
 _6_Coordinate_EP/j7080/mpi_app
 _6_Coordinate_EP/j7080/log.energyplus
 *.xlsx
+_6_Coordinate_EP/j7080/log.mpiAPP
