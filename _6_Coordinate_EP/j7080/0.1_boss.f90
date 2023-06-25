@@ -71,7 +71,6 @@ contains
           return
       end if
      
-     print *, "my calling", calling, "curitime", curitime, "saveitime", saveitime
       if (curitime /= saveitime) then
             calling = calling + 1
             saveitime = curitime
@@ -125,6 +124,8 @@ contains
       else
           ucm_tag = 0
       end if
+    
+         print *, "my calling", calling, "curitime", curitime, "saveitime", saveitime
 
       do child_idx = 1, num_children
           call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
