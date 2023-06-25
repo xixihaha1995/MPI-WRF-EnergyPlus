@@ -46,7 +46,7 @@ contains
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
-      integer ::  calling = 0, ending_steps = (24 ) * 540, ucm_tag = 0
+      integer ::  calling = 0, ending_steps = (23 ) * 540, ucm_tag = 0
       integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
@@ -125,7 +125,7 @@ contains
           ucm_tag = 0
       end if
     
-         print *, "my calling", calling, "curitime", curitime, "saveitime", saveitime
+      print *, "my calling", calling, "curitime", curitime, "saveitime", saveitime
 
       do child_idx = 1, num_children
           call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
