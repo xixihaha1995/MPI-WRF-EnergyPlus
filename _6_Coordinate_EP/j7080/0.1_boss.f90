@@ -11,6 +11,7 @@ program mpi_app
 
 
     do time_idx = 1, timesteps
+    print *, "WRF time_idx", time_idx
         do curiy = 1, alliy
             do curix = 1, allix
                 do curibui = 1, allbui
