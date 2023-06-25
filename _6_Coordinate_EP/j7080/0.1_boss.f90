@@ -19,7 +19,6 @@ program mpi_app
                     random_weather(2) = 0.007612 + int(random_data*0.0001)
                     random_weather(3) = 101325 + int(random_data*1000)
                     call spawn_children(curix,curiy,curibui,dt,time_idx,xlat, xlong, random_weather,wM2_12K)
-                    print *, "wM2_12K", wM2_12K
                     if (wM2_12K(1) < 0) then 
                         continue
                     end if
@@ -71,7 +70,8 @@ contains
       if (curix /= saveix .or. curiy /= saveiy) then
           return
       end if
-    
+     
+     print *, "my calling", calling
       if (curitime /= saveitime) then
             calling = calling + 1
             saveitime = curitime
