@@ -1197,7 +1197,8 @@ CONTAINS
           call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
-      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
+      ! Currently, we assume/hardcode the urban area of 1 IDF is 1.33 of footprint area.
+      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1)) / 1.33
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
       wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
       print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
