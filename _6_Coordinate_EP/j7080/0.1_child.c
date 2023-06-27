@@ -34,6 +34,7 @@ int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohr
 int rank = -1, performanc_length =14;
 float msg_arr[3] = {-1, -1, -1};
 int weatherMPIon = 1, wasteMPIon = 1;
+bool isOnline = true;
 MPI_Comm parent_comm;
 MPI_Status status;
 SurfaceHandles surHandles;
@@ -230,8 +231,10 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 
     float data[performanc_length];
     data[0] = uwyo1.footPrintM2;
-    data[1] = -66.0;
-    // data[1] = (float) simHVAC_W;
+    if (isOnline)
+        data[1] = (float) simHVAC_W;
+    else
+        data[1] = -66.0;
     // bot 4, mid 4, top 4
     for (int i = 0; i < 4; i++) {
         data[i + 2] = (float) (surValues.botVal[i] + 273.15);
@@ -278,7 +281,10 @@ int main(int argc, char** argv) {
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
     requestSur(state, uwyo1);
 
-    sprintf(output_path, "./saved_offline_ep_trivial_%d", rank);
+    if (isOnline) 
+        sprintf(output_path, "./saved_online_ep_trivial_%d", rank);
+    else
+        sprintf(output_path, "./saved_offline_ep_trivial_%d", rank);
     sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_1.idf");
 
     char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
