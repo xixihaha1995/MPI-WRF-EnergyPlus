@@ -1780,7 +1780,6 @@ CONTAINS
                print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                if (wM2_12K(1) < 0) then 
                   print *, 'offline; one way coupling from WRF -> EP'
-                  continue
                else
                   ! override the first 3 values of sflev1D with mean_recv_waste_w
                   ! override the first 12 values of twb1D with wM2_12K
