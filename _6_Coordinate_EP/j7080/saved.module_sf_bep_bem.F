@@ -1773,14 +1773,13 @@ CONTAINS
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
-               print *, 'Curr xlat, xlong', xlat, xlong
                call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K)
                if (wM2_12K(1) < 0) then 
                   !offline; one way coupling from WRF -> EP
                   continue
                end if
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3
-               print *, 'EP waste heat(w) for one room', mean_recv_waste_w 
+               print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                ! override the first 3 values of sflev1D with mean_recv_waste_w
