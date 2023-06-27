@@ -34,7 +34,7 @@ int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohr
 int rank = -1, performanc_length =14;
 float msg_arr[3] = {-1, -1, -1};
 int weatherMPIon = 1, wasteMPIon = 1;
-bool isOnline = true;
+int isOnline = 1;
 MPI_Comm parent_comm;
 MPI_Status status;
 SurfaceHandles surHandles;
