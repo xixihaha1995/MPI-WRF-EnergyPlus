@@ -239,7 +239,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     }
 
     float data[performanc_length];
-    data[rank] = footprintm2[rank];
+    data[0] = footprintm2[rank];
     if (isOnline)
         data[1] = (float) simHVAC_W;
     else
