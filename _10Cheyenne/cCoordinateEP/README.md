@@ -72,7 +72,7 @@ LDLIBS = -lenergyplusapi
 make
 # copy customized child.exe and all the EnergyPlus input files into the WRF running folder
 #cp child.exe ~/NWP/WRF/test/em_real
-#cp ../../_6_Coordinate_EP/j7080/resources-23-1-0/ ~/project/NWP/WRF/test/em_real
+#cp -r ../../_6_Coordinate_EP/j7080/resources-23-1-0/ ~/project/NWP/WRF/test/em_real
  ```
 Run the integrated program
 ```
@@ -82,7 +82,7 @@ cp nested24.namelist.input ~/project/NWP/WRF/test/em_real/namelist.input
 cdw
 cd WPS/
 ln -sf ungrib/Variable_Tables/Vtable.GFS Vtable
-./link_grid.csh ../DATA/fnl
+./link_grib.csh ../DATA/fnl
 ./ungrib.exe
 ./geogrid.exe
 ./metgrid.exe
