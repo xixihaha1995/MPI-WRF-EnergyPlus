@@ -31,5 +31,6 @@ wget https://www2.mmm.ucar.edu/wrf/src/wps_files/cglc_modis_lcz_global.tar.gz
 ln -sf GEOGRID.TBL.ARW_LCZ GEOGRID.TBL
 ln -sf  GEOGRID.TBL.ARW_LCZ GEOGRID.TBL
 wget "https://stratus.rda.ucar.edu/ds083.2/grib2/2023/2023.05/fnl_20230501_06_00.grib2"
+wget "https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_00_00.grib2"
 ln -sf ungrib/Variable_Tables/Vtable.GFS Vtable
 ./link_grib.csh ../DATA/matthew/fnl
