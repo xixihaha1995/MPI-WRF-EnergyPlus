@@ -7,6 +7,7 @@ https://www.hpe.com/psnow/doc/a00074669en_us
 https://arc.ucar.edu/knowledge_base/72581529
 ```
 qhist -u $USER -d 3 -w
+https://arc.ucar.edu/knowledge_base/72581495
 ```
 
 

@@ -3,7 +3,7 @@
 #PBS -N lwu4_wrf_ep
 #PBS -A WYOM0106
 #PBS -l walltime=01:30:00
-#PBS -q regular
+#PBS -q economy
 #PBS -j oe
 #PBS -k eod
 #PBS -l select=2:mpiprocs=36
