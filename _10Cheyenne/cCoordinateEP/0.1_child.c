@@ -293,7 +293,6 @@ int main(int argc, char** argv) {
     getcwd(curpath, sizeof(curpath));
     
     if (strstr(curpath, "glade")) {
-        printf("Current working dir: %s\n", curpath);
         if (isOnline) 
              sprintf(output_path, "/glade/scratch/lichenwu/ep_temp/saved_online_ep_trivial_%d", rank + 1);
         else
