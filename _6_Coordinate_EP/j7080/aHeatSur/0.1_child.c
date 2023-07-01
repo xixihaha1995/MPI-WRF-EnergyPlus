@@ -31,7 +31,7 @@ typedef struct {
 
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
-int rank = -1, performanc_length =2;
+int rank = -1, performanc_length =14;
 float msg_arr[3] = {-1, -1, -1};
 int weatherMPIon = 1, wasteMPIon = 1;
 int isOnline = 1;
@@ -186,7 +186,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        // surHandles = getSurHandle(state, uwyo1);
+        surHandles = getSurHandle(state, uwyo1);
         
         if (simHVACSensor < 0)
         {
@@ -208,21 +208,21 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_W = simHVAC_J/ 3600;
 
-    // surValues = getSurVal(state, surHandles);
-    // // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
-    // Real64 avgMidVal[4];
-    // for (int i = 0; i < midLen; i++) {
-    //     avgMidVal[i % 4] += surValues.midVal[i];
-    // }
-    // for (int i = 0; i < 4; i++) {
-    //     int num = midLen / 4;
-    //     avgMidVal[i] /= num;
-    //     // printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
-    //     // printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
-    //     // printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
-    // }
+    surValues = getSurVal(state, surHandles);
+    // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
+    Real64 avgMidVal[4];
+    for (int i = 0; i < midLen; i++) {
+        avgMidVal[i % 4] += surValues.midVal[i];
+    }
+    for (int i = 0; i < 4; i++) {
+        int num = midLen / 4;
+        avgMidVal[i] /= num;
+        // printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
+        // printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
+        // printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
+    }
 
-    // free(tempMidVal);
+    free(tempMidVal);
     if (! wasteMPIon)
     {
         printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC_W = %.2f (W), \n", rank, simTime, simHVAC_W);
@@ -236,11 +236,11 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     else
         data[1] = -66.0;
     // bot 4, mid 4, top 4
-    // for (int i = 0; i < 4; i++) {
-    //     data[i + 2] = (float) (surValues.botVal[i] + 273.15);
-    //     data[i + 6] = (float) (avgMidVal[i] + 273.15);
-    //     data[i + 10] = (float) (surValues.topVal[i] + 273.15);
-    // }
+    for (int i = 0; i < 4; i++) {
+        data[i + 2] = (float) (surValues.botVal[i] + 273.15);
+        data[i + 6] = (float) (avgMidVal[i] + 273.15);
+        data[i + 10] = (float) (surValues.topVal[i] + 273.15);
+    }
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent heat %.2f (W) to it, at time %.2f(s)\n",
@@ -279,22 +279,13 @@ int main(int argc, char** argv) {
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-    // requestSur(state, uwyo1);
-    char curpath[256];
-    getcwd(curpath, sizeof(curpath));
-    if (strstr(curpath, "glade")) {
-        if (isOnline) 
-             sprintf(output_path, "/glade/scratch/lichenwu/ep_temp/saved_online_ep_trivial_%d", rank + 1);
-        else
-            sprintf(output_path, "/glade/scratch/lichenwu/ep_temp/saved_offline_ep_trivial_%d", rank + 1);
-    } else {
-        if (isOnline) 
-            sprintf(output_path, "./saved_online_ep_trivial_%d", rank + 1);
-        else
-            sprintf(output_path, "./saved_offline_ep_trivial_%d", rank + 1);
-    }
-    
-    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf", rank+1);
+    requestSur(state, uwyo1);
+
+    if (isOnline) 
+        sprintf(output_path, "./saved_online_ep_trivial_%d", rank);
+    else
+        sprintf(output_path, "./saved_offline_ep_trivial_%d", rank);
+    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_1.idf");
 
     char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
