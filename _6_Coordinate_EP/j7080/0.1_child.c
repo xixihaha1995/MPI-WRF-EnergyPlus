@@ -33,8 +33,17 @@ int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1, performanc_length =2;
 float msg_arr[3] = {-1, -1, -1};
+float footprintm2[38] = {
+    162.15, 2513.40, 37.75, 355.15, 1049.87, 415.98,
+    2608.08, 115.65, 1793.84, 2785.14,958.38,2745.55,
+    1292.35,347.83,2464.88,9048.44,548.43,185.96,
+    828.75,91.38,107.44,90.02,181.64,1698.19,
+    4090.41,24400.54,158.22,4229.28,92.32,108.30,
+    3781.44,123.20,3298.50,257.05,841.63,80.27,
+    1808.91,889.49
+}
 int weatherMPIon = 1, wasteMPIon = 1;
-int isOnline = 1;
+int isOnline = 0;
 MPI_Comm parent_comm;
 MPI_Status status;
 SurfaceHandles surHandles;
@@ -230,7 +239,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     }
 
     float data[performanc_length];
-    data[0] = uwyo1.footPrintM2;
+    data[rank] = footprintm2[rank];
     if (isOnline)
         data[1] = (float) simHVAC_W;
     else
