@@ -1131,7 +1131,7 @@ CONTAINS
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
       integer ::  calling = 0, ending_steps = (23 ) * 540, ucm_tag = 0
-      integer, parameter ::  num_children = 1, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
+      integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
@@ -1197,10 +1197,9 @@ CONTAINS
           call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
       end do
-      ! Currently, we assume/hardcode the urban area of 1 IDF is 1.33 of footprint area.
-      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1)) / 1.33
+      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
-      wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
+    !   wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
       print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
       print *, "WRF (Parent(s)) wM2_12K", wM2_12K
 
@@ -1214,7 +1213,6 @@ CONTAINS
         !   call MPI_Finalize(ierr)
       end if
   end subroutine spawn_children
-
 
 
 ! ===6=8===============================================================72
@@ -1532,7 +1530,7 @@ CONTAINS
       real sfr_avb(ndm, nbui_max)
       real :: mean_recv_waste_w
       real, dimension(3) :: wrf_weather
-      real, dimension(13) :: wM2_12K;
+      real, dimension(1) :: wM2_12K;
       integer wrfFlrIdx
 ! ----------------------------------------------------------------------
 ! END VARIABLES DEFINITIONS
@@ -1784,9 +1782,9 @@ CONTAINS
                   ! override the first 3 values of sflev1D with mean_recv_waste_w
                   ! override the first 12 values of twb1D with wM2_12K
                   sflev1D(1:3) = mean_recv_waste_w
-                  do wrfFlrIdx = 1, 3
-                     twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
-                  end do
+                  ! do wrfFlrIdx = 1, 3
+                  !    twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
+                  ! end do
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                end if
