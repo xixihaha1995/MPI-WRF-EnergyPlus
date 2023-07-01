@@ -41,7 +41,7 @@ float footprintm2[38] = {
     4090.41,24400.54,158.22,4229.28,92.32,108.30,
     3781.44,123.20,3298.50,257.05,841.63,80.27,
     1808.91,889.49
-}
+};
 int weatherMPIon = 1, wasteMPIon = 1;
 int isOnline = 0;
 MPI_Comm parent_comm;
