@@ -8,6 +8,12 @@ https://forum.mmm.ucar.edu/threads/domain-design-the-ratio-among-domain-resoluti
 
 HRRR 3km > 500m > 100m
 
+```
+ln -sf ungrib/Variable_Tables/Vtable.HRRR Vtable
+./link_grib.csh ../DATA/HRRR07022022/
+
+```
+
 #### 100m Spatial resolution 
 
 GIS4WRF
@@ -17,6 +23,7 @@ https://gis4wrf.github.io/
 https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh/hrrr.20220702/conus?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22))&prefix=&forceOnObjectsSortingFiltering=false
 
 https://console.cloud.google.com/marketplace/product/noaa-public/hrrr?project=python-232920&pli=1
+https://www.nco.ncep.noaa.gov/pmb/products/hrrr/
 
 Vtable:
 ‘prs’ pressure-level data should be used: https://github.com/blaylockbk/Ute_WRF/blob/5ccef028807f9fcf621ecfe3b1adc4616b27b211/modificaions/Vtable.HRRR.bkb#L49
