@@ -5,7 +5,50 @@ https://www.thoughtco.com/degree-of-latitude-and-longitude-distance-4070616#:~:t
 https://forum.mmm.ucar.edu/threads/design-coarse-domain.10586/post-22296
 https://forum.mmm.ucar.edu/threads/domain-design-the-ratio-among-domain-resolutions.329/post-913
 
-HRRR 3km hourly
+
+HRRR 3km > 500m > 100m
+
+#### 100m Spatial resolution 
+
+GIS4WRF
+https://gis4wrf.github.io/
+
+#### HRRR 3km hourly
+https://console.cloud.google.com/storage/browser/high-resolution-rapid-refresh/hrrr.20220702/conus?pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22))&prefix=&forceOnObjectsSortingFiltering=false
+
+https://console.cloud.google.com/marketplace/product/noaa-public/hrrr?project=python-232920&pli=1
+
+Vtable:
+‘prs’ pressure-level data should be used: https://github.com/blaylockbk/Ute_WRF/blob/5ccef028807f9fcf621ecfe3b1adc4616b27b211/modificaions/Vtable.HRRR.bkb#L49
+
+```
+gsutil -m cp \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t00z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t01z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t02z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t03z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t04z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t05z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t06z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t07z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t08z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t09z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t10z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t11z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t12z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t13z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t14z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t15z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t16z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t17z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t18z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t19z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t20z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t21z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t22z.wrfprsf00.grib2" \
+  "gs://high-resolution-rapid-refresh/hrrr.20220702/conus/hrrr.t23z.wrfprsf00.grib2" \
+  .
+```
 
 ### General workflow
 
