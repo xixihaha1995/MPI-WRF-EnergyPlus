@@ -10,7 +10,6 @@ MODULE module_sf_bep_bem
    USE module_sf_urban
    USE module_sf_bem
    USE module_bep_bem_helper, ONLY: nurbm
-   ! USE module_configure
 
 ! SGClarke 09/11/2008
 ! Access urban_param.tbl values through calling urban_param_init in module_physics_init
@@ -901,8 +900,7 @@ CONTAINS
                call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                           dzr, dzf, dzw, dzgb,ims,ime,jms,jme, &
-                           xlat, xlong, xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
+                           dzr, dzf, dzw, dzgb, ims, ime, jms, jme, xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
                            albg_u(iurb), albw_u(iurb), albr_u(iurb), &
                            albwin_u(iurb), emg_u(iurb), emw_u(iurb), &
                            emr_u(iurb), emwind_u(iurb), fww_u, fwg_u, &
@@ -1127,19 +1125,15 @@ CONTAINS
       return
    end subroutine BEP_BEM
 
-   subroutine spawn_children(curix,curiy,curibui,dt,curitime, ims, ime, jms, jme,&
-      XLATALL, XLONGALL, xlat, xlong,wrf_weather,wM2_12K)
+   subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,wrf_weather,wM2_12K)
       implicit none
       include 'mpif.h'
-      integer :: ims, ime, jms, jme
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
       integer ::  calling = 0, ending_steps = (23 ) * 540, ucm_tag = 0
       integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
-      REAL, DIMENSION(ims:ime, jms:jme), &
-      INTENT(IN)  ::                           XLATALL, XLONGALL
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true.
       character(len=50) :: command
@@ -1155,7 +1149,6 @@ CONTAINS
             saveiy = curiy
             wM2_12K = 300
             wM2_12K(1) = 0
-            print *, "xlatall", xlatall, "xlongall", xlongall
         end if
 
       !saveix, saveiy, first building height call, not the last step
@@ -1227,8 +1220,7 @@ CONTAINS
    subroutine BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
                      zr, deltar, ah, rs, rld, alagb, &
                      alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                     dzr, dzf, dzw, dzgb, ims, ime, jms, jme,&
-                      XLATALL, XLONGALL, xlat, xlong,swddir, swddif, &
+                     dzr, dzf, dzw, dzgb, ims, ime, jms, jme, xlat, xlong,swddir, swddif, &
                      albg, albw, albr, albwin, emg, emw, emr, &
                      emwind, fww, fwg, fgw, fsw, fws, fsg, z0, &
                      ndu, strd, drst, ws, bs_u, bs, ss, pb, &
@@ -1245,7 +1237,7 @@ CONTAINS
                      qv, tlev, qlev, sflev, lflev, consumlev, &
                      eppvlev, tpvlev, sfvlev, lfvlev, twlev, tglev, tflev, sfwin, tmp_u, sfr_indoor, sfrpv, gfr)
       ! print*,'SFR_AFT',sfr(id,iz)
-      
+
       implicit none
 
 ! ----------------------------------------------------------------------
@@ -1255,7 +1247,7 @@ CONTAINS
 ! Data relative to the "mesoscale grid"
 
 !!    integer nz                 ! Number of vertical levels
-      integer kms, kme, kts, kte, ix, iy, itimestep, ims, ime, jms, jme
+      integer kms, kme, kts, kte, ix, iy, itimestep
       real z(kms:kme)               ! Altitude above the ground of the cell interfaces.
       real ua(kms:kme)                ! Wind speed in the x direction
       real va(kms:kme)                ! Wind speed in the y direction
@@ -1274,8 +1266,6 @@ CONTAINS
       real xlong                 ! Longitude
       real swddir                ! short wave direct solar radiation   !_gl
       real swddif                ! short wave diffuse solar radiation  !_gl
-      REAL, DIMENSION(ims:ime, jms:jme), &
-      INTENT(IN)  ::                           XLATALL, XLONGALL
 
 ! Data relative to the "urban grid"
 
@@ -1540,9 +1530,8 @@ CONTAINS
       real sfr_avb(ndm, nbui_max)
       real :: mean_recv_waste_w
       real, dimension(3) :: wrf_weather
-      real, dimension(1) :: wM2_12K
-      integer wrfFlrIdx
-      !real innermost_dt
+      real, dimension(1) :: wM2_12K;
+      integer wrfFlrIdx, ims, ime, jms, jme
 ! ----------------------------------------------------------------------
 ! END VARIABLES DEFINITIONS
 ! ----------------------------------------------------------------------
@@ -1780,12 +1769,9 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-            !call nl_get_innermost_dt(1, innermost_dt)
-            !print *, 'innermost_dt', innermost_dt
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
-               call spawn_children(ix,iy,ibui,dt,itimestep,ims, ime, jms, jme, &
-               XLATALL, XLONGALL,xlat,xlong,wrf_weather, wM2_12K)
+               call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3
                print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
