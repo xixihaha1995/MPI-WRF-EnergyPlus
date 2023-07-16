@@ -1125,7 +1125,8 @@ CONTAINS
       return
    end subroutine BEP_BEM
 
-   subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,wrf_weather,wM2_12K)
+   subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
+      ims,ime,jms,jme,xlat, xlong,wrf_weather,wM2_12K)
       implicit none
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
@@ -1139,6 +1140,7 @@ CONTAINS
       character(len=50) :: command
     !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
+      integer :: ims, ime, jms, jme
 
 
 
@@ -1771,7 +1773,8 @@ CONTAINS
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
-               call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K)
+               call spawn_children(ix,iy,ibui,dt,itimestep,&
+               ims,ime,jms,jme,xlat,xlong,wrf_weather, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3
                print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
