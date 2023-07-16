@@ -57,6 +57,51 @@ gsutil -m cp \
   .
 ```
 
+#### WRF-IDF mapping
+
+1. geoJSON > centroid 
+2. WRF iterates the innermost domain grids (send domain lat and long, urban weather).
+3. IDF iterates through all buildings
+  Within 2^0.5 * 50 meters, then the building will be bond with the current grid.
+
+```c
+#include <stdio.h>
+#include <math.h>
+
+double haversine(double lat1, double lon1, double lat2, double lon2) {
+    double R = 6371;  // Earth's radius in kilometers
+
+    // Convert latitude and longitude to radians
+    double lat1_rad = lat1 * M_PI / 180;
+    double lon1_rad = lon1 * M_PI / 180;
+    double lat2_rad = lat2 * M_PI / 180;
+    double lon2_rad = lon2 * M_PI / 180;
+
+    // Calculate differences between coordinates
+    double dlat = lat2_rad - lat1_rad;
+    double dlon = lon2_rad - lon1_rad;
+
+    // Apply Haversine formula
+    double a = pow(sin(dlat / 2), 2) + cos(lat1_rad) * cos(lat2_rad) * pow(sin(dlon / 2), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    double distance = R * c;
+
+    return distance;
+}
+
+int main() {
+    double lat1 = 41.313;
+    double lon1 = -105.581;
+    double lat2 = 41.213;
+    double lon2 = -105.523;
+
+    double distance = haversine(lat1, lon1, lat2, lon2);
+    printf("Distance between the coordinates: %f kilometers\n", distance);
+
+    return 0;
+}
+```
+
 ### General workflow
 
 ln -sf ../../../WPS/met_em.d01.2016-10* .
