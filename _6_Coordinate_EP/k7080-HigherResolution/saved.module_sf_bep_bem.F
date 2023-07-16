@@ -900,7 +900,9 @@ CONTAINS
                call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                           dzr, dzf, dzw, dzgb, ims, ime, jms, jme, xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
+                           dzr, dzf, dzw, dzgb, ims, ime, jms, jme, &
+                           xlat, xlong, &
+                           xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
                            albg_u(iurb), albw_u(iurb), albr_u(iurb), &
                            albwin_u(iurb), emg_u(iurb), emw_u(iurb), &
                            emr_u(iurb), emwind_u(iurb), fww_u, fwg_u, &
@@ -1126,7 +1128,7 @@ CONTAINS
    end subroutine BEP_BEM
 
    subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
-      ims,ime,jms,jme,xlat, xlong,wrf_weather,wM2_12K)
+      ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,wM2_12K)
       implicit none
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
@@ -1141,6 +1143,8 @@ CONTAINS
     !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
       integer :: ims, ime, jms, jme
+      REAL, DIMENSION(ims:ime, jms:jme), &
+      INTENT(IN)  ::                           xlatall, xlongall
 
 
 
@@ -1151,6 +1155,7 @@ CONTAINS
             saveiy = curiy
             wM2_12K = 300
             wM2_12K(1) = 0
+            print *, "xlatall", xlatall, "xlongall", xlongall
         end if
 
       !saveix, saveiy, first building height call, not the last step
@@ -1222,7 +1227,8 @@ CONTAINS
    subroutine BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
                      zr, deltar, ah, rs, rld, alagb, &
                      alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                     dzr, dzf, dzw, dzgb, ims, ime, jms, jme, xlat, xlong,swddir, swddif, &
+                     dzr, dzf, dzw, dzgb, ims, ime, jms, jme, &
+                     xlatall, xlongall, xlat, xlong,swddir, swddif, &
                      albg, albw, albr, albwin, emg, emw, emr, &
                      emwind, fww, fwg, fgw, fsw, fws, fsg, z0, &
                      ndu, strd, drst, ws, bs_u, bs, ss, pb, &
@@ -1534,6 +1540,9 @@ CONTAINS
       real, dimension(3) :: wrf_weather
       real, dimension(1) :: wM2_12K;
       integer wrfFlrIdx, ims, ime, jms, jme
+
+      REAL, DIMENSION(ims:ime, jms:jme), &
+      INTENT(IN)  ::                           xlatall, xlongall
 ! ----------------------------------------------------------------------
 ! END VARIABLES DEFINITIONS
 ! ----------------------------------------------------------------------
@@ -1774,7 +1783,8 @@ CONTAINS
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
                call spawn_children(ix,iy,ibui,dt,itimestep,&
-               ims,ime,jms,jme,xlat,xlong,wrf_weather, wM2_12K)
+               ims,ime,jms,jme,xlatall, xlongall, &
+               xlat,xlong,wrf_weather, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3
                print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
