@@ -10,6 +10,7 @@ MODULE module_sf_bep_bem
    USE module_sf_urban
    USE module_sf_bem
    USE module_bep_bem_helper, ONLY: nurbm
+   ! USE module_configure
 
 ! SGClarke 09/11/2008
 ! Access urban_param.tbl values through calling urban_param_init in module_physics_init
@@ -1242,7 +1243,7 @@ CONTAINS
                      qv, tlev, qlev, sflev, lflev, consumlev, &
                      eppvlev, tpvlev, sfvlev, lfvlev, twlev, tglev, tflev, sfwin, tmp_u, sfr_indoor, sfrpv, gfr)
       ! print*,'SFR_AFT',sfr(id,iz)
-      USE module_configure
+      
       implicit none
 
 ! ----------------------------------------------------------------------
