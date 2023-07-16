@@ -1225,7 +1225,7 @@ CONTAINS
    subroutine BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
                      zr, deltar, ah, rs, rld, alagb, &
                      alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                     dzr, dzf, dzw, dzgb, XLATALL, XLONGALL, xlat, xlong,swddir, swddif, &
+                     dzr, dzf, dzw, dzgb, ims, ime, jms, jme, XLATALL, XLONGALL, xlat, xlong,swddir, swddif, &
                      albg, albw, albr, albwin, emg, emw, emr, &
                      emwind, fww, fwg, fgw, fsw, fws, fsg, z0, &
                      ndu, strd, drst, ws, bs_u, bs, ss, pb, &

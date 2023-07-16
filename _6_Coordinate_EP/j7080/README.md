@@ -12,6 +12,8 @@ HRRR 3km > 500m > 100m
 ln -sf ungrib/Variable_Tables/Vtable.HRRR Vtable
 ./link_grib.csh ../DATA/HRRR07022022/
 
+ln -sf ungrib/Variable_Tables/Vtable.GFS Vtable
+./link_grib.csh ../DATA/fnl
 ```
 
 #### 100m Spatial resolution 
