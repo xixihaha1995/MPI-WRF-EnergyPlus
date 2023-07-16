@@ -900,7 +900,7 @@ CONTAINS
                call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                           dzr, dzf, dzw, dzgb, xlat, xlong, xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
+                           dzr, dzf, dzw, dzgb,ims,ime,jms,jme, xlat, xlong, xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
                            albg_u(iurb), albw_u(iurb), albr_u(iurb), &
                            albwin_u(iurb), emg_u(iurb), emw_u(iurb), &
                            emr_u(iurb), emwind_u(iurb), fww_u, fwg_u, &
@@ -1125,15 +1125,19 @@ CONTAINS
       return
    end subroutine BEP_BEM
 
-   subroutine spawn_children(curix,curiy,curibui,dt,curitime,xlat, xlong,wrf_weather,wM2_12K)
+   subroutine spawn_children(curix,curiy,curibui,dt,curitime, ims, ime, jms, jme,&
+      XLATALL, XLONGALL, xlat, xlong,wrf_weather,wM2_12K)
       implicit none
       include 'mpif.h'
+      integer :: ims, ime, jms, jme
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm,  saveix, saveiy, saveitime = -1
       integer ::  calling = 0, ending_steps = (23 ) * 540, ucm_tag = 0
       integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
+      REAL, DIMENSION(ims:ime, jms:jme), &
+      INTENT(IN)  ::                           XLATALL, XLONGALL
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true.
       character(len=50) :: command
@@ -1220,7 +1224,7 @@ CONTAINS
    subroutine BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
                      zr, deltar, ah, rs, rld, alagb, &
                      alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                     dzr, dzf, dzw, dzgb, xlat, xlong,swddir, swddif, &
+                     dzr, dzf, dzw, dzgb, XLATALL, XLONGALL, xlat, xlong,swddir, swddif, &
                      albg, albw, albr, albwin, emg, emw, emr, &
                      emwind, fww, fwg, fgw, fsw, fws, fsg, z0, &
                      ndu, strd, drst, ws, bs_u, bs, ss, pb, &
@@ -1247,7 +1251,7 @@ CONTAINS
 ! Data relative to the "mesoscale grid"
 
 !!    integer nz                 ! Number of vertical levels
-      integer kms, kme, kts, kte, ix, iy, itimestep
+      integer kms, kme, kts, kte, ix, iy, itimestep, ims, ime, jms, jme
       real z(kms:kme)               ! Altitude above the ground of the cell interfaces.
       real ua(kms:kme)                ! Wind speed in the x direction
       real va(kms:kme)                ! Wind speed in the y direction
@@ -1266,6 +1270,8 @@ CONTAINS
       real xlong                 ! Longitude
       real swddir                ! short wave direct solar radiation   !_gl
       real swddif                ! short wave diffuse solar radiation  !_gl
+      REAL, DIMENSION(ims:ime, jms:jme), &
+      INTENT(IN)  ::                           XLATALL, XLONGALL
 
 ! Data relative to the "urban grid"
 
@@ -1771,7 +1777,8 @@ CONTAINS
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
-               call spawn_children(ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K)
+               call spawn_children(ix,iy,ibui,dt,itimestep,ims, ime, jms, jme, &
+               XLATALL, XLONGALL,xlat,xlong,wrf_weather, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3
                print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
