@@ -21,7 +21,6 @@
  io_form_restart                     = 2
  io_form_input                       = 2
  io_form_boundary                    = 2
- innermost_dt = 6.7
  /
 
  &domains

@@ -1539,7 +1539,7 @@ CONTAINS
       real, dimension(3) :: wrf_weather
       real, dimension(1) :: wM2_12K
       integer wrfFlrIdx
-      real innermost_dt
+      !real innermost_dt
 ! ----------------------------------------------------------------------
 ! END VARIABLES DEFINITIONS
 ! ----------------------------------------------------------------------
@@ -1777,8 +1777,8 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-            call nl_get_innermost_dt(1, innermost_dt)
-            print *, 'innermost_dt', innermost_dt
+            !call nl_get_innermost_dt(1, innermost_dt)
+            !print *, 'innermost_dt', innermost_dt
          if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
             if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
                call spawn_children(ix,iy,ibui,dt,itimestep,ims, ime, jms, jme, &
