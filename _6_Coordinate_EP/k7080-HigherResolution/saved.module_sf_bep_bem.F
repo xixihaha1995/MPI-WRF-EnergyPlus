@@ -901,7 +901,8 @@ CONTAINS
                call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                           dzr, dzf, dzw, dzgb,ims,ime,jms,jme, xlat, xlong, xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
+                           dzr, dzf, dzw, dzgb,ims,ime,jms,jme, &
+                           xlat, xlong, xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
                            albg_u(iurb), albw_u(iurb), albr_u(iurb), &
                            albwin_u(iurb), emg_u(iurb), emw_u(iurb), &
                            emr_u(iurb), emwind_u(iurb), fww_u, fwg_u, &
@@ -1226,7 +1227,8 @@ CONTAINS
    subroutine BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
                      zr, deltar, ah, rs, rld, alagb, &
                      alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                     dzr, dzf, dzw, dzgb, ims, ime, jms, jme, XLATALL, XLONGALL, xlat, xlong,swddir, swddif, &
+                     dzr, dzf, dzw, dzgb, ims, ime, jms, jme,&
+                      XLATALL, XLONGALL, xlat, xlong,swddir, swddif, &
                      albg, albw, albr, albwin, emg, emw, emr, &
                      emwind, fww, fwg, fgw, fsw, fws, fsg, z0, &
                      ndu, strd, drst, ws, bs_u, bs, ss, pb, &
