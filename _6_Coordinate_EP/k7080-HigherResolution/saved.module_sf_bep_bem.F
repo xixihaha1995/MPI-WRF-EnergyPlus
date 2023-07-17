@@ -1821,8 +1821,6 @@ CONTAINS
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                end if
-
-            endif
          endif
 !
 !Temporal modifications
