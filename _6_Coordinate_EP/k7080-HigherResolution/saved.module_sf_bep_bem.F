@@ -653,7 +653,6 @@ CONTAINS
       end do
       end do
 
-      print *, "YSML its ite jts jte", its, ite, jts, jte
 
       do ix = its, ite
       do iy = jts, jte
@@ -898,7 +897,7 @@ CONTAINS
                deltar1D = DECLIN_URB
                ah1D = OMG_URB2D(ix, iy)
 
-
+               print *, "YSML dt its ite," dt, its, ite, "ims ime jms jme", ims, ime, jms, jme
                call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
@@ -1160,6 +1159,9 @@ CONTAINS
          wM2_12K(1) = 0
          latlongall_length = (ime - ims + 1) * (jme - jms + 1)
          print *, "latlongall_length", latlongall_length
+         print *, "xlat, xlong", xlat, xlong
+         print *, "curix, curiy", curix, curiy
+         print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
          print *, "xlatall", xlatall, "xlongall", xlongall
          allocate(xlatall1d(latlongall_length))
          allocate(xlongall1d(latlongall_length))
