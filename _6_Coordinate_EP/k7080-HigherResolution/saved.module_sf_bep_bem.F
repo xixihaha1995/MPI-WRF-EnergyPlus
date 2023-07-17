@@ -897,7 +897,7 @@ CONTAINS
                deltar1D = DECLIN_URB
                ah1D = OMG_URB2D(ix, iy)
 
-               print *, "YSML dt its ite," dt, its, ite, "ims ime jms jme", ims, ime, jms, jme
+               print *, "YSML dt its ite,", dt, its, ite, "ims ime jms jme", ims, ime, jms, jme
                call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
