@@ -1147,36 +1147,37 @@ CONTAINS
       INTENT(IN)  ::                           xlatall, xlongall
       REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER :: latlongall_length
+      integer :: i, j, k
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
-        if (calling == 0) then
-            saveix = curix
-            saveiy = curiy
-            wM2_12K = 300
-            wM2_12K(1) = 0
-            latlongall_length = (ime - ims + 1) * (jme - jms + 1)
-            print *, "latlongall_length", latlongall_length
-            print *, "xlatall", xlatall, "xlongall", xlongall
-            allocate(xlatall1d(latlongall_length))
-            allocate(xlongall1d(latlongall_length))
-            !flatten the 2d arrays
-            integer :: i, j, k
-            k = 1
-            do j = jms, jme
-               do i = ims, ime
-                  xlatall1d(k) = xlatall(i, j)
-                  xlongall1d(k) = xlongall(i, j)
-                  k = k + 1
-               end do
-            end do
+      if (calling == 0) then
+         saveix = curix
+         saveiy = curiy
+         wM2_12K = 300
+         wM2_12K(1) = 0
+         latlongall_length = (ime - ims + 1) * (jme - jms + 1)
+         print *, "latlongall_length", latlongall_length
+         print *, "xlatall", xlatall, "xlongall", xlongall
+         allocate(xlatall1d(latlongall_length))
+         allocate(xlongall1d(latlongall_length))
+         !flatten the 2d arrays
 
-            do child_idx = 1, num_children
-               call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
-               call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
+         k = 1
+         do j = jms, jme
+            do i = ims, ime
+               xlatall1d(k) = xlatall(i, j)
+               xlongall1d(k) = xlongall(i, j)
+               k = k + 1
             end do
+         end do
 
-        end if
+         do child_idx = 1, num_children
+            call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
+            call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
+         end do
+
+      end if
 
       !saveix, saveiy, first building height call, not the last step
         if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
