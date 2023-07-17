@@ -1145,8 +1145,8 @@ CONTAINS
       integer :: ims, ime, jms, jme
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
-
-
+      REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
+      INTEGER :: latlongall_length
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
@@ -1155,7 +1155,27 @@ CONTAINS
             saveiy = curiy
             wM2_12K = 300
             wM2_12K(1) = 0
+            latlongall_length = (ime - ims + 1) * (jme - jms + 1)
+            print *, "latlongall_length", latlongall_length
             print *, "xlatall", xlatall, "xlongall", xlongall
+            allocate(xlatall1d(latlongall_length))
+            allocate(xlongall1d(latlongall_length))
+            !flatten the 2d arrays
+            integer :: i, j, k
+            k = 1
+            do j = jms, jme
+               do i = ims, ime
+                  xlatall1d(k) = xlatall(i, j)
+                  xlongall1d(k) = xlongall(i, j)
+                  k = k + 1
+               end do
+            end do
+
+            do child_idx = 1, num_children
+               call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
+               call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
+            end do
+
         end if
 
       !saveix, saveiy, first building height call, not the last step
@@ -1780,8 +1800,7 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-         if (7 .gt. dt .and. xlat .gt. 41.30 .and. xlong .gt. -105.59) then
-            if (41.31 .gt. xlat .and. -105.58 .gt. xlong) then 
+         if (7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather, wM2_12K)
