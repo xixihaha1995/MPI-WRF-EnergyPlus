@@ -1195,11 +1195,11 @@ CONTAINS
         end if
 
          do child_idx = 1, num_children
-            call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
-            call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
-            !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
-            !each building IDF centroid.
-            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, child_idx, 0, MPI_COMM_WORLD, status, ierr)
+            call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx-1, 0, MPI_COMM_WORLD, ierr)
+            ! call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
+            ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
+            ! !each building IDF centroid.
+            ! call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, child_idx, 0, MPI_COMM_WORLD, status, ierr)
          end do
 
       end if

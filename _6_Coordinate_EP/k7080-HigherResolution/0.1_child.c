@@ -327,11 +327,11 @@ int main(int argc, char** argv) {
     
     // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
-    MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
+    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
-        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    // print the received latlongall
+    // MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
+    //     MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    // print the received latlongalls
     for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
         printf("Child %d received longall, latall[%d] = %.2f, %.2f\n", rank, k, longall[k], latall[k]);
     }
