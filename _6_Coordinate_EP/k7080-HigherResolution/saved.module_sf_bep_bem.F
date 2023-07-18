@@ -1145,8 +1145,8 @@ CONTAINS
       integer :: ims, ime, jms, jme, its, ite
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
-      REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
-      INTEGER :: latlongall_length
+      REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d, mapping_wrf_ep
+      INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
@@ -1156,9 +1156,11 @@ CONTAINS
          saveiy = curiy
          wM2_12K = 300
          wM2_12K(1) = 0
-         latlongall_length = (its - ite + 1)*(its - ite + 1)
+         latlongall_length = (ite - its + 1)*(ite - its + 1)
+         mapping_length = latlongall_length * 38
          allocate(xlatall1d(latlongall_length))
          allocate(xlongall1d(latlongall_length))
+         allocate(mapping_wrf_ep(mapping_length))
          !flatten the 2d arrays
 
          k = 1
@@ -1179,6 +1181,9 @@ CONTAINS
          do child_idx = 1, num_children
             call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
             call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
+            !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
+            !each building IDF centroid.
+            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, status, ierr)
          end do
 
       end if
@@ -1231,7 +1236,7 @@ CONTAINS
       end do
       wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
-    !   wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
+      !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
       print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
       print *, "WRF (Parent(s)) wM2_12K", wM2_12K
 
