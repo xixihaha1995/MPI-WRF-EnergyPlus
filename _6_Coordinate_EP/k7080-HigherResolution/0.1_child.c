@@ -9,6 +9,7 @@
 #include <EnergyPlus/api/func.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
+#define INNERMOST_POINTS 15
 
 typedef struct {
     int id;
@@ -37,10 +38,10 @@ typedef struct {
 
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
-int rank = -1, performanc_length =2, innermost_points = 15;
+int rank = -1, performanc_length =2;
 float msg_arr[3] = {-1, -1, -1};
-float longall[innermost_points * innermost_points], latall[innermost_points * innermost_points];
-float mappings[innermost_points * innermost_points * 38];
+float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
+float mappings[INNERMOST_POINTS * INNERMOST_POINTS * 38];
 float footprintm2[38] = {
     162.15, 2513.40, 37.75, 355.15, 1049.87, 415.98,
     2608.08, 115.65, 1793.84, 2785.14,958.38,2745.55,
@@ -69,8 +70,6 @@ GeoUWyo uwyo1 = {
     .mid = midNames,
     .top = {98, 110, 116, 104}
 };
-
-
 
 // I'd like add three more functions related with GeoUWyo1 surfaces,
 // one is used to request the surface variables
@@ -294,7 +293,6 @@ void closestGrid(void) {
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
     if (file == NULL) {
         printf("Failed to open centroid.csv file.\n");
-        return 1;
     }
     // Skip the first line (header) in centroid.csv
     char line[100];
@@ -329,12 +327,12 @@ int main(int argc, char** argv) {
     
     // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
-    MPI_Recv(&longall, innermost_points * innermost_points, MPI_FLOAT, 
+    MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    MPI_Recv(&latall, innermost_points * innermost_points, MPI_FLOAT,
+    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // print the received latlongall
-    for (int k = 0; k < innermost_points * innermost_points; k++) {
+    for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
         printf("Child %d received longall, latall[%d] = %.2f, %.2f\n", rank, k, longall[k], latall[k]);
     }
 
