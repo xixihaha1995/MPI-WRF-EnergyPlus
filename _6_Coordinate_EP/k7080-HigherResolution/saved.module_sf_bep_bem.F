@@ -1173,12 +1173,27 @@ CONTAINS
             end do
          end do
 
-         print *, "latlongall_length", latlongall_length
-         print *, "xlat, xlong", xlat, xlong
-         print *, "curix, curiy", curix, curiy
          print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
-         print *, "xlatall1d, xlongall1d", xlatall1d, xlongall1d
-         print *, "xlatall", xlatall, "xlongall", xlongall
+
+         if (spawned .eqv. .false.) then
+            spawned = .true.
+            call MPI_Initialized(initedMPI, ierr)
+            if (.not. initedMPI) then
+                print *, "MPI not initialized, initializing"
+                call MPI_Init(ierr)
+            end if
+  
+            call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+            call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
+            !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
+  
+            call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
+            command = "./child.exe"
+            call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
+                    0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
+            !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
+        end if
+
          do child_idx = 1, num_children
             call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
             call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
