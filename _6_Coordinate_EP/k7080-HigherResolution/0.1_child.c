@@ -31,8 +31,9 @@ typedef struct {
 
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
-int rank = -1, performanc_length =2;
+int rank = -1, performanc_length =2, innermost_points = 15
 float msg_arr[3] = {-1, -1, -1};
+float latlongall[innermost_points * innermost_points];
 float footprintm2[38] = {
     162.15, 2513.40, 37.75, 355.15, 1049.87, 415.98,
     2608.08, 115.65, 1793.84, 2785.14,958.38,2745.55,
@@ -278,6 +279,15 @@ int main(int argc, char** argv) {
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Get_processor_name(processor_name, &namelen);
     printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
+    
+    // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
+    MPI_Recv(&latlongall, innermost_points * innermost_points, MPI_FLOAT, 
+        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    // print the received latlongall
+    for (int k = 0; k < innermost_points * innermost_points; k++) {
+        printf("Child %d received latlongall[%d] = %.2f\n", rank, k, latlongall[k]);
+    }
 
 
     char output_path[MPI_MAX_PROCESSOR_NAME];

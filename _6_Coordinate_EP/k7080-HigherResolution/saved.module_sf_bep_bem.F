@@ -1145,7 +1145,8 @@ CONTAINS
       integer :: ims, ime, jms, jme, its, ite
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
-      REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d, mapping_wrf_ep
+      REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
+      INTEGER, DIMENSION(:), ALLOCATABLE :: mapping_wrf_ep
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k
 
@@ -1164,8 +1165,8 @@ CONTAINS
          !flatten the 2d arrays
 
          k = 1
-         do j = its, ite
-            do i = its, ite
+         do i = its, ite
+            do j = its, ite
                xlatall1d(k) = xlatall(i, j)
                xlongall1d(k) = xlongall(i, j)
                k = k + 1
@@ -1183,7 +1184,7 @@ CONTAINS
             call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
             !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
             !each building IDF centroid.
-            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, status, ierr)
+            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, child_idx, 0, MPI_COMM_WORLD, status, ierr)
          end do
 
       end if
