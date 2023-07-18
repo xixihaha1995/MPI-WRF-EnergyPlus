@@ -1157,11 +1157,6 @@ CONTAINS
          wM2_12K = 300
          wM2_12K(1) = 0
          latlongall_length = (its - ite + 1)*(its - ite + 1)
-         print *, "latlongall_length", latlongall_length
-         print *, "xlat, xlong", xlat, xlong
-         print *, "curix, curiy", curix, curiy
-         print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
-         print *, "xlatall", xlatall, "xlongall", xlongall
          allocate(xlatall1d(latlongall_length))
          allocate(xlongall1d(latlongall_length))
          !flatten the 2d arrays
@@ -1175,6 +1170,12 @@ CONTAINS
             end do
          end do
 
+         print *, "latlongall_length", latlongall_length
+         print *, "xlat, xlong", xlat, xlong
+         print *, "curix, curiy", curix, curiy
+         print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
+         print *, "xlatall1d, xlongall1d", xlatall1d, xlongall1d
+         print *, "xlatall", xlatall, "xlongall", xlongall
          do child_idx = 1, num_children
             call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
             call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
