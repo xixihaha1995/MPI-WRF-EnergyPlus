@@ -37,7 +37,7 @@ typedef struct {
 
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
-int rank = -1, performanc_length =2, innermost_points = 15
+int rank = -1, performanc_length =2, innermost_points = 15;
 float msg_arr[3] = {-1, -1, -1};
 float longall[innermost_points * innermost_points], latall[innermost_points * innermost_points];
 float mappings[innermost_points * innermost_points * 38];
