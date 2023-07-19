@@ -14,8 +14,8 @@
 
 typedef struct {
     int id;
-    float lat;
-    float lon;
+    double lat;
+    double lon;
 } Building;
 
 typedef struct {
@@ -317,15 +317,15 @@ void receiveLongLat(void) {
     }
 
     int id;
-    float lat, lon;
+    double lat, lon;
     for (int i = 0; i < NBR_IDF; i++) {
         fscanf(file, "%d, %f, %f", &id, &lat, &lon);
         buildings[i].id = id;
         buildings[i].lat = lat;
         buildings[i].lon = lon;
         int gridIndex = closetGridIndex(lat, lon);
-        printf("Building id = %d, lat = %.2f, lon = %.2f,"
-            "is assigned to grid `idx` with lat = %.2f, lon = %.2f\n", id, lat, lon, latall[gridIndex], longall[gridIndex]);
+        printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
+            "is assigned to grid `idx` with lat = %.14lf, lon = %.14lf\n", id, lat, lon, latall[gridIndex], longall[gridIndex]);
         mappings[gridIndex * NBR_IDF + i] = 1;
     }
     fclose(file);
