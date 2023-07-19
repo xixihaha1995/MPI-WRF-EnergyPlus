@@ -43,9 +43,7 @@ int rank = -1, performanc_length =2;
 float msg_arr[3] = {-1, -1, -1};
 float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
 int mappings[INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
-for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
-    mappings[i] = -1;
-}
+
 
 Building buildings[NBR_IDF]; 
 float footprintm2[38] = {
@@ -313,6 +311,10 @@ void receiveLongLat(void) {
     // Skip the first line (header) in centroid.csv
     char line[100];
     fgets(line, sizeof(line), file);
+    
+    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
+        mappings[i] = -1;
+    }
 
     int id;
     float lat, lon;
