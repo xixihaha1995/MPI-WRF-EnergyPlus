@@ -331,6 +331,12 @@ void receiveLongLat(void) {
     fclose(file);
 
     MPI_Send(&mappings, INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, 0, 0, parent_comm);
+    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
+        for (int j = 0; j < NBR_IDF; j++) {
+            printf("%d ", mappings[i * NBR_IDF + j]);
+        }
+        printf("\n");
+    }
 
 }
 

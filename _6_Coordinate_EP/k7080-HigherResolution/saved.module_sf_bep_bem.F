@@ -1207,6 +1207,8 @@ CONTAINS
             call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, child_idx-1, 0, new_comm, status, ierr)
          end do
 
+         print *, "mapping_wrf_ep", mapping_wrf_ep
+
       end if
 
       if (turnMPIon .eqv. .false.) then
