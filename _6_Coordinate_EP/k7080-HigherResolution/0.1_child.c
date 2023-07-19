@@ -325,7 +325,7 @@ void receiveLongLat(void) {
         buildings[i].lon = lon;
         int gridIndex = closetGridIndex(lat, lon);
         printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
-            "is assigned to grid `idx` with lat = %.14lf, lon = %.14lf\n", id, lat, lon, latall[gridIndex], longall[gridIndex]);
+            "is assigned to grid %d, lat = %.14lf, lon = %.14lf\n");
         mappings[gridIndex * NBR_IDF + i] = 1;
     }
     fclose(file);
