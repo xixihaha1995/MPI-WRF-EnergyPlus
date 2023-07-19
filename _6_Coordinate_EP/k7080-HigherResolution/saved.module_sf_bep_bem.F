@@ -1200,8 +1200,8 @@ CONTAINS
          
 
          do child_idx = 1, num_children
-            call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx-1, 0, new_comm, ierr)
-            call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx-1, 0, new_comm, ierr)
+            call MPI_Send(xlatall1d, latlongall_length, MPI_DOUBLE_PRECISION, child_idx-1, 0, new_comm, ierr)
+            call MPI_Send(xlongall1d, latlongall_length, MPI_DOUBLE_PRECISION, child_idx-1, 0, new_comm, ierr)
             ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
             ! !each building IDF centroid.
             call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, child_idx-1, 0, new_comm, status, ierr)
