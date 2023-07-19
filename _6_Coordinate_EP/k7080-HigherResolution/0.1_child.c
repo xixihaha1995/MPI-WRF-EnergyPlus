@@ -318,7 +318,7 @@ void receiveLongLat(void) {
     int id;
     double lat, lon;
     for (int i = 0; i < NBR_IDF; i++) {
-        fscanf(file, "%d, %f, %f", &id, &lat, &lon);
+        fscanf(file, "%d, %lf, %lf", &id, &lat, &lon);
         buildings[i].id = id;
         buildings[i].lat = lat;
         buildings[i].lon = lon;
