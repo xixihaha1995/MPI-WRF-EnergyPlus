@@ -1131,8 +1131,9 @@ CONTAINS
       its, ite, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,wM2_12K)
       implicit none
       include 'mpif.h'
+      integer, parameter ::  nbr_steps_hr = 540
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-      integer, save :: new_comm,  saveitime = -1, nbr_steps_hr = 540
+      integer, save :: new_comm,  saveitime = -1
       integer ::  calling = 0, ending_steps = (23 ) * nbr_steps_hr, ucm_tag = 0
       integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
       real, dimension(num_children, performance_length) :: received_data
