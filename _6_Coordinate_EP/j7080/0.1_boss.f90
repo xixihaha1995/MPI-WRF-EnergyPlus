@@ -50,7 +50,7 @@ contains
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., turnMPIon = .true.
       character(len=50) :: command
-    !   output variables
+    !output variables
       real, dimension(wrfNeedLen) :: wM2_12K
 
 

@@ -10,11 +10,12 @@
 
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 15
+#define NBR_IDF 3
 
 typedef struct {
     int id;
-    double lat;
-    double lon;
+    float lat;
+    float lon;
 } Building;
 
 typedef struct {
@@ -41,7 +42,12 @@ int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohr
 int rank = -1, performanc_length =2;
 float msg_arr[3] = {-1, -1, -1};
 float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
-float mappings[INNERMOST_POINTS * INNERMOST_POINTS * 38];
+int mappings[INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
+for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
+    mappings[i] = -1;
+}
+
+Building buildings[NBR_IDF]; 
 float footprintm2[38] = {
     162.15, 2513.40, 37.75, 355.15, 1049.87, 415.98,
     2608.08, 115.65, 1793.84, 2785.14,958.38,2745.55,
@@ -274,21 +280,31 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     
 }
 
-void closestGrid(void) {
-    /*
-     These functions are used to find the closest grid point (long, lat) to buildings.
-     input: longall[innermost*innermost], latall[innermost*innermost], centroid.csv
-     For centroid.csv, there are 38 buildings. And each record looks like below:
-        id, lat, long
-        1, 41.3152975, -105.58152500000001
-        2, 41.313289850098016, -105.58458895073731
-        3, 41.315211999999995, -105.578926
-        ...
-     output:mappings[innermost*innermost*38], default value is -1
-     You will organize the output as below:
-      For example, the first 38 values are [-1,1,-1,...,1], which indicates how all the 38 buildings treat
-      the first grid point as the closest.
-    */
+int closetGridIndex(float bldlat, float bldlong){
+    // go through all grids latall, longall, find the closest grid
+    float minDist = 1000000000;
+    int minIndex = -1;
+    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
+        float dist = (bldlat - latall[i]) * (bldlat - latall[i]) + (bldlong - longall[i]) * (bldlong - longall[i]);
+        if (dist < minDist) {
+            minDist = dist;
+            minIndex = i;
+        }
+    }
+    return minIndex;
+}
+
+void receiveLongLat(void) {
+    // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
+    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
+        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
+        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    // print the received latlongalls
+    for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
+        printf("Child %d received longall, latall[%d] = %.2f, %.2f\n", rank, k, longall[k], latall[k]);
+    }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
     if (file == NULL) {
@@ -297,19 +313,22 @@ void closestGrid(void) {
     // Skip the first line (header) in centroid.csv
     char line[100];
     fgets(line, sizeof(line), file);
-    Building buildings[38]; 
 
     int id;
-    double lat, lon;
-    for (int i = 0; i < 38; i++) {
-        fscanf(file, "%d, %lf, %lf", &id, &lat, &lon);
-        printf("id: %d, lat: %lf, lon: %lf\n", id, lat, lon);
+    float lat, lon;
+    for (int i = 0; i < NBR_IDF; i++) {
+        fscanf(file, "%d, %f, %f", &id, &lat, &lon);
         buildings[i].id = id;
         buildings[i].lat = lat;
         buildings[i].lon = lon;
+        int gridIndex = closetGridIndex(lat, lon);
+        printf("Building id = %d, lat = %.2f, lon = %.2f,'
+            'is assigned to grid `idx` with lat = %.2f, lon = %.2f\n", id, lat, lon, latall[gridIndex], longall[gridIndex]);
+        mappings[gridIndex * NBR_IDF + i] = 1;
     }
-
     fclose(file);
+
+    MPI_Send(&mappings, INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, 0, 0, parent_comm);
 
 }
 
@@ -325,18 +344,7 @@ int main(int argc, char** argv) {
     MPI_Get_processor_name(processor_name, &namelen);
     printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
     
-    // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
-    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
-        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    // MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
-    //     MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    // print the received latlongalls
-    for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
-        printf("Child %d received longall, latall[%d] = %.2f, %.2f\n", rank, k, longall[k], latall[k]);
-    }
-
-    closestGrid();
+    receiveLongLat();
 
 
     char output_path[MPI_MAX_PROCESSOR_NAME];

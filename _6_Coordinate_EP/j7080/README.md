@@ -4,6 +4,7 @@ Our "rule" is that each domain should be at least 100x100 (e_we and e_sn values)
 https://www.thoughtco.com/degree-of-latitude-and-longitude-distance-4070616#:~:text=A%20degree%20of%20longitude%20is,53%20miles%20(85%20kilometers).
 https://forum.mmm.ucar.edu/threads/design-coarse-domain.10586/post-22296
 https://forum.mmm.ucar.edu/threads/domain-design-the-ratio-among-domain-resolutions.329/post-913
+https://www2.mmm.ucar.edu/wrf/users/namelist_best_prac_wps.html
 
 
 HRRR 3km > 500m > 100m

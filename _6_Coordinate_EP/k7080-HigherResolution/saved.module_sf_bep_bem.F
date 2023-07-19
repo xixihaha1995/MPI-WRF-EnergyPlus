@@ -1132,8 +1132,8 @@ CONTAINS
       implicit none
       include 'mpif.h'
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-      integer, save :: new_comm,  saveix, saveiy, saveitime = -1
-      integer ::  calling = 0, ending_steps = (23 ) * 540, ucm_tag = 0
+      integer, save :: new_comm,  saveitime = -1, nbr_steps_hr = 540
+      integer ::  calling = 0, ending_steps = (23 ) * nbr_steps_hr, ucm_tag = 0
       integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
@@ -1145,25 +1145,25 @@ CONTAINS
       integer :: ims, ime, jms, jme, its, ite
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
+      REAL, DIMENSION(its:ite, its:ite, 1:wrfNeedLen) :: saved_wM2_12k
       REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER, DIMENSION(:), ALLOCATABLE :: mapping_wrf_ep
+      INTEGER, DIMENSION(num_children) :: one_grid_mapping
       INTEGER :: latlongall_length, mapping_length
-      integer :: i, j, k
+      integer :: i, j, k, map_left_idx, map_right_idx
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
       if (calling == 0) then
-         saveix = curix
-         saveiy = curiy
          wM2_12K = 300
          wM2_12K(1) = 0
          latlongall_length = (ite - its + 1)*(ite - its + 1)
-         mapping_length = latlongall_length * 38
+         mapping_length = latlongall_length * num_children
          allocate(xlatall1d(latlongall_length))
          allocate(xlongall1d(latlongall_length))
          allocate(mapping_wrf_ep(mapping_length))
+         
          !flatten the 2d arrays
-
          k = 1
          do i = its, ite
             do j = its, ite
@@ -1172,7 +1172,7 @@ CONTAINS
                k = k + 1
             end do
          end do
-
+         print *, "curitime", curitime
          print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
 
          if (spawned .eqv. .false.) then
@@ -1192,63 +1192,48 @@ CONTAINS
             call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
                     0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
             !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
-        end if
+         end if
+
+         
 
          do child_idx = 1, num_children
             call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx-1, 0, new_comm, ierr)
-            ! call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx, 0, MPI_COMM_WORLD, ierr)
+            call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx-1, 0, new_comm, ierr)
             ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
             ! !each building IDF centroid.
-            ! call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, child_idx, 0, MPI_COMM_WORLD, status, ierr)
+            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, child_idx-1, 0, new_comm, status, ierr)
          end do
 
       end if
 
-      !saveix, saveiy, first building height call, not the last step
-        if (curix /= saveix .or. curiy /= saveiy .or. curitime == saveitime) then
-            return
-        else 
-            calling = calling + 1
-            saveitime = curitime
-            if (calling /= 1 .and. mod(calling,540) /= 0) then
-                return
-            end if
-        end if
-
-        if (turnMPIon .eqv. .false.) then
-        !print *, "turnMPIon is false, no more MPI calls"
-            return
-        end if
-
-      if (spawned .eqv. .false.) then
-          spawned = .true.
-          call MPI_Initialized(initedMPI, ierr)
-          if (.not. initedMPI) then
-              print *, "MPI not initialized, initializing"
-              call MPI_Init(ierr)
-          end if
-
-          call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
-          call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-          !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
-
-          call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
-          command = "./child.exe"
-          call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
-                  0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
-          !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
+      if (turnMPIon .eqv. .false.) then
+         !print *, "turnMPIon is false, no more MPI calls"
+             return
       end if
 
-      if (calling > ending_steps - 1) then
-          ucm_tag = 886
-          turnMPIon = .false.
+      !hourly timestep
+      if (curitime == saveitime .or. mod(curitime, nbr_steps_hr) /= 0) then
+         ! to communicate with EnergyPlus for updating
+         wM2_12K = saved_wM2_12k(curix, curiy, :)
+         return
+      end if
+
+      saveitime = curitime
+      if (curitime > ending_steps - 1) then
+         ucm_tag = 886
+         turnMPIon = .false.
       else
-          ucm_tag = 0
+         ucm_tag = 0
       end if
 
+      map_right_idx = ((curix - 1) * (ite - its + 1) + curiy) * num_children
+      map_left_idx = map_right_idx - num_children + 1
+      one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
       do child_idx = 1, num_children
-          call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+         if (one_grid_mapping(child_idx) .gt. 0) then
+            call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
+         end if
       end do
       wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
@@ -1259,11 +1244,11 @@ CONTAINS
 
       if (ucm_tag == 886) then
          print *, "WRF (Parent(s)) ending messsage 886 sent, &
-                 &to reach collective barrier,MPI about to end, no more inter-communicator calls."
-          call MPI_Barrier(new_comm, ierr)
-          ! call MPI_Comm_free(new_comm, ierr)
-          ! call MPI_Comm_free(parent_comm, ierr)
-        !   call MPI_Finalize(ierr)
+                  &to reach collective barrier,MPI about to end, no more inter-communicator calls."
+            call MPI_Barrier(new_comm, ierr)
+            ! call MPI_Comm_free(new_comm, ierr)
+            ! call MPI_Comm_free(parent_comm, ierr)
+         !   call MPI_Finalize(ierr)
       end if
   end subroutine spawn_children
 

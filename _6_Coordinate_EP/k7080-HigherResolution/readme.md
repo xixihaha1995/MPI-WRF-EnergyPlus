@@ -6,6 +6,11 @@
 git clone --recurse-submodule https://github.com/wrf-model/WRF.git
 ln -sf ../../../WPS/met_em.d01*.*.
 - Do you need to inform every IDF for the mapping-wrf-ep?
+- Each hourly timestep, part of grid points from the innermost domain will call BEP1D/spawn_children
+    1. hourly timestep and the first update in this location.
+        a. communicate with ep for updating.
+    2. otherwise
+        a. (curix, curiy) > (waste)
 - WRF global xlat, xlong (shape and transfer through MPI)
 - mappings from WRF grids to IDF centroids
 - WRF calling = 1 (get all the mappings, save the 3D-WRF-Mapping-EP variable into spawn_children)
