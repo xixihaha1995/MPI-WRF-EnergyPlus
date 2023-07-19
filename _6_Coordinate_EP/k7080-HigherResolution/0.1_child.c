@@ -44,7 +44,6 @@ float msg_arr[3] = {-1, -1, -1};
 float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
 int mappings[INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
 
-
 Building buildings[NBR_IDF]; 
 float footprintm2[38] = {
     162.15, 2513.40, 37.75, 355.15, 1049.87, 415.98,

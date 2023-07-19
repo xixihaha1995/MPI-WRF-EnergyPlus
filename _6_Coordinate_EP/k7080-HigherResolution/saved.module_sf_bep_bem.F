@@ -1174,6 +1174,8 @@ CONTAINS
          end do
          print *, "curitime", curitime
          print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
+         print *, "xlongall1d", xlongall1d
+         print *, "xlatall1d", xlatall1d
 
          if (spawned .eqv. .false.) then
             spawned = .true.
