@@ -294,13 +294,14 @@ int closetGridIndex(float bldlat, float bldlong){
 void receiveLongLat(void) {
     // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
-    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_DOUBLE, 
+    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_DOUBLE,
+    MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // print the received latlongalls
     for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
-        printf("Child %d received longall, latall[%d] = %.lf, %.lf\n", rank, k, longall[k], latall[k]);
+        // print the received data with higheset precision
+        printf("Child %d received longall[%d] = %.10f, latall[%d] = %.10f\n", rank, k, longall[k], k, latall[k]);
     }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
