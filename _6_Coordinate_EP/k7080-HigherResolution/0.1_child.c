@@ -311,7 +311,7 @@ void receiveLongLat(void) {
     // Skip the first line (header) in centroid.csv
     char line[100];
     fgets(line, sizeof(line), file);
-    
+
     for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
         mappings[i] = -1;
     }
@@ -324,8 +324,8 @@ void receiveLongLat(void) {
         buildings[i].lat = lat;
         buildings[i].lon = lon;
         int gridIndex = closetGridIndex(lat, lon);
-        printf("Building id = %d, lat = %.2f, lon = %.2f,'
-            'is assigned to grid `idx` with lat = %.2f, lon = %.2f\n", id, lat, lon, latall[gridIndex], longall[gridIndex]);
+        printf("Building id = %d, lat = %.2f, lon = %.2f,"
+            "is assigned to grid `idx` with lat = %.2f, lon = %.2f\n", id, lat, lon, latall[gridIndex], longall[gridIndex]);
         mappings[gridIndex * NBR_IDF + i] = 1;
     }
     fclose(file);
