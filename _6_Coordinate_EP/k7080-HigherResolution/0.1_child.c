@@ -41,7 +41,7 @@ int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1, performanc_length =2;
 float msg_arr[3] = {-1, -1, -1};
-float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
+double longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
 int mappings[INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
 
 Building buildings[NBR_IDF]; 
@@ -279,10 +279,10 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 
 int closetGridIndex(float bldlat, float bldlong){
     // go through all grids latall, longall, find the closest grid
-    float minDist = 1000000000;
+    double minDist = 1000000000;
     int minIndex = -1;
     for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
-        float dist = (bldlat - latall[i]) * (bldlat - latall[i]) + (bldlong - longall[i]) * (bldlong - longall[i]);
+        double dist = (bldlat - latall[i]) * (bldlat - latall[i]) + (bldlong - longall[i]) * (bldlong - longall[i]);
         if (dist < minDist) {
             minDist = dist;
             minIndex = i;
@@ -300,7 +300,7 @@ void receiveLongLat(void) {
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // print the received latlongalls
     for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
-        printf("Child %d received longall, latall[%d] = %.2f, %.2f\n", rank, k, longall[k], latall[k]);
+        printf("Child %d received longall, latall[%d] = %.lf, %.lf\n", rank, k, longall[k], latall[k]);
     }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
