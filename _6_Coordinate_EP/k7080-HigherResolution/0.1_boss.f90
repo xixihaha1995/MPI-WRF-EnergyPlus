@@ -76,6 +76,7 @@ subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
 
     !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
+    print *, "befor its spawned", spawned
     if (spawned .eqv. .false.) then
         spawned = .true.
         wM2_12K = 300
@@ -130,6 +131,7 @@ subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
 
     end if
 
+    print *, "before checking mapping_wrf_ep", mapping_wrf_ep
     map_right_idx = ((curix - 1) * (ite - its + 1) + curiy) * num_children
     map_left_idx = map_right_idx - num_children + 1
     one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
