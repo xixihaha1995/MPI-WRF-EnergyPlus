@@ -1,5 +1,5 @@
 program mpi_app
-    integer :: time_idx, timesteps = 24 * 540, allix = 3, alliy =3, allbui = 2, curix, curiy, curibui, curitime = 1
+    integer :: time_idx, timesteps = 7 * 540, allix = 3, alliy =3, allbui = 2, curix, curiy, curibui, curitime = 1
     integer :: ierr
     integer, parameter :: its = 1, ite = 15, ims = 1, ime = 15, jms = 1, jme = 15
     real, dimension (3) :: random_weather ! oat_c, abs_hum_kgw_kga, pressure_pa
