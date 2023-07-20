@@ -1128,7 +1128,7 @@ CONTAINS
    end subroutine BEP_BEM
 
    subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
-      its, ite, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,wM2_12K)
+      its, ite, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
       implicit none
       include 'mpif.h'
       integer, parameter ::  nbr_steps_hr = 540
@@ -1139,7 +1139,7 @@ CONTAINS
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., turnMPIon = .true.
+      logical :: initedMPI, spawned = .false., turnMPIon = .true., replaced = .false.
       character(len=50) :: command
     !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
@@ -1221,6 +1221,7 @@ CONTAINS
       if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
          ! to communicate with EnergyPlus for updating
          wM2_12K = saved_wM2_12k(curix, curiy, :)
+         replaced = .true.
          return
       end if
 
@@ -1228,6 +1229,12 @@ CONTAINS
       if (curitime > ending_steps - 1) then
          ucm_tag = 886
          turnMPIon = .false.
+         print *, "WRF (Parent(s)) ending messsage 886 sent, &
+         &to reach collective barrier,MPI about to end, no more inter-communicator calls."
+         call MPI_Barrier(new_comm, ierr)
+         ! call MPI_Comm_free(new_comm, ierr)
+         ! call MPI_Comm_free(parent_comm, ierr)
+         !call MPI_Finalize(ierr)
       else
          ucm_tag = 0
       end if
@@ -1236,26 +1243,23 @@ CONTAINS
       map_left_idx = map_right_idx - num_children + 1
       one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
       print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping
-      do child_idx = 1, num_children
-         if (one_grid_mapping(child_idx) .gt. 0) then
-            call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
-                  received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
-         end if
-      end do
-      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
-      ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
-      !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
-      print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
-      print *, "WRF (Parent(s)) wM2_12K", wM2_12K
-
-
-      if (ucm_tag == 886) then
-         print *, "WRF (Parent(s)) ending messsage 886 sent, &
-                  &to reach collective barrier,MPI about to end, no more inter-communicator calls."
-            call MPI_Barrier(new_comm, ierr)
-            ! call MPI_Comm_free(new_comm, ierr)
-            ! call MPI_Comm_free(parent_comm, ierr)
-         !   call MPI_Finalize(ierr)
+      ! check if any values of one_grid_mapping is greater than 0
+      if (any(one_grid_mapping .gt. 0)) then
+         replaced = .true.
+         do child_idx = 1, num_children
+            if (one_grid_mapping(child_idx) .gt. 0) then
+               call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+                     received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
+            end if
+         end do
+         wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
+         ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
+         !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
+         print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
+         print *, "WRF (Parent(s)) wM2_12K", wM2_12K
+      else
+         replaced = .false.
+         return
       end if
   end subroutine spawn_children
 
@@ -1577,6 +1581,7 @@ CONTAINS
       real :: mean_recv_waste_w
       real, dimension(3) :: wrf_weather
       real, dimension(1) :: wM2_12K;
+      logical :: replaced
       integer wrfFlrIdx, ims, ime, jms, jme, its, ite
 
       REAL, DIMENSION(ims:ime, jms:jme), &
@@ -1827,9 +1832,7 @@ CONTAINS
                print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
-               if (wM2_12K(1) < 0) then 
-                  print *, 'offline; one way coupling from WRF -> EP'
-               else
+               if (replaced) then 
                   ! override the first 3 values of sflev1D with mean_recv_waste_w
                   ! override the first 12 values of twb1D with wM2_12K
                   sflev1D(1:3) = mean_recv_waste_w
@@ -1838,6 +1841,8 @@ CONTAINS
                   ! end do
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+               else
+                  print *, 'offline; one way coupling from WRF -> EP'
                end if
          endif
 !
