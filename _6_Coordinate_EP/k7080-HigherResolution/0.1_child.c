@@ -55,7 +55,7 @@ float footprintm2[38] = {
     1808.91,889.49
 };
 int weatherMPIon = 1, wasteMPIon = 1;
-int isOnline = 1;
+int isOnline = 1, isMapped = 0;
 MPI_Comm parent_comm;
 MPI_Status status;
 SurfaceHandles surHandles;
@@ -299,10 +299,10 @@ void receiveLongLat(void) {
     MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // print the received latlongalls
-    for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
-        // print the received data with higheset precision
-        printf("Child %d received longall[%d] = %.10f, latall[%d] = %.10f\n", rank, k, longall[k], k, latall[k]);
-    }
+    // for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
+    //     // print the received data with higheset precision
+    //     printf("Child %d received longall[%d] = %.10f, latall[%d] = %.10f\n", rank, k, longall[k], k, latall[k]);
+    // }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
     if (file == NULL) {
@@ -351,8 +351,10 @@ int main(int argc, char** argv) {
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Get_processor_name(processor_name, &namelen);
     printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
-    
-    receiveLongLat();
+    if (!isMapped) {
+        receiveLongLat();
+        isMapped = 1;s
+    }
 
 
     char output_path[MPI_MAX_PROCESSOR_NAME];
