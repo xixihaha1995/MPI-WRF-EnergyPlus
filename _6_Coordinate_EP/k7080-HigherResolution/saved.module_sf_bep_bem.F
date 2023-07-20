@@ -1139,7 +1139,7 @@ CONTAINS
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., turnMPIon = .true., replaced = .false.
+      logical :: initedMPI, spawned = .false., turnMPIon = .true., replaced
       character(len=50) :: command
     !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
