@@ -1210,6 +1210,18 @@ CONTAINS
 
       end if
 
+      map_right_idx = ((curix - 1) * (ite - its + 1) + curiy) * num_children
+      map_left_idx = map_right_idx - num_children + 1
+      one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
+      print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping
+
+      if (.not. any(one_grid_mapping .gt. 0)) then
+         replaced = .false.
+         return
+      else
+         replaced = .true.
+      end if
+
       if (turnMPIon .eqv. .false.) then
          !print *, "turnMPIon is false, no more MPI calls"
              return
@@ -1221,11 +1233,11 @@ CONTAINS
       if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
          ! to communicate with EnergyPlus for updating
          wM2_12K = saved_wM2_12k(curix, curiy, :)
-         replaced = .true.
          return
       end if
 
       saveitime(curix, curiy) = curitime
+
       if (curitime > ending_steps - 1) then
          ucm_tag = 886
          turnMPIon = .false.
@@ -1239,28 +1251,18 @@ CONTAINS
          ucm_tag = 0
       end if
 
-      map_right_idx = ((curix - 1) * (ite - its + 1) + curiy) * num_children
-      map_left_idx = map_right_idx - num_children + 1
-      one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
-      print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping
-      ! check if any values of one_grid_mapping is greater than 0
-      if (any(one_grid_mapping .gt. 0)) then
-         replaced = .true.
-         do child_idx = 1, num_children
-            if (one_grid_mapping(child_idx) .gt. 0) then
-               call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
-                     received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
-            end if
-         end do
-         wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
-         ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
-         !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
-         print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
-         print *, "WRF (Parent(s)) wM2_12K", wM2_12K
-      else
-         replaced = .false.
-         return
-      end if
+      do child_idx = 1, num_children
+         if (one_grid_mapping(child_idx) .gt. 0) then
+            call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+                  received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
+         end if
+      end do
+      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
+      ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
+      !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
+      print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
+      print *, "WRF (Parent(s)) wM2_12K", wM2_12K
+
   end subroutine spawn_children
 
 
@@ -1827,7 +1829,7 @@ CONTAINS
                print *, 'if dt vs 7 ?', dt .gt. 7
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                its, ite, ims,ime,jms,jme,xlatall, xlongall, &
-               xlat,xlong,wrf_weather, wM2_12K)
+               xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3
                print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
