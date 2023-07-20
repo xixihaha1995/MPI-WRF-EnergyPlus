@@ -353,7 +353,7 @@ int main(int argc, char** argv) {
     printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
     if (!isMapped) {
         receiveLongLat();
-        isMapped = 1;s
+        isMapped = 1;
     }
 
 
