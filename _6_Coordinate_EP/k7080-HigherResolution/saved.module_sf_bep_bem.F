@@ -1216,7 +1216,7 @@ CONTAINS
       end if
 
       !hourly timestep
-      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0) then
+      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
          ! to communicate with EnergyPlus for updating
          wM2_12K = saved_wM2_12k(curix, curiy, :)
          return
