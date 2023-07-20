@@ -50,8 +50,8 @@ subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
     implicit none
     include 'mpif.h'
     integer, parameter ::  nbr_steps_hr = 540
-    integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-    integer, save :: new_comm
+    integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), 
+    integer :: new_comm, curix, curiy, curibui, curitime
     ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
     ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
     integer ::  ending_steps = (5 ) * nbr_steps_hr, ucm_tag = 0
@@ -130,11 +130,9 @@ subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
 
     end if
 
-    print *, "before checking mapping_wrf_ep", mapping_wrf_ep
     map_right_idx = ((curix - 1) * (ite - its + 1) + curiy) * num_children
     map_left_idx = map_right_idx - num_children + 1
     one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
-    print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping
 
     if (.not. any(one_grid_mapping .gt. 0)) then
         replaced = .false.
@@ -142,6 +140,8 @@ subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
     else
         replaced = .true.
     end if
+    
+    print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping
 
     if (turnMPIon .eqv. .false.) then
         !print *, "turnMPIon is false, no more MPI calls"
@@ -149,8 +149,6 @@ subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
     end if
 
     !hourly timestep
-    print *, "curitime", curitime, "mod(curitime, nbr_steps_hr) /= 0?", mod(curitime, nbr_steps_hr) /= 0
-    print *, "curitime /= 1?", curitime /= 1
     if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
         ! to communicate with EnergyPlus for updating
         wM2_12K = saved_wM2_12k(curix, curiy, :)
