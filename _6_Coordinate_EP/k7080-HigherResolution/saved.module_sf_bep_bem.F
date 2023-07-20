@@ -1132,8 +1132,9 @@ CONTAINS
       implicit none
       include 'mpif.h'
       integer, parameter ::  nbr_steps_hr = 540
-      integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE)
-      integer :: new_comm, curix, curiy, curibui, curitime
+      integer :: ierr, rank, num_procs, parent_comm, child_idx, 
+      integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
+      integer, save :: new_comm
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
       integer ::  ending_steps = (5 ) * nbr_steps_hr, ucm_tag = 0
