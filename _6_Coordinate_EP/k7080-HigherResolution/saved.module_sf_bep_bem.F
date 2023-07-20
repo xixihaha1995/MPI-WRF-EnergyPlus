@@ -1133,8 +1133,8 @@ CONTAINS
       include 'mpif.h'
       integer, parameter ::  nbr_steps_hr = 540
       integer :: ierr, rank, num_procs, parent_comm, child_idx, status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-      integer, save :: new_comm,  saveitime = -1
-      integer ::  calling = 0, ending_steps = (23 ) * nbr_steps_hr, ucm_tag = 0
+      integer, save :: new_comm
+      integer ::  ending_steps = (23 ) * nbr_steps_hr, ucm_tag = 0
       integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
@@ -1147,6 +1147,7 @@ CONTAINS
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
       REAL, DIMENSION(its:ite, its:ite, 1:wrfNeedLen) :: saved_wM2_12k
+      integer :: saveitime(its:ite, its:ite) = -1
       REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER, DIMENSION(:), ALLOCATABLE :: mapping_wrf_ep
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
@@ -1155,7 +1156,8 @@ CONTAINS
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
-      if (calling == 0) then
+      if (spawned .eqv. .false.) then
+         spawned = .true.
          wM2_12K = 300
          wM2_12K(1) = 0
          latlongall_length = (ite - its + 1)*(ite - its + 1)
@@ -1178,26 +1180,21 @@ CONTAINS
          print *, "xlongall1d", xlongall1d
          print *, "xlatall1d", xlatall1d
 
-         if (spawned .eqv. .false.) then
-            spawned = .true.
-            call MPI_Initialized(initedMPI, ierr)
-            if (.not. initedMPI) then
-                print *, "MPI not initialized, initializing"
-                call MPI_Init(ierr)
-            end if
-  
-            call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
-            call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-            !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
-  
-            call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
-            command = "./child.exe"
-            call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
-                    0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
-            !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
+         call MPI_Initialized(initedMPI, ierr)
+         if (.not. initedMPI) then
+               print *, "MPI not initialized, initializing"
+               call MPI_Init(ierr)
          end if
 
-         
+         call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+         call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
+         !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
+
+         call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
+         command = "./child.exe"
+         call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
+                  0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
+         !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
 
          do child_idx = 1, num_children
             call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx-1, 0, new_comm, ierr)
@@ -1217,13 +1214,13 @@ CONTAINS
       end if
 
       !hourly timestep
-      if (curitime == saveitime .or. mod(curitime, nbr_steps_hr) /= 0) then
+      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0) then
          ! to communicate with EnergyPlus for updating
          wM2_12K = saved_wM2_12k(curix, curiy, :)
          return
       end if
 
-      saveitime = curitime
+      saveitime(curix, curiy) = curitime
       if (curitime > ending_steps - 1) then
          ucm_tag = 886
          turnMPIon = .false.
