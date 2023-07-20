@@ -69,14 +69,13 @@ subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
     REAL, DIMENSION(its:ite, its:ite, 1:wrfNeedLen) :: saved_wM2_12k
     integer :: saveitime(its:ite, its:ite)
     REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
-    INTEGER, DIMENSION(:), ALLOCATABLE :: mapping_wrf_ep
+    INTEGER, DIMENSION(:), ALLOCATABLE, save, parameter :: mapping_wrf_ep
     INTEGER, DIMENSION(num_children) :: one_grid_mapping
     INTEGER :: latlongall_length, mapping_length
     integer :: i, j, k, map_left_idx, map_right_idx
 
     !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
 
-    print *, "befor its spawned", spawned
     if (spawned .eqv. .false.) then
         spawned = .true.
         wM2_12K = 300
