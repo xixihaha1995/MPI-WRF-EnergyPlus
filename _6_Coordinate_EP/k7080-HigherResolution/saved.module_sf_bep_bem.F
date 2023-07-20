@@ -1235,9 +1235,9 @@ CONTAINS
       map_right_idx = ((curix - 1) * (ite - its + 1) + curiy) * num_children
       map_left_idx = map_right_idx - num_children + 1
       one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
+      print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping
       do child_idx = 1, num_children
          if (one_grid_mapping(child_idx) .gt. 0) then
-            print *, "WRF grid", ((curix - 1) * (ite - its + 1) + curiy), "calling building", child_idx
             call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
          end if
