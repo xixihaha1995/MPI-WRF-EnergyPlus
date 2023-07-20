@@ -1147,7 +1147,7 @@ CONTAINS
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
       REAL, DIMENSION(its:ite, its:ite, 1:wrfNeedLen) :: saved_wM2_12k
-      integer :: saveitime(its:ite, its:ite) = -1
+      integer :: saveitime(its:ite, its:ite)
       REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER, DIMENSION(:), ALLOCATABLE :: mapping_wrf_ep
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
@@ -1160,6 +1160,8 @@ CONTAINS
          spawned = .true.
          wM2_12K = 300
          wM2_12K(1) = 0
+         saveitime = -1 
+         print *, "saveitime", saveitime
          latlongall_length = (ite - its + 1)*(ite - its + 1)
          mapping_length = latlongall_length * num_children
          allocate(xlatall1d(latlongall_length))
