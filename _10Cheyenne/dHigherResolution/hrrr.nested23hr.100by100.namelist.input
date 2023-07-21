@@ -1,6 +1,6 @@
  &time_control
  run_days                            = 0,
- run_hours                           = 24,
+ run_hours                           = 23,
  run_minutes                         = 0,
  run_seconds                         = 0,
  start_year                          = 2022, 2022,
@@ -9,8 +9,8 @@
  start_hour                          = 00,   00,
  end_year                            = 2022, 2022,
  end_month                           = 07,   07,
- end_day                             = 03,   03,
- end_hour                            = 00,   00,
+ end_day                             = 02,   02,
+ end_hour                            = 23,   23,
  interval_seconds                    = 3600
  input_from_file                     = .true.,.true.,
  history_interval                    = 60,  60, 
