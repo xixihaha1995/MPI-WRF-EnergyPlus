@@ -1132,26 +1132,26 @@ CONTAINS
       implicit none
       include 'mpif.h'
       integer, parameter ::  nbr_steps_hr = 540
+      integer :: ierr, rank, num_procs, parent_comm, child_idx
+      integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
+      integer, save :: new_comm
+      ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
+      ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
+      integer ::  ending_steps = (5 ) * nbr_steps_hr, ucm_tag = 0
       integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
+      real, dimension(num_children, performance_length) :: received_data
+      REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
+      logical :: initedMPI, spawned = .false., replaced
+      character(len=50) :: command
+  !   output variables
+      real, dimension(wrfNeedLen) :: wM2_12K
       integer :: ims, ime, jms, jme, its, ite
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
-      integer :: ierr, rank, num_procs, parent_comm, child_idx
-      integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-      ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
-      ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
-      integer, save :: new_comm, ending_steps = (5 ) * nbr_steps_hr, ucm_tag = 0
-
-      real, dimension(num_children, performance_length) :: received_data
-      REAL, DIMENSION(weatherLength) :: wrf_weather
-      
-      logical, save :: initedMPI, spawned = .false., replaced
-      character(len=50), save :: command
-      REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
-      real, dimension(wrfNeedLen) :: wM2_12K
       REAL, DIMENSION(:,:,:), ALLOCATABLE, save :: saved_wM2_12k
       integer,save :: saveitime(its:ite, its:ite)
+      REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER, DIMENSION(:), ALLOCATABLE, save :: mapping_wrf_ep
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
       INTEGER :: latlongall_length, mapping_length
