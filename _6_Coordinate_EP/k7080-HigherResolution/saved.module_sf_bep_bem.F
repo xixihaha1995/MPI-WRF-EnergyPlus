@@ -1250,7 +1250,8 @@ CONTAINS
       else
           ucm_tag = 0
       end if
-
+      ! set all received_data to 0
+      received_data = 0
       do child_idx = 1, num_children
           if (one_grid_mapping(child_idx) .gt. 0) then
           call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
@@ -1846,7 +1847,7 @@ CONTAINS
                   ! end do
                   print *, "INF waste heat? wM2_12K", wM2_12K, "bs_u(1, iurb) * bs_u(2, iurb)", bs_u(1, iurb) * bs_u(2, iurb)
                   print *, "mean_recv_waste_w", mean_recv_waste_w
-                  
+
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                else
