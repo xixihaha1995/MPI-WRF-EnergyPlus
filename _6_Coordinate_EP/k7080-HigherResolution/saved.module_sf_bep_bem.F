@@ -1150,7 +1150,7 @@ CONTAINS
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
       REAL, DIMENSION(:,:,:), ALLOCATABLE, save :: saved_wM2_12k
-      integer :: saveitime(its:ite, its:ite)
+      integer,save :: saveitime(its:ite, its:ite)
       REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER, DIMENSION(:), ALLOCATABLE, save :: mapping_wrf_ep
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
@@ -1241,7 +1241,7 @@ CONTAINS
           wM2_12K = saved_wM2_12k(curix, curiy, :)
           return
       end if
-      
+
       if (saveitime(curix, curiy) /= -886) then
          saveitime(curix, curiy) = curitime
       end if
