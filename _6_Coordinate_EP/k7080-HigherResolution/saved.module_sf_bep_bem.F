@@ -1234,6 +1234,7 @@ CONTAINS
 
 
       print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping, "curitime", curitime
+      print *, "curix", curix, "curiy", curiy
 
 
       !hourly timestep
@@ -1248,6 +1249,7 @@ CONTAINS
       if (curitime > ending_steps - 1) then
           ucm_tag = 886
           saveitime(curix, curiy) = -886
+          print *,"assign -886 to curix curiy", curix, curiy
       else
           ucm_tag = 0
       end if
