@@ -351,10 +351,13 @@ int main(int argc, char** argv) {
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Get_processor_name(processor_name, &namelen);
     printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
-    if (!isMapped) {
-        receiveLongLat();
-        isMapped = 1;
+    if (rank == 0) {
+        if (!isMapped) {
+            receiveLongLat();
+            isMapped = 1;
+        }
     }
+
 
 
     char output_path[MPI_MAX_PROCESSOR_NAME];

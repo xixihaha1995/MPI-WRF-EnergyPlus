@@ -1201,14 +1201,11 @@ CONTAINS
           call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
                   0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
           !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
-
-          do child_idx = 1, num_children
-          call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, child_idx-1, 0, new_comm, ierr)
-          call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, child_idx-1, 0, new_comm, ierr)
+          call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
+          call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
           ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
           ! !each building IDF centroid.
-          call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, child_idx-1, 0, new_comm, status, ierr)
-          end do
+          call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
 
           print *, "mapping_wrf_ep", mapping_wrf_ep
 
@@ -1836,7 +1833,8 @@ CONTAINS
                its, ite, ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3 !it's currently averaged by bld footprint. And divided by three floors.
-
+               print *, "INF waste heat? wM2_12K", wM2_12K, "bs_u(1, iurb) * bs_u(2, iurb)", bs_u(1, iurb) * bs_u(2, iurb)
+               print *, "mean_recv_waste_w", mean_recv_waste_w
                if (replaced) then 
                   ! override the first 3 values of sflev1D with mean_recv_waste_w
                   ! override the first 12 values of twb1D with wM2_12K
