@@ -1245,7 +1245,7 @@ CONTAINS
       saveitime(curix, curiy) = curitime
 
       if (curitime > ending_steps - 1) then
-          ucm_tag = -886
+          ucm_tag = 886
           saveitime(curix, curiy) = -886
       else
           ucm_tag = 0
