@@ -1131,13 +1131,13 @@ CONTAINS
       its, ite, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
       implicit none
       include 'mpif.h'
-      integer, parameter ::  nbr_steps_hr = 540
+      integer, parameter ::  nbr_steps_hr = 5400
       integer :: ierr, rank, num_procs, parent_comm, child_idx
       integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
-      integer ::  ending_steps = (23 ) * nbr_steps_hr, ucm_tag = 0
+      integer ::  ending_steps = (6 ) * nbr_steps_hr, ucm_tag = 0
       integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
@@ -1264,6 +1264,9 @@ CONTAINS
       print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
       print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
+      if (wM2_12K(1) < 0) then
+         replaced = .false.
+      end if
       saved_wM2_12k(curix, curiy, :) = wM2_12K
       print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
@@ -1841,7 +1844,7 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-         if (7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
+         if (0.7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                its, ite, ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
