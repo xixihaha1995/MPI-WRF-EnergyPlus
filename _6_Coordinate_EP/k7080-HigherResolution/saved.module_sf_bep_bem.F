@@ -1228,11 +1228,12 @@ CONTAINS
 
       if (saveitime(curix, curiy) == -886) then
          print *,"WRF no more MPI calling for curix, cuiy, curibui, curitime", curix, curiy, curibui, curitime
+         wM2_12K = saved_wM2_12k(curix, curiy, :)
          return
       end if
 
 
-      print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping
+      print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping, "curitime", curitime
 
 
       !hourly timestep
