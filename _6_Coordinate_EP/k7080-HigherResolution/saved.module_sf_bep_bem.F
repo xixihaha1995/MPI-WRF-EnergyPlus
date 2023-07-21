@@ -1149,7 +1149,7 @@ CONTAINS
       integer :: ims, ime, jms, jme, its, ite
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
-      REAL, DIMENSION(15:15, 15:15, 1:1),save :: saved_wM2_12k
+      REAL, DIMENSION(:,:,:), ALLOCATABLE, save :: saved_wM2_12k
       integer :: saveitime(its:ite, its:ite)
       REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER, DIMENSION(:), ALLOCATABLE, save :: mapping_wrf_ep
@@ -1165,13 +1165,16 @@ CONTAINS
           wM2_12K = 300
           wM2_12K(1) = 0
           saveitime = -1 
-          saved_wM2_12k = 0
+          
           print *, "saveitime", saveitime
           latlongall_length = (ite - its + 1)*(ite - its + 1)
           mapping_length = latlongall_length * num_children
           allocate(xlatall1d(latlongall_length))
           allocate(xlongall1d(latlongall_length))
           allocate(mapping_wrf_ep(mapping_length))
+          allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
+          mapping_wrf_ep = -1
+          saved_wM2_12k = 0
           
           !flatten the 2d arrays
           k = 1
