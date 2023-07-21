@@ -1232,8 +1232,8 @@ CONTAINS
          return
       end if
 
-      print *, "curix", curix, "curiy", curiy, "saveitime", saveitime(curix, curiy)
-      print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping, "curitime", curitime
+      ! print *, "curix", curix, "curiy", curiy, "saveitime", saveitime(curix, curiy)
+      ! print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping, "curitime", curitime
       
       !hourly timestep
       if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then

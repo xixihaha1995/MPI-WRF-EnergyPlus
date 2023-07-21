@@ -267,8 +267,8 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     
     if (!weatherMPIon) {
         printf("Child %d reached collective barrier, all my siblings here, let's end MPI. \n", rank);
-        // MPI_Barrier(MPI_COMM_WORLD);
-        MPI_Barrier(parent_comm);
+        MPI_Barrier(MPI_COMM_WORLD);
+        // MPI_Barrier(parent_comm);
         wasteMPIon = 0;
         int sleeptimeP8S = 1200000;
         usleep(sleeptimeP8S*100);
