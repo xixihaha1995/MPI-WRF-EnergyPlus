@@ -1232,19 +1232,19 @@ CONTAINS
          return
       end if
 
-
+      print *, "curix", curix, "curiy", curiy, "saveitime", saveitime(curix, curiy)
       print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping, "curitime", curitime
-      print *, "curix", curix, "curiy", curiy
-
-
+      
       !hourly timestep
       if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
           ! to communicate with EnergyPlus for updating
           wM2_12K = saved_wM2_12k(curix, curiy, :)
           return
       end if
-
-      saveitime(curix, curiy) = curitime
+      
+      if (saveitime(curix, curiy) /= -886) then
+         saveitime(curix, curiy) = curitime
+      end if
 
       if (curitime > ending_steps - 1) then
           ucm_tag = 886
