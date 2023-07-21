@@ -1150,9 +1150,9 @@ CONTAINS
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
       REAL, DIMENSION(:,:,:), ALLOCATABLE, save :: saved_wM2_12k
-      integer,save :: saveitime(its:ite, its:ite)
       REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER, DIMENSION(:), ALLOCATABLE, save :: mapping_wrf_ep
+      INTEGER, DIMENSION(:,:), ALLOCATABLE, SAVE :: saveitime
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
@@ -1164,17 +1164,17 @@ CONTAINS
           spawned = .true.
           wM2_12K = 300
           wM2_12K(1) = 0
-          saveitime = -1 
-          
-          print *, "saveitime", saveitime
+          allocate(saveitime(its:ite, its:ite))
           latlongall_length = (ite - its + 1)*(ite - its + 1)
           mapping_length = latlongall_length * num_children
           allocate(xlatall1d(latlongall_length))
           allocate(xlongall1d(latlongall_length))
           allocate(mapping_wrf_ep(mapping_length))
           allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
+          saveitime = -1 
           mapping_wrf_ep = -1
           saved_wM2_12k = 0
+          print *, "saveitime", saveitime
           
           !flatten the 2d arrays
           k = 1
