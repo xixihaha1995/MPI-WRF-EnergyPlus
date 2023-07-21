@@ -1833,8 +1833,7 @@ CONTAINS
                its, ite, ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3 !it's currently averaged by bld footprint. And divided by three floors.
-               print *, "INF waste heat? wM2_12K", wM2_12K, "bs_u(1, iurb) * bs_u(2, iurb)", bs_u(1, iurb) * bs_u(2, iurb)
-               print *, "mean_recv_waste_w", mean_recv_waste_w
+
                if (replaced) then 
                   ! override the first 3 values of sflev1D with mean_recv_waste_w
                   ! override the first 12 values of twb1D with wM2_12K
@@ -1845,6 +1844,9 @@ CONTAINS
                   ! do wrfFlrIdx = 1, 3
                   !    twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
                   ! end do
+                  print *, "INF waste heat? wM2_12K", wM2_12K, "bs_u(1, iurb) * bs_u(2, iurb)", bs_u(1, iurb) * bs_u(2, iurb)
+                  print *, "mean_recv_waste_w", mean_recv_waste_w
+                  
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                else
