@@ -16,6 +16,10 @@ ln -sf ../../../WPS/met_em.d01*.*.
 - WRF calling = 1 (get all the mappings, save the 3D-WRF-Mapping-EP variable into spawn_children)
 - WRF calling = 1 (curXlat, curXlong) > call necessary > get corresponding response 
 (for each timestep, IDF callback functions will and must be called exactly once.)
+- Deploy on cheyenne.ucar.edu
+    a. 24 hours HRRR
+    b. 100 by 100 innermost domain
+    c. (optional) parallel computing WRF with 4 * 4 = 16 processors.
 
 ### notes
 1. currently, building waste heat is normalized by conditioned building footprint. And divided by three floors.
