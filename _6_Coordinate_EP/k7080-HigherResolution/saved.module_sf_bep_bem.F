@@ -1245,12 +1245,6 @@ CONTAINS
       if (curitime > ending_steps - 1) then
           ucm_tag = 886
           turnMPIon = .false.
-          print *, "WRF (Parent(s)) ending messsage 886 sent, &
-          &to reach collective barrier,MPI about to end, no more inter-communicator calls."
-          call MPI_Barrier(new_comm, ierr)
-          ! call MPI_Comm_free(new_comm, ierr)
-          ! call MPI_Comm_free(parent_comm, ierr)
-          !call MPI_Finalize(ierr)
       else
           ucm_tag = 0
       end if
@@ -1271,6 +1265,14 @@ CONTAINS
       !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
       ! print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
       ! print *, "WRF (Parent(s)) wM2_12K", wM2_12K
+      if (ucm_tag == 886) then
+         print *, "WRF (Parent(s)) ending messsage 886 sent, &
+                 &to reach collective barrier,MPI about to end, no more inter-communicator calls."
+          call MPI_Barrier(new_comm, ierr)
+          ! call MPI_Comm_free(new_comm, ierr)
+          ! call MPI_Comm_free(parent_comm, ierr)
+        !   call MPI_Finalize(ierr)
+      end if
 
   end subroutine spawn_children
 
