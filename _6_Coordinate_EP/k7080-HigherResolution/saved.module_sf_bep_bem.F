@@ -1158,6 +1158,7 @@ CONTAINS
       integer :: i, j, k, map_left_idx, map_right_idx
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
+      print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
       if (spawned .eqv. .false.) then
           spawned = .true.
@@ -1828,11 +1829,10 @@ CONTAINS
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
-               print *, 'if dt vs 7 ?', dt .gt. 7
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                its, ite, ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
-               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3
+               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) !it's currently averaged by bld footprint.
                print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)

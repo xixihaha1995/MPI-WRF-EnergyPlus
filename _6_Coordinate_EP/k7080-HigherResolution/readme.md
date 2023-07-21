@@ -16,3 +16,7 @@ ln -sf ../../../WPS/met_em.d01*.*.
 - WRF calling = 1 (get all the mappings, save the 3D-WRF-Mapping-EP variable into spawn_children)
 - WRF calling = 1 (curXlat, curXlong) > call necessary > get corresponding response 
 (for each timestep, IDF callback functions will and must be called exactly once.)
+
+### notes
+1. currently, building waste heat is normalized by conditioned building footprint.
+2. ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0).
