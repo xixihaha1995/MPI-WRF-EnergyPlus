@@ -262,7 +262,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     // }
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
-    printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W)",
+    printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W)\n",
            rank, data[0], data[1]);
     
     if (!weatherMPIon) {

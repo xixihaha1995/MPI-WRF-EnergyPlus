@@ -1158,7 +1158,7 @@ CONTAINS
       integer :: i, j, k, map_left_idx, map_right_idx
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
-      print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
+      ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
       if (spawned .eqv. .false.) then
           spawned = .true.
@@ -1260,13 +1260,14 @@ CONTAINS
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
           end if
       end do
-      print *, "received_data(:, 2)", received_data(:, 2)
-      print *, "received_data(:, 1)", received_data(:, 1)
-      wM2_12K(1) = sum(received_data(:, 2)) / num_children /sum (received_data(:, 1))
+      print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
+      print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
+      wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
+      print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
       !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
-      print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
-      print *, "WRF (Parent(s)) wM2_12K", wM2_12K
+      ! print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
+      ! print *, "WRF (Parent(s)) wM2_12K", wM2_12K
 
   end subroutine spawn_children
 
@@ -1839,9 +1840,9 @@ CONTAINS
                if (replaced) then 
                   ! override the first 3 values of sflev1D with mean_recv_waste_w
                   ! override the first 12 values of twb1D with wM2_12K
-                  print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
-                  print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
-                  print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+                  ! print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
+                  ! print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
+                  ! print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                   sflev1D(1:3) = mean_recv_waste_w
                   ! do wrfFlrIdx = 1, 3
                   !    twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
