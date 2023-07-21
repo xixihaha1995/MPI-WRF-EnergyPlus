@@ -1165,6 +1165,7 @@ CONTAINS
           wM2_12K = 300
           wM2_12K(1) = 0
           saveitime = -1 
+          saved_wM2_12k = 0
           print *, "saveitime", saveitime
           latlongall_length = (ite - its + 1)*(ite - its + 1)
           mapping_length = latlongall_length * num_children
@@ -1261,6 +1262,7 @@ CONTAINS
       print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
       print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
+      saved_wM2_12k(curix, curiy, :) = wM2_12K
       print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
       !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
