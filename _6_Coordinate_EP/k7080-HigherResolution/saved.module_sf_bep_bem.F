@@ -1142,7 +1142,7 @@ CONTAINS
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., turnMPIon = .true., replaced
+      logical :: initedMPI, spawned = .false., replaced
       character(len=50) :: command
   !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
@@ -1226,12 +1226,14 @@ CONTAINS
           replaced = .true.
       end if
 
+      if (saveitime(curix, curiy) == -886) then
+         print *,"WRF no more MPI calling for curix, cuiy, curibui, curitime", curix, curiy, curibui, curitime
+         return
+      end if
+
+
       print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping
 
-      if (turnMPIon .eqv. .false.) then
-          !print *, "turnMPIon is false, no more MPI calls"
-              return
-      end if
 
       !hourly timestep
       if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
@@ -1243,8 +1245,8 @@ CONTAINS
       saveitime(curix, curiy) = curitime
 
       if (curitime > ending_steps - 1) then
-          ucm_tag = 886
-          turnMPIon = .false.
+          ucm_tag = -886
+          saveitime(curix, curiy) = -886
       else
           ucm_tag = 0
       end if
@@ -1265,14 +1267,14 @@ CONTAINS
       !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
       ! print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
       ! print *, "WRF (Parent(s)) wM2_12K", wM2_12K
-      if (ucm_tag == 886) then
-         print *, "WRF (Parent(s)) ending messsage 886 sent, &
-                 &to reach collective barrier,MPI about to end, no more inter-communicator calls."
-          call MPI_Barrier(new_comm, ierr)
-          ! call MPI_Comm_free(new_comm, ierr)
-          ! call MPI_Comm_free(parent_comm, ierr)
-        !   call MPI_Finalize(ierr)
-      end if
+      ! if (ucm_tag == 886) then
+      !    print *, "WRF (Parent(s)) ending messsage 886 sent, &
+      !            &to reach collective barrier,MPI about to end, no more inter-communicator calls."
+      !     call MPI_Barrier(new_comm, ierr)
+      !     ! call MPI_Comm_free(new_comm, ierr)
+      !     ! call MPI_Comm_free(parent_comm, ierr)
+      !   !   call MPI_Finalize(ierr)
+      ! end if
 
   end subroutine spawn_children
 

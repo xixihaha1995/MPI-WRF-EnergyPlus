@@ -177,9 +177,9 @@ void overwriteEpWeather(EnergyPlusState state) {
     }
     // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    if (status.MPI_TAG == 886)
+    if (status.MPI_TAG == -886)
     {
-        printf("EnergyPlus(BEMs):%d received 'ending messsage 886', "
+        printf("EnergyPlus(BEMs):%d received 'ending messsage -886', "
                "to reach collective barrier, EP wait WRF to finalize, then EP free MPI_Finalize().\n"
                "Then no more MPI at all on both sides.", rank);
         weatherMPIon = 0;
@@ -267,9 +267,8 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     
     if (!weatherMPIon) {
         printf("Child %d reached collective barrier, all my siblings here, let's end MPI. \n", rank);
-        MPI_Barrier(parent_comm);
+        MPI_Barrier(MPI_COMM_WORLD);
         wasteMPIon = 0;
-        // sleep 5 seconds
         int sleeptimeP8S = 800000;
         usleep(sleeptimeP8S*100);
         MPI_Finalize();
