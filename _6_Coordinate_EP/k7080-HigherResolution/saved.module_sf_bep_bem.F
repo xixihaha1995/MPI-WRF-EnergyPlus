@@ -1149,7 +1149,7 @@ CONTAINS
       integer :: ims, ime, jms, jme, its, ite
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
-      REAL, DIMENSION(its:ite, its:ite, 1:wrfNeedLen),save :: saved_wM2_12k
+      REAL, DIMENSION(15:15, 15:15, 1:1),save :: saved_wM2_12k
       integer :: saveitime(its:ite, its:ite)
       REAL, DIMENSION(:), ALLOCATABLE :: xlatall1d, xlongall1d
       INTEGER, DIMENSION(:), ALLOCATABLE, save :: mapping_wrf_ep
