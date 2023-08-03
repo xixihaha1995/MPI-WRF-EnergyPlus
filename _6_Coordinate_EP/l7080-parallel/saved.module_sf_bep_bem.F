@@ -1844,7 +1844,7 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-         if (0.7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
+         if (7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                its, ite, ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
