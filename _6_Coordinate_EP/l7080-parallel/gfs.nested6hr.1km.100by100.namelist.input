@@ -10,7 +10,7 @@
  end_year                            = 2022, 2022,
  end_month                           = 07,   07,
  end_day                             = 02,   02,
- end_hour                            = 23,   23,
+ end_hour                            = 06,   06,
  interval_seconds                    = 21600
  input_from_file                     = .true.,.true.,
  history_interval                    = 60,  60, 
