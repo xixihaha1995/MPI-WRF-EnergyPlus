@@ -33,7 +33,7 @@
  e_vert                              = 45,45,
  dzstretch_s                         = 1.1
  p_top_requested                     = 5000,
- num_metgrid_levels                  = 41,
+ num_metgrid_levels                  = 34,
  num_metgrid_soil_levels             = 4,
  dx                                  = 3000,1000,
  dy                                  = 3000,1000,
