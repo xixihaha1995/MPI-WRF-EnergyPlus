@@ -1174,7 +1174,7 @@ CONTAINS
           saveitime = -1 
           mapping_wrf_ep = -1
           saved_wM2_12k = 0
-          print *, "saveitime", saveitime
+         !  print *, "saveitime", saveitime
           
           !flatten the 2d arrays
           k = 1
@@ -1185,10 +1185,10 @@ CONTAINS
               k = k + 1
           end do
           end do
-          print *, "curitime", curitime
-          print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
-          print *, "xlongall1d", xlongall1d
-          print *, "xlatall1d", xlatall1d
+         !  print *, "curitime", curitime
+         !  print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
+         !  print *, "xlongall1d", xlongall1d
+         !  print *, "xlatall1d", xlatall1d
 
           call MPI_Initialized(initedMPI, ierr)
           if (.not. initedMPI) then
@@ -1198,7 +1198,7 @@ CONTAINS
 
           call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
           call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-          !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
+          print *, "WRF rank ID", rank, "its, ite", its, ite,"ims, ime", ims, ime, "jms, jme", jms, jme
 
           call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
           command = "./child.exe"
@@ -1211,7 +1211,7 @@ CONTAINS
           ! !each building IDF centroid.
           call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
 
-          print *, "mapping_wrf_ep", mapping_wrf_ep
+          print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
 
       end if
 
