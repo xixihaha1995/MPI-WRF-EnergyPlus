@@ -9,7 +9,7 @@
 #include <EnergyPlus/api/func.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define INNERMOST_POINTS 15
+#define INNERMOST_POINTS 26
 #define NBR_IDF 2
 
 typedef struct {
