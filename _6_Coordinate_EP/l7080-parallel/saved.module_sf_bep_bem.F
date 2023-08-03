@@ -1199,7 +1199,6 @@ CONTAINS
           call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
           call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
           print *, "WRF rank ID", rank, "its, ite", its, ite,"ims, ime", ims, ime, "jms, jme", jms, jme
-
           call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
           command = "./child.exe"
           call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
@@ -1209,6 +1208,7 @@ CONTAINS
           call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
           ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
           ! !each building IDF centroid.
+          print *, "WRF rank ID", rank, "sent xlatall1d, xlongall1d to EnergyPlus"
           call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
 
           print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep

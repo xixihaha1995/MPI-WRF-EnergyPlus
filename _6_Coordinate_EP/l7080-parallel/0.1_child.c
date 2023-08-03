@@ -298,6 +298,7 @@ void receiveLongLat(void) {
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
         MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    printf ("Child %d received info from parent %d\n", rank, status.MPI_SOURCE);
     // print the received latlongalls
     // for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
     //     // print the received data with higheset precision
