@@ -1144,7 +1144,7 @@ CONTAINS
       real :: dt, xlat, xlong
       logical :: initedMPI, spawned = .false., replaced
       character(len=50) :: command
-   !   output variables
+  !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
       integer :: ims, ime, jms, jme, its, ite
       REAL, DIMENSION(ims:ime, jms:jme), &
@@ -1161,57 +1161,57 @@ CONTAINS
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
       if (spawned .eqv. .false.) then
-            spawned = .true.
-            wM2_12K = 300
-            wM2_12K(1) = 0
-            allocate(saveitime(its:ite, its:ite))
-            latlongall_length = (ite - its + 1)*(ite - its + 1)
-            mapping_length = latlongall_length * num_children
-            allocate(xlatall1d(latlongall_length))
-            allocate(xlongall1d(latlongall_length))
-            allocate(mapping_wrf_ep(mapping_length))
-            allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
-            saveitime = -1 
-            mapping_wrf_ep = -1
-            saved_wM2_12k = 0
-            print *, "saveitime", saveitime
-            
-            !flatten the 2d arrays
-            k = 1
-            do i = its, ite
-            do j = its, ite
-               xlatall1d(k) = xlatall(i, j)
-               xlongall1d(k) = xlongall(i, j)
-               k = k + 1
-            end do
-            end do
-            print *, "curitime", curitime
-            print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
-            print *, "xlongall1d", xlongall1d
-            print *, "xlatall1d", xlatall1d
+          spawned = .true.
+          wM2_12K = 300
+          wM2_12K(1) = 0
+          allocate(saveitime(its:ite, its:ite))
+          latlongall_length = (ite - its + 1)*(ite - its + 1)
+          mapping_length = latlongall_length * num_children
+          allocate(xlatall1d(latlongall_length))
+          allocate(xlongall1d(latlongall_length))
+          allocate(mapping_wrf_ep(mapping_length))
+          allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
+          saveitime = -1 
+          mapping_wrf_ep = -1
+          saved_wM2_12k = 0
+          print *, "saveitime", saveitime
+          
+          !flatten the 2d arrays
+          k = 1
+          do i = its, ite
+          do j = its, ite
+              xlatall1d(k) = xlatall(i, j)
+              xlongall1d(k) = xlongall(i, j)
+              k = k + 1
+          end do
+          end do
+          print *, "curitime", curitime
+          print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
+          print *, "xlongall1d", xlongall1d
+          print *, "xlatall1d", xlatall1d
 
-            call MPI_Initialized(initedMPI, ierr)
-            if (.not. initedMPI) then
-               print *, "MPI not initialized, initializing"
-               call MPI_Init(ierr)
-            end if
+          call MPI_Initialized(initedMPI, ierr)
+          if (.not. initedMPI) then
+              print *, "MPI not initialized, initializing"
+              call MPI_Init(ierr)
+          end if
 
-            call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
-            call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-            !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
+          call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+          call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
+          !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
 
-            call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
-            command = "./child.exe"
-            call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
+          call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
+          command = "./child.exe"
+          call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
                   0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
-            !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
-            call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
-            call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
-            ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
-            ! !each building IDF centroid.
-            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
+          !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
+          call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
+          call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
+          ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
+          ! !each building IDF centroid.
+          call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
 
-            print *, "mapping_wrf_ep", mapping_wrf_ep
+          print *, "mapping_wrf_ep", mapping_wrf_ep
 
       end if
 
@@ -1220,10 +1220,10 @@ CONTAINS
       one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
 
       if (.not. any(one_grid_mapping .gt. 0)) then
-            replaced = .false.
-            return
+          replaced = .false.
+          return
       else
-            replaced = .true.
+          replaced = .true.
       end if
 
       if (saveitime(curix, curiy) == -886) then
@@ -1237,9 +1237,9 @@ CONTAINS
       
       !hourly timestep
       if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
-            ! to communicate with EnergyPlus for updating
-            wM2_12K = saved_wM2_12k(curix, curiy, :)
-            return
+          ! to communicate with EnergyPlus for updating
+          wM2_12K = saved_wM2_12k(curix, curiy, :)
+          return
       end if
 
       if (saveitime(curix, curiy) /= -886) then
@@ -1247,19 +1247,19 @@ CONTAINS
       end if
 
       if (curitime > ending_steps - 1) then
-            ucm_tag = 886
-            saveitime(curix, curiy) = -886
-            print *,"assign -886 to curix curiy", curix, curiy
+          ucm_tag = 886
+          saveitime(curix, curiy) = -886
+          print *,"assign -886 to curix curiy", curix, curiy
       else
-            ucm_tag = 0
+          ucm_tag = 0
       end if
       ! set all received_data to 0
       received_data = 0
       do child_idx = 1, num_children
-            if (one_grid_mapping(child_idx) .gt. 0) then
-            call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+          if (one_grid_mapping(child_idx) .gt. 0) then
+          call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
-            end if
+          end if
       end do
       print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
       print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
@@ -1282,7 +1282,7 @@ CONTAINS
       !   !   call MPI_Finalize(ierr)
       ! end if
 
-   end subroutine spawn_children
+  end subroutine spawn_children
 
 
 ! ===6=8===============================================================72
