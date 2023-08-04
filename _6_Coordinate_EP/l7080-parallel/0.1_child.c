@@ -11,8 +11,11 @@
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 26
 #define NBR_IDF 2
+#define NBR_WRF 4
+#define LAT_TAG 1
+#define LONG_TAG 2
 
-int weatherMPIon = 1, wasteMPIon = 1, toSendMap = 4;
+int weatherMPIon = 1, wasteMPIon = 1, toSendMap = NBR_WRF;
 int IDF_Coupling = 1; //0, offline; 1, waste; 2, waste + surface;
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
@@ -68,8 +71,9 @@ typedef struct {
 
 //performance_length are area, waste, and 12 surface temperatures, which are 14
 float msg_arr[3] = {-1, -1, -1};
-float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
-int mappings[INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
+float longall[NBR_WRF][INNERMOST_POINTS * INNERMOST_POINTS], latall[NBR_WRF][INNERMOST_POINTS * INNERMOST_POINTS];
+float tmp_longall[INNERMOST_POINTS * INNERMOST_POINTS], tmp_latall[INNERMOST_POINTS * INNERMOST_POINTS];
+int mappings[NBR_WRF][INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
 
 Building buildings[NBR_IDF]; 
 
@@ -280,24 +284,37 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 int closetGridIndex(float bldlat, float bldlong){
     // go through all grids latall, longall, find the closest grid
     double minDist = 1000000000;
-    int minIndex = -1;
-    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
-        double dist = (bldlat - latall[i]) * (bldlat - latall[i]) + (bldlong - longall[i]) * (bldlong - longall[i]);
-        if (dist < minDist) {
-            minDist = dist;
-            minIndex = i;
+    int minIndex = -1, minWRFIdx = -1;
+    for (int j = 0; j < NBR_WRF; j++) {
+        for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
+            double dist = (bldlat - latall[j][i]) * (bldlat - latall[j][i]) + (bldlong - longall[j][i]) * (bldlong - longall[j][i]);
+            if (dist < minDist) {
+                minDist = dist;
+                minIndex = i;
+                minWRFIdx = j;
+            }
         }
+
     }
-    return minIndex;
+
+    return minIndex, minWRFIdx;
 }
 
 void receiveLongLat(void) {
     // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
-    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
-        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
-        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+
+    while (toSendMap > 0) {
+        MPI_Recv(&tmp_longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
+            MPI_ANY_SOURCE, LATALL_TAG, parent_comm, &status);
+        MPI_Recv(&tmp_latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
+            MPI_ANY_SOURCE, LONGALL_TAG, parent_comm, &status);
+        latall[status.MPI_SOURCE] = tmp_latall;
+        longall[status.MPI_SOURCE] = tmp_longall;
+        toSendMap--;
+    }
+
+
     
     // print the received latlongalls
     // for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
@@ -312,10 +329,12 @@ void receiveLongLat(void) {
     // Skip the first line (header) in centroid.csv
     char line[100];
     fgets(line, sizeof(line), file);
-
-    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
-        mappings[i] = -1;
+    for (int j = 0; j < NBR_WRF; j++) {
+        for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
+            mappings[j][i] = -1;
+        }
     }
+
 
     int id;
     double lat, lon;
@@ -324,16 +343,22 @@ void receiveLongLat(void) {
         buildings[i].id = id;
         buildings[i].lat = lat;
         buildings[i].lon = lon;
-        int gridIndex = closetGridIndex(lat, lon);
+        int gridIndex, wrfIndex;
+        gridIndex, wrfIndex = closetGridIndex(lat, lon);
         printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
             "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
-            id, lat, lon, status.MPI_SOURCE,gridIndex, latall[gridIndex], longall[gridIndex]);
-        mappings[gridIndex * NBR_IDF + i] = 1;
+            id, lat, lon, wrfIndex, gridIndex, latall[wrfIndex][gridIndex], longall[wrfIndex][gridIndex]);
+        mappings[wrfIndex][gridIndex * NBR_IDF + i] = 1;
     }
     fclose(file);
 
-    MPI_Send(&mappings, INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
-    MPI_Send(&IDF_Coupling, 1, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
+    for (int j = 0; j < NBR_WRF; j++) {
+        // MPI_Send(&mappings, INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
+        // MPI_Send(&IDF_Coupling, 1, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
+        MPI_Send(&mappings[j], INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, j, 0, parent_comm);
+        MPI_Send(&IDF_Coupling, 1, MPI_INT, j, 0, parent_comm);
+    }
+
     // for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
     //     for (int j = 0; j < NBR_IDF; j++) {
     //         printf("%d ", mappings[i * NBR_IDF + j]);
@@ -355,10 +380,7 @@ int main(int argc, char** argv) {
     MPI_Get_processor_name(processor_name, &namelen);
     printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
     if (rank == 0) {
-        while (toSendMap > 0) {
-            receiveLongLat();
-            toSendMap--;
-        }
+        receiveLongLat();
     }
 
     char output_path[MPI_MAX_PROCESSOR_NAME];
