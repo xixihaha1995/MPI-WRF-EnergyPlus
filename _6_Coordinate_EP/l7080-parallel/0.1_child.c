@@ -396,6 +396,7 @@ int main(int argc, char** argv) {
     // requestSur(state, uwyo1);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
+    printf("where am I? %s\n", curpath);
     const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/ep_temp" : ".";
     // Choose the appropriate folder based on IDF_Coupling value
     printf("base_path = %s\n", base_path);
