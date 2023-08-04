@@ -10,8 +10,8 @@
 
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 26
-#define NBR_IDF 3
-#define NBR_WRF 4
+#define NBR_IDF 2
+#define NBR_WRF 2
 #define LAT_TAG 1
 #define LONG_TAG 2
 
@@ -311,7 +311,7 @@ void receiveLongLat(void) {
             MPI_ANY_SOURCE, LONG_TAG, parent_comm, &status);
         memcpy(latall[status.MPI_SOURCE], tmp_latall, INNERMOST_POINTS * INNERMOST_POINTS * sizeof(float));
         memcpy(longall[status.MPI_SOURCE], tmp_longall, INNERMOST_POINTS * INNERMOST_POINTS * sizeof(float));
-        printf("Child %d received singnal from WRF%d\n",rank, status.MPI_SOURCE);
+        // printf("Child %d received singnal from WRF%d\n",rank, status.MPI_SOURCE);
         toSendMap--;
     }
 
@@ -358,7 +358,7 @@ void receiveLongLat(void) {
         // MPI_Send(&IDF_Coupling, 1, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
         MPI_Send(&mappings[j], INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, j, 0, parent_comm);
         MPI_Send(&IDF_Coupling, 1, MPI_INT, j, 0, parent_comm);
-        printf("Child %d sent mappings to WRF%d\n", rank, j);
+        // printf("Child %d sent mappings to WRF%d\n", rank, j);
     }
 
     // for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
