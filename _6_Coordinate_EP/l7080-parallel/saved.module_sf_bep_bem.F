@@ -1202,13 +1202,13 @@ CONTAINS
               print *, "MPI not initialized, initializing"
               call MPI_Init(ierr)
           end if
-          print *, "WRF rank ID", rank, "its, ite", its, ite,"ims, ime", ims, ime, "jms, jme", jms, jme
+         !  print *, "WRF rank ID", rank, "its, ite", its, ite,"ims, ime", ims, ime, "jms, jme", jms, jme
           call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
           command = "./child.exe"
           call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
                   0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
           !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
-          print *, "WRF rank ID", rank, "to send xlatall1d, xlongall1d to EnergyPlus"
+         !  print *, "WRF rank ID", rank, "to send xlatall1d, xlongall1d to EnergyPlus"
           call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 1, new_comm, ierr)
           call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 2, new_comm, ierr)
           ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
@@ -1217,7 +1217,7 @@ CONTAINS
           call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
           call MPI_Recv(IDF_Coupling, 1, MPI_INTEGER, 0, 0, new_comm, status, ierr)
 
-          print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
+         !  print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
 
       end if
 
