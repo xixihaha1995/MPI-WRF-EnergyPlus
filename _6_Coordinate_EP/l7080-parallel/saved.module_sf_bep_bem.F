@@ -1132,12 +1132,12 @@ CONTAINS
       implicit none
       include 'mpif.h'
       integer, parameter ::  nbr_steps_hr = 600 !540 is for 6.67s, 600 is for 6 s.
-      integer :: ierr, rank, num_procs, parent_comm, child_idx
+      integer :: ierr, num_procs, parent_comm, child_idx
       integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-      integer, save :: new_comm
+      integer, save :: new_comm,rank,ucm_tag = 0
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
-      integer ::  ending_steps = (5 ) * nbr_steps_hr, ucm_tag = 0
+      integer ::  ending_steps = (5 ) * nbr_steps_hr
       integer, parameter ::  num_children = 3, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       !performance_length are area, waste, and 12 surface temperatures, which are 14
       !wrfNeedLen are waste/m2, and 12 surface temperatures
