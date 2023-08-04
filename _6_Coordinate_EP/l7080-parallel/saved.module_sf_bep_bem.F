@@ -1266,7 +1266,7 @@ CONTAINS
             if (ucm_tag == 886 ) then
                if (rank == 0) then
                   call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
-                     received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, 
+                     received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, &
                      MPI_ANY_TAG, new_comm, status, ierr)
                end if
             else 
