@@ -384,7 +384,7 @@ int main(int argc, char** argv) {
     if (rank == 0) {
         receiveLongLat();
     }
-
+    printf("Child %d is processing IDF settings\n", rank);
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
