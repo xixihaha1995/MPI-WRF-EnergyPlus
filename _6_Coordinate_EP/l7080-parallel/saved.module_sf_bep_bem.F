@@ -1604,7 +1604,7 @@ CONTAINS
       real sfr_avb(ndm, nbui_max)
       real :: mean_recv_waste_w
       real, dimension(3) :: wrf_weather
-      real, dimension(1) :: wM2_12K;
+      real, dimension(13) :: wM2_12K;
       integer :: replaced !0, offline; 1, waste; 2, waste + surface;
       integer wrfFlrIdx, ims, ime, jms, jme, its, ite
 
