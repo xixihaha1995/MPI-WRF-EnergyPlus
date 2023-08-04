@@ -1860,7 +1860,7 @@ CONTAINS
                   print *, "mean_recv_waste_w", mean_recv_waste_w
                   sflev1D(1:3) = mean_recv_waste_w
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
-                  if (replaced == 2)
+                  if (replaced == 2) then
                      do wrfFlrIdx = 1, 3
                         twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
                      end do
