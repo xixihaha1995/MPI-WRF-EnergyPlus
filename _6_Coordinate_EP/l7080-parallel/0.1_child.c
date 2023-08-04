@@ -31,6 +31,13 @@ int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
 int midLen = sizeof(midNames) / sizeof(midNames[0]);
 Real64* tempMidVal;
 
+typedef struct {
+    float footPrintM2;
+    int bot[4];
+    int* mid;
+    int top[4];
+} GeoUWyo;
+
 GeoUWyo uwyo1 = {
     .footPrintM2 = 162.15,
     .bot = {8, 20, 26, 14},
@@ -45,12 +52,7 @@ typedef struct {
     double lon;
 } Building;
 
-typedef struct {
-    float footPrintM2;
-    int bot[4];
-    int* mid;
-    int top[4];
-} GeoUWyo;
+
 
 typedef struct {
     int botHandle[4];
