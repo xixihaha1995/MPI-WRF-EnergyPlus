@@ -309,8 +309,8 @@ void receiveLongLat(void) {
             MPI_ANY_SOURCE, LAT_TAG, parent_comm, &status);
         MPI_Recv(&tmp_latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
             MPI_ANY_SOURCE, LONG_TAG, parent_comm, &status);
-        latall[status.MPI_SOURCE] = tmp_latall;
-        longall[status.MPI_SOURCE] = tmp_longall;
+        memcpy(latall[status.MPI_SOURCE], tmp_latall, INNERMOST_POINTS * INNERMOST_POINTS * sizeof(float));
+        memcpy(longall[status.MPI_SOURCE], tmp_longall, INNERMOST_POINTS * INNERMOST_POINTS * sizeof(float));
         toSendMap--;
     }
 
