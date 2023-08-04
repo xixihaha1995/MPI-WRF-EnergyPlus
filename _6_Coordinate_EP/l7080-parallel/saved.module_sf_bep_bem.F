@@ -1263,8 +1263,16 @@ CONTAINS
       received_data = 0
       do child_idx = 1, num_children
           if (one_grid_mapping(child_idx) .gt. 0) then
-          call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+            if (ucm_tag == 886 ) then
+               if (rank == 0) then
+                  call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+                     received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, 
+                     MPI_ANY_TAG, new_comm, status, ierr)
+               end if
+            else 
+               call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
+            end if
           end if
       end do
       print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
