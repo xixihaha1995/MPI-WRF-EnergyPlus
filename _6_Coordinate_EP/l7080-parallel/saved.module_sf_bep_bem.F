@@ -1163,6 +1163,9 @@ CONTAINS
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
+      call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+      call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
+      print *, "rank", rank, "num_procs", num_procs
 
       if (spawned .eqv. .false.) then
           spawned = .true.
@@ -1199,9 +1202,6 @@ CONTAINS
               print *, "MPI not initialized, initializing"
               call MPI_Init(ierr)
           end if
-
-          call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
-          call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
           print *, "WRF rank ID", rank, "its, ite", its, ite,"ims, ime", ims, ime, "jms, jme", jms, jme
           call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
           command = "./child.exe"
