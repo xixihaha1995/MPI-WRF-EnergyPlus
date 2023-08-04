@@ -402,6 +402,7 @@ int main(int argc, char** argv) {
             (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
             rank + 1);
     sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf", rank+1);
+    printf("output_path = %s\n", output_path);
 
     char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
