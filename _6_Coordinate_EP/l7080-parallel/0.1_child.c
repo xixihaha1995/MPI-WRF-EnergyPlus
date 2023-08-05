@@ -9,14 +9,30 @@
 #include <EnergyPlus/api/func.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define INNERMOST_POINTS 15
+#define INNERMOST_POINTS 26
 #define NBR_IDF 3
+#define NBR_WRF 2
+#define LAT_TAG 1
+#define LONG_TAG 2
 
-typedef struct {
-    int id;
-    double lat;
-    double lon;
-} Building;
+int weatherMPIon = 1, wasteMPIon = 1, toSendMap = NBR_WRF;
+int IDF_Coupling = 1; //0, offline; 1, waste; 2, waste + surface;
+int handlesRetrieved = 0, weatherHandleRetrieved = 0;
+int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
+int rank = -1, performanc_length = 14; 
+float footprintm2[38] = {
+    162.15, 2513.40, 37.75, 355.15, 1049.87, 415.98,
+    2608.08, 115.65, 1793.84, 2785.14,958.38,2745.55,
+    1292.35,347.83,2464.88,9048.44,548.43,185.96,
+    828.75,91.38,107.44,90.02,181.64,1698.19,
+    4090.41,24400.54,158.22,4229.28,92.32,108.30,
+    3781.44,123.20,3298.50,257.05,841.63,80.27,
+    1808.91,889.49
+};
+
+int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
+int midLen = sizeof(midNames) / sizeof(midNames[0]);
+Real64* tempMidVal;
 
 typedef struct {
     float footPrintM2;
@@ -24,6 +40,22 @@ typedef struct {
     int* mid;
     int top[4];
 } GeoUWyo;
+
+GeoUWyo uwyo1 = {
+    .footPrintM2 = 162.15,
+    .bot = {8, 20, 26, 14},
+    .mid = midNames,
+    .top = {98, 110, 116, 104}
+};
+
+
+typedef struct {
+    int id;
+    double lat;
+    double lon;
+} Building;
+
+
 
 typedef struct {
     int botHandle[4];
@@ -37,47 +69,19 @@ typedef struct {
     Real64 topVal[4];
 } SurfaceValues;
 
-int handlesRetrieved = 0, weatherHandleRetrieved = 0;
-int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
-int rank = -1, performanc_length =2;
+//performance_length are area, waste, and 12 surface temperatures, which are 14
 float msg_arr[3] = {-1, -1, -1};
-float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
-int mappings[INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
+float longall[NBR_WRF][INNERMOST_POINTS * INNERMOST_POINTS], latall[NBR_WRF][INNERMOST_POINTS * INNERMOST_POINTS];
+float tmp_longall[INNERMOST_POINTS * INNERMOST_POINTS], tmp_latall[INNERMOST_POINTS * INNERMOST_POINTS];
+int mappings[NBR_WRF][INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
 
 Building buildings[NBR_IDF]; 
-float footprintm2[38] = {
-    162.15, 2513.40, 37.75, 355.15, 1049.87, 415.98,
-    2608.08, 115.65, 1793.84, 2785.14,958.38,2745.55,
-    1292.35,347.83,2464.88,9048.44,548.43,185.96,
-    828.75,91.38,107.44,90.02,181.64,1698.19,
-    4090.41,24400.54,158.22,4229.28,92.32,108.30,
-    3781.44,123.20,3298.50,257.05,841.63,80.27,
-    1808.91,889.49
-};
-int weatherMPIon = 1, wasteMPIon = 1;
-int isOnline = 1, isMapped = 0;
+
 MPI_Comm parent_comm;
 MPI_Status status;
 SurfaceHandles surHandles;
 SurfaceValues surValues;
 
-
-
-int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
-int midLen = sizeof(midNames) / sizeof(midNames[0]);
-Real64* tempMidVal;
-
-GeoUWyo uwyo1 = {
-    .footPrintM2 = 162.15,
-    .bot = {8, 20, 26, 14},
-    .mid = midNames,
-    .top = {98, 110, 116, 104}
-};
-
-// I'd like add three more functions related with GeoUWyo1 surfaces,
-// one is used to request the surface variables
-// one is used to get surface handle, and check if it is valid
-// one is used to get surface variable value.
 
 void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
     // char surfaceName[100];
@@ -250,10 +254,10 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 
     float data[performanc_length];
     data[0] = footprintm2[rank];
-    if (isOnline)
-        data[1] = (float) simHVAC_W;
-    else
+    if (IDF_Coupling == 0)
         data[1] = -66.0;
+    else
+        data[1] = (float) simHVAC_W;
     // bot 4, mid 4, top 4
     // for (int i = 0; i < 4; i++) {
     //     data[i + 2] = (float) (surValues.botVal[i] + 273.15);
@@ -280,24 +284,39 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 int closetGridIndex(float bldlat, float bldlong){
     // go through all grids latall, longall, find the closest grid
     double minDist = 1000000000;
-    int minIndex = -1;
-    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
-        double dist = (bldlat - latall[i]) * (bldlat - latall[i]) + (bldlong - longall[i]) * (bldlong - longall[i]);
-        if (dist < minDist) {
-            minDist = dist;
-            minIndex = i;
+    int minIndex = -1, minWRFIdx = -1;
+    for (int j = 0; j < NBR_WRF; j++) {
+        for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
+            double dist = (bldlat - latall[j][i]) * (bldlat - latall[j][i]) + (bldlong - longall[j][i]) * (bldlong - longall[j][i]);
+            if (dist < minDist) {
+                minDist = dist;
+                minIndex = i;
+                minWRFIdx = j;
+            }
         }
+
     }
-    return minIndex;
+
+    return minIndex, minWRFIdx;
 }
 
 void receiveLongLat(void) {
     // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
-    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
-        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
-        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+
+    while (toSendMap > 0) {
+        MPI_Recv(&tmp_longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
+            MPI_ANY_SOURCE, LAT_TAG, parent_comm, &status);
+        MPI_Recv(&tmp_latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
+            MPI_ANY_SOURCE, LONG_TAG, parent_comm, &status);
+        memcpy(latall[status.MPI_SOURCE], tmp_latall, INNERMOST_POINTS * INNERMOST_POINTS * sizeof(float));
+        memcpy(longall[status.MPI_SOURCE], tmp_longall, INNERMOST_POINTS * INNERMOST_POINTS * sizeof(float));
+        // printf("Child %d received singnal from WRF%d\n",rank, status.MPI_SOURCE);
+        toSendMap--;
+    }
+
+
+    
     // print the received latlongalls
     // for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
     //     // print the received data with higheset precision
@@ -311,10 +330,12 @@ void receiveLongLat(void) {
     // Skip the first line (header) in centroid.csv
     char line[100];
     fgets(line, sizeof(line), file);
-
-    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
-        mappings[i] = -1;
+    for (int j = 0; j < NBR_WRF; j++) {
+        for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
+            mappings[j][i] = -1;
+        }
     }
+
 
     int id;
     double lat, lon;
@@ -323,14 +344,23 @@ void receiveLongLat(void) {
         buildings[i].id = id;
         buildings[i].lat = lat;
         buildings[i].lon = lon;
-        int gridIndex = closetGridIndex(lat, lon);
+        int gridIndex, wrfIndex;
+        gridIndex, wrfIndex = closetGridIndex(lat, lon);
         printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
-            "is assigned to grid %d, lat = %.14lf, lon = %.14lf\n", id, lat, lon, gridIndex, latall[gridIndex], longall[gridIndex]);
-        mappings[gridIndex * NBR_IDF + i] = 1;
+            "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
+            id, lat, lon, wrfIndex, gridIndex, latall[wrfIndex][gridIndex], longall[wrfIndex][gridIndex]);
+        mappings[wrfIndex][gridIndex * NBR_IDF + i] = 1;
     }
     fclose(file);
 
-    MPI_Send(&mappings, INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, 0, 0, parent_comm);
+    for (int j = 0; j < NBR_WRF; j++) {
+        // MPI_Send(&mappings, INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
+        // MPI_Send(&IDF_Coupling, 1, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
+        MPI_Send(&mappings[j], INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, j, 0, parent_comm);
+        MPI_Send(&IDF_Coupling, 1, MPI_INT, j, 0, parent_comm);
+        // printf("Child %d sent mappings to WRF%d\n", rank, j);
+    }
+
     // for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
     //     for (int j = 0; j < NBR_IDF; j++) {
     //         printf("%d ", mappings[i * NBR_IDF + j]);
@@ -352,14 +382,9 @@ int main(int argc, char** argv) {
     MPI_Get_processor_name(processor_name, &namelen);
     printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
     if (rank == 0) {
-        if (!isMapped) {
-            receiveLongLat();
-            isMapped = 1;
-        }
+        receiveLongLat();
     }
-
-
-
+    printf("Child %d is processing IDF settings\n", rank);
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
@@ -371,19 +396,15 @@ int main(int argc, char** argv) {
     // requestSur(state, uwyo1);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
-    if (strstr(curpath, "glade")) {
-        if (isOnline) 
-             sprintf(output_path, "/glade/scratch/lichenwu/ep_temp/saved_online_ep_trivial_%d", rank + 1);
-        else
-            sprintf(output_path, "/glade/scratch/lichenwu/ep_temp/saved_offline_ep_trivial_%d", rank + 1);
-    } else {
-        if (isOnline) 
-            sprintf(output_path, "./saved_online_ep_trivial_%d", rank + 1);
-        else
-            sprintf(output_path, "./saved_offline_ep_trivial_%d", rank + 1);
-    }
-    
+    printf("where am I? %s\n", curpath);
+    const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/ep_temp" : ".";
+    // Choose the appropriate folder based on IDF_Coupling value
+    printf("base_path = %s\n", base_path);
+    sprintf(output_path, "%s/saved_%s_ep_trivial_%d", base_path,
+            (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
+            rank + 1);
     sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf", rank+1);
+    printf("output_path = %s\n", output_path);
 
     char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
