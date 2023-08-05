@@ -11,7 +11,7 @@
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 26
 #define NBR_IDF 3
-#define NBR_WRF 2
+#define NBR_WRF 4
 #define LAT_TAG 1
 #define LONG_TAG 2
 
