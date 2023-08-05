@@ -1131,20 +1131,23 @@ CONTAINS
       its, ite, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
       implicit none
       include 'mpif.h'
-      integer, parameter ::  nbr_steps_hr = 5400
-      integer :: ierr, rank, num_procs, parent_comm, child_idx
+      integer, parameter ::  nbr_steps_hr = 600 !540 is for 6.67s, 600 is for 6 s.
+      integer :: ierr, num_procs, parent_comm, child_idx
       integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
-      integer, save :: new_comm
+      integer, save :: new_comm,rank,ucm_tag = 0
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
-      integer ::  ending_steps = (5 ) * nbr_steps_hr, ucm_tag = 0
-      integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
+      integer ::  ending_steps = (5 ) * nbr_steps_hr
+      integer, parameter ::  num_children = 2, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
+      !performance_length are area, waste, and 12 surface temperatures, which are 14
+      !wrfNeedLen are waste/m2, and 12 surface temperatures
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., replaced
+      logical :: initedMPI, spawned = .false.
+      integer :: replaced
       character(len=50) :: command
-  !   output variables
+   !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
       integer :: ims, ime, jms, jme, its, ite
       REAL, DIMENSION(ims:ime, jms:jme), &
@@ -1156,62 +1159,65 @@ CONTAINS
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
+      integer :: IDF_Coupling
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
+      call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+      call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
+      print *, "rank", rank, "num_procs", num_procs
 
       if (spawned .eqv. .false.) then
-          spawned = .true.
-          wM2_12K = 300
-          wM2_12K(1) = 0
-          allocate(saveitime(its:ite, its:ite))
-          latlongall_length = (ite - its + 1)*(ite - its + 1)
-          mapping_length = latlongall_length * num_children
-          allocate(xlatall1d(latlongall_length))
-          allocate(xlongall1d(latlongall_length))
-          allocate(mapping_wrf_ep(mapping_length))
-          allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
-          saveitime = -1 
-          mapping_wrf_ep = -1
-          saved_wM2_12k = 0
-          print *, "saveitime", saveitime
-          
-          !flatten the 2d arrays
-          k = 1
-          do i = its, ite
-          do j = its, ite
-              xlatall1d(k) = xlatall(i, j)
-              xlongall1d(k) = xlongall(i, j)
-              k = k + 1
-          end do
-          end do
-          print *, "curitime", curitime
-          print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
-          print *, "xlongall1d", xlongall1d
-          print *, "xlatall1d", xlatall1d
+            spawned = .true.
+            wM2_12K = 300
+            wM2_12K(1) = 0
+            allocate(saveitime(its:ite, its:ite))
+            latlongall_length = (ite - its + 1)*(ite - its + 1)
+            mapping_length = latlongall_length * num_children
+            allocate(xlatall1d(latlongall_length))
+            allocate(xlongall1d(latlongall_length))
+            allocate(mapping_wrf_ep(mapping_length))
+            allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
+            saveitime = -1 
+            mapping_wrf_ep = -1
+            saved_wM2_12k = 0
+         !  print *, "saveitime", saveitime
+            
+            !flatten the 2d arrays
+            k = 1
+            do i = its, ite
+            do j = its, ite
+               xlatall1d(k) = xlatall(i, j)
+               xlongall1d(k) = xlongall(i, j)
+               k = k + 1
+            end do
+            end do
+         !  print *, "curitime", curitime
+         !  print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
+         !  print *, "xlongall1d", xlongall1d
+         !  print *, "xlatall1d", xlatall1d
 
-          call MPI_Initialized(initedMPI, ierr)
-          if (.not. initedMPI) then
-              print *, "MPI not initialized, initializing"
-              call MPI_Init(ierr)
-          end if
-
-          call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
-          call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-          !print *, "MPI_COMM_WORLD", MPI_COMM_WORLD, "num_procs", num_procs, "rank", rank
-
-          call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
-          command = "./child.exe"
-          call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
+            call MPI_Initialized(initedMPI, ierr)
+            if (.not. initedMPI) then
+               print *, "MPI not initialized, initializing"
+               call MPI_Init(ierr)
+            end if
+         !  print *, "WRF rank ID", rank, "its, ite", its, ite,"ims, ime", ims, ime, "jms, jme", jms, jme
+            call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
+            command = "./child.exe"
+            call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
                   0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
-          !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
-          call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
-          call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
-          ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
-          ! !each building IDF centroid.
-          call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
+            !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
+         !  print *, "WRF rank ID", rank, "to send xlatall1d, xlongall1d to EnergyPlus"
+            call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 1, new_comm, ierr)
+            call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 2, new_comm, ierr)
+            ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
+            ! !each building IDF centroid.
+            
+            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
+            call MPI_Recv(IDF_Coupling, 1, MPI_INTEGER, 0, 0, new_comm, status, ierr)
 
-          print *, "mapping_wrf_ep", mapping_wrf_ep
+            print *, "WRF rank ID", rank, "IDF_Coupling", IDF_Coupling
 
       end if
 
@@ -1220,10 +1226,10 @@ CONTAINS
       one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
 
       if (.not. any(one_grid_mapping .gt. 0)) then
-          replaced = .false.
-          return
+            replaced = 0
+            return
       else
-          replaced = .true.
+            replaced = IDF_Coupling
       end if
 
       if (saveitime(curix, curiy) == -886) then
@@ -1237,9 +1243,9 @@ CONTAINS
       
       !hourly timestep
       if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
-          ! to communicate with EnergyPlus for updating
-          wM2_12K = saved_wM2_12k(curix, curiy, :)
-          return
+            ! to communicate with EnergyPlus for updating
+            wM2_12K = saved_wM2_12k(curix, curiy, :)
+            return
       end if
 
       if (saveitime(curix, curiy) /= -886) then
@@ -1247,26 +1253,31 @@ CONTAINS
       end if
 
       if (curitime > ending_steps - 1) then
-          ucm_tag = 886
-          saveitime(curix, curiy) = -886
-          print *,"assign -886 to curix curiy", curix, curiy
+            ucm_tag = 886
+            saveitime(curix, curiy) = -886
+            print *,"assign -886 to curix curiy", curix, curiy
       else
-          ucm_tag = 0
+            ucm_tag = 0
       end if
       ! set all received_data to 0
       received_data = 0
       do child_idx = 1, num_children
-          if (one_grid_mapping(child_idx) .gt. 0) then
-          call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+            if (one_grid_mapping(child_idx) .gt. 0) then
+            if (ucm_tag == 886 ) then
+               if (rank == 0) then
+                  call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+                     received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, &
+                     MPI_ANY_TAG, new_comm, status, ierr)
+               end if
+            else 
+               call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
-          end if
+            end if
+            end if
       end do
       print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
       print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
-      if (wM2_12K(1) < 0) then
-         replaced = .false.
-      end if
       saved_wM2_12k(curix, curiy, :) = wM2_12K
       print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
@@ -1279,10 +1290,10 @@ CONTAINS
       !     call MPI_Barrier(new_comm, ierr)
       !     ! call MPI_Comm_free(new_comm, ierr)
       !     ! call MPI_Comm_free(parent_comm, ierr)
-      !   !   call MPI_Finalize(ierr)
+      !     !call MPI_Finalize(ierr)
       ! end if
 
-  end subroutine spawn_children
+   end subroutine spawn_children
 
 
 ! ===6=8===============================================================72
@@ -1601,8 +1612,8 @@ CONTAINS
       real sfr_avb(ndm, nbui_max)
       real :: mean_recv_waste_w
       real, dimension(3) :: wrf_weather
-      real, dimension(1) :: wM2_12K;
-      logical :: replaced
+      real, dimension(13) :: wM2_12K;
+      integer :: replaced !0, offline; 1, waste; 2, waste + surface;
       integer wrfFlrIdx, ims, ime, jms, jme, its, ite
 
       REAL, DIMENSION(ims:ime, jms:jme), &
@@ -1844,31 +1855,27 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-         if (0.7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
+         if (7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                its, ite, ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3 !it's currently averaged by bld footprint. And divided by three floors.
 
-               if (replaced) then 
-                  ! override the first 3 values of sflev1D with mean_recv_waste_w
-                  ! override the first 12 values of twb1D with wM2_12K
-                  ! print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
-                  ! print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
-                  ! print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
-                  sflev1D(1:3) = mean_recv_waste_w
-                  ! do wrfFlrIdx = 1, 3
-                  !    twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
-                  ! end do
+               if (replaced == 0 ) then 
+                  ! print *, 'offline; one way coupling from WRF -> EP'
+               else 
                   print *, "INF waste heat? wM2_12K", wM2_12K, "bs_u(1, iurb) * bs_u(2, iurb)", bs_u(1, iurb) * bs_u(2, iurb)
                   print *, "mean_recv_waste_w", mean_recv_waste_w
-
+                  sflev1D(1:3) = mean_recv_waste_w
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
-                  print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
-               else
-                  ! print *, 'offline; one way coupling from WRF -> EP'
+                  if (replaced == 2) then
+                     do wrfFlrIdx = 1, 3
+                        twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
+                     end do
+                     print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+                  end if
                end if
-         endif
+         end if
 !
 !Temporal modifications
 !
@@ -5727,4 +5734,3 @@ FUNCTION bep_bem_ngr_u() RESULT(bep_bem_val_ngr_u)
    INTEGER :: bep_bem_val_ngr_u
    bep_bem_val_ngr_u = ngr_u
 END FUNCTION bep_bem_ngr_u
-
