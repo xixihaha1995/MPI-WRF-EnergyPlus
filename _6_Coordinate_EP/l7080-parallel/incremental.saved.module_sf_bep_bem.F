@@ -1172,12 +1172,12 @@ CONTAINS
             wM2_12K = 300
             wM2_12K(1) = 0
             allocate(saveitime(its:ite, its:ite))
-            latlongall_length = (ite - its + 1)*(ite - its + 1)
+            latlongall_length = (ite - its + 1)*(jte - jts + 1)
             mapping_length = latlongall_length * num_children
             allocate(xlatall1d(latlongall_length))
             allocate(xlongall1d(latlongall_length))
             allocate(mapping_wrf_ep(mapping_length))
-            allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
+            allocate(saved_wM2_12k(its:ite, jts:jte, wrfNeedLen))
             saveitime = -1 
             mapping_wrf_ep = -1
             saved_wM2_12k = 0
@@ -1185,12 +1185,12 @@ CONTAINS
             
             !flatten the 2d arrays
             k = 1
-            do i = its, ite
-            do j = its, ite
-               xlatall1d(k) = xlatall(i, j)
-               xlongall1d(k) = xlongall(i, j)
-               k = k + 1
-            end do
+            do j = jts, jte
+               do i = its, ite
+                  xlatall1d(k) = xlatall(i, j)
+                  xlongall1d(k) = xlongall(i, j)
+                  k = k + 1
+               end do
             end do
          !  print *, "curitime", curitime
          !  print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
@@ -1209,18 +1209,21 @@ CONTAINS
                   0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
          !  print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
          !  print *, "WRF rank ID", rank, "to send xlatall1d, xlongall1d to EnergyPlus"
+            call MPI_Send(ite - its + 1, 1, MPI_INTEGER, 0, 3, new_comm, ierr)
+            call MPI_Send(jte - jts + 1, 1, MPI_INTEGER, 0, 4, new_comm, ierr)
+
             call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 1, new_comm, ierr)
             call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 2, new_comm, ierr)
             ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
             ! !each building IDF centroid.
-            call MPI_Recv(IDF_Coupling, 1, MPI_INTEGER, 0, 0, new_comm, status, ierr)
-            ! call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
+            call MPI_Recv(IDF_Coupling, 1, MPI_INTEGER, 0, 5, new_comm, status, ierr)
+            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 6, new_comm, status, ierr)
             
             print *, "WRF rank ID", rank, "IDF_Coupling", IDF_Coupling
 
       end if
 
-      map_right_idx = ((curix - 1) * (ite - its + 1) + curiy) * num_children
+      map_right_idx = ((curiy - 1) * (ite - its + 1) + curix) * num_children
       map_left_idx = map_right_idx - num_children + 1
       one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
 
@@ -1262,16 +1265,8 @@ CONTAINS
       received_data = 0
       do child_idx = 1, num_children
             if (one_grid_mapping(child_idx) .gt. 0) then
-            if (ucm_tag == 886 ) then
-               if (rank == 0) then
-                  call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
-                     received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, &
-                     MPI_ANY_TAG, new_comm, status, ierr)
-               end if
-            else 
                call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
                   received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
-            end if
             end if
       end do
       print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
