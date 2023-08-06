@@ -7,6 +7,7 @@
 #include <EnergyPlus/api/datatransfer.h>
 #include <EnergyPlus/api/runtime.h>
 #include <EnergyPlus/api/func.h>
+#include <math.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 26
@@ -18,6 +19,30 @@
 #define VER_LEN_TAG 4
 #define COUPLING_TAG 5
 #define MAPPING_TAG 6
+#define EARTH_RADIUS_KM 6371.0
+
+double degreesToRadians(double degrees) {
+    return degrees * M_PI / 180.0;
+}
+
+double distanceBetweenPoints(double lat1, double long1, double lat2, double long2) {
+    // Convert latitude and longitude from degrees to radians
+    lat1 = degreesToRadians(lat1);
+    long1 = degreesToRadians(long1);
+    lat2 = degreesToRadians(lat2);
+    long2 = degreesToRadians(long2);
+
+    // Haversine formula
+    double dlat = lat2 - lat1;
+    double dlong = long2 - long1;
+    double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlong / 2), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    
+    // Calculate the distance in kilometers
+    double distance = EARTH_RADIUS_KM * c;
+    return distance;
+}
+
 
 int weatherMPIon = 1, wasteMPIon = 1;
 int IDF_Coupling = 1; //0, offline; 1, waste; 2, waste + surface;
@@ -291,7 +316,8 @@ int closetGridIndex(float bldlat, float bldlong){
     int minIndex = -1, minWRFIdx = -1;
     for (int j = 0; j < NBR_WRF; j++) {
         for (int i = 0; i < allDomainLen[j]; i++) {
-            double dist = (bldlat - latall[j][i]) * (bldlat - latall[j][i]) + (bldlong - longall[j][i]) * (bldlong - longall[j][i]);
+            // double dist = (bldlat - latall[j][i]) * (bldlat - latall[j][i]) + (bldlong - longall[j][i]) * (bldlong - longall[j][i]);
+            double dist = distanceBetweenPoints((double) bldlat, (double) bldlong, (double) latall[j][i], (double) longall[j][i]);
             if (dist < minDist) {
                 minDist = dist;
                 minIndex = i;
