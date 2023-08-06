@@ -1239,7 +1239,7 @@ CONTAINS
             replaced = IDF_Coupling
             print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "one_grid_mapping", one_grid_mapping
             print *, "WRF rank ID", "map_left_idx, map_right_idx", map_left_idx, map_right_idx
-            print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
+            ! print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
       end if
 
       if (saveitime(curix, curiy) == -886) then

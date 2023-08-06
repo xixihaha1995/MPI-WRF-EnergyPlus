@@ -332,7 +332,7 @@ Mapping_Index closetGridIndex(float bldlat, float bldlong){
                 minDist = dist;
                 mapping_index.gridIdx = i;
                 mapping_index.wrfIdx = j;
-                printf("minDist = %.2f, gridIdx = %d, wrfIdx = %d\n", minDist, mapping_index.gridIdx, mapping_index.wrfIdx);
+                // printf("minDist = %.2f, gridIdx = %d, wrfIdx = %d\n", minDist, mapping_index.gridIdx, mapping_index.wrfIdx);
             }
         }
     }
@@ -380,7 +380,7 @@ void receiveLongLat(void) {
             id, lat, lon, mapping_index.wrfIdx, mapping_index.gridIdx,
             latall[mapping_index.wrfIdx][mapping_index.gridIdx],
             longall[mapping_index.wrfIdx][mapping_index.gridIdx]);
-        mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = id;
+        mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = 1;
     }
     fclose(file);
 
