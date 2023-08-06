@@ -9,9 +9,9 @@
 #include <EnergyPlus/api/func.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define INNERMOST_POINTS 52
+#define INNERMOST_POINTS 26
 #define NBR_IDF 2
-#define NBR_WRF 1
+#define NBR_WRF 4
 #define LAT_TAG 1
 #define LONG_TAG 2
 
