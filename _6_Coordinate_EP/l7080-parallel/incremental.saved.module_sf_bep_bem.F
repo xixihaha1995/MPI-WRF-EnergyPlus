@@ -1238,7 +1238,7 @@ CONTAINS
       else
             replaced = IDF_Coupling
             print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "one_grid_mapping", one_grid_mapping
-            print *, "WRF rank ID", "map_left_idx, map_right_idx", map_left_idx, map_right_idx
+            ! print *, "WRF rank ID", "map_left_idx, map_right_idx", map_left_idx, map_right_idx
             ! print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
       end if
 
@@ -1866,7 +1866,7 @@ CONTAINS
                if (replaced == 0 ) then 
                   ! print *, 'offline; one way coupling from WRF -> EP'
                else 
-                  print *, "INF waste heat? wM2_12K", wM2_12K, "bs_u(1, iurb) * bs_u(2, iurb)", bs_u(1, iurb) * bs_u(2, iurb)
+                  ! print *, "INF waste heat? wM2_12K", wM2_12K, "bs_u(1, iurb) * bs_u(2, iurb)", bs_u(1, iurb) * bs_u(2, iurb)
                   print *, "mean_recv_waste_w", mean_recv_waste_w
                   sflev1D(1:3) = mean_recv_waste_w
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
@@ -1874,7 +1874,7 @@ CONTAINS
                      do wrfFlrIdx = 1, 3
                         twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
                      end do
-                     print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+                     ! print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                   end if
                end if
          end if
