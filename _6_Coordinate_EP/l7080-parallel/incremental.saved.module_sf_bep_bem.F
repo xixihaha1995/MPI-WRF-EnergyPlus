@@ -1224,11 +1224,11 @@ CONTAINS
 
       end if
 
-      print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "IDF_Coupling", IDF_Coupling
-      replaced = 0
-      return
-      
-      map_right_idx = ((curiy - 1) * (ite - its + 1) + curix) * num_children
+      ! print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "IDF_Coupling", IDF_Coupling
+      ! replaced = 0
+      ! return
+
+      map_right_idx = ((curiy - jts + 1 - 1) * (ite - its + 1) + curix - its + 1) * num_children
       map_left_idx = map_right_idx - num_children + 1
       one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
 
