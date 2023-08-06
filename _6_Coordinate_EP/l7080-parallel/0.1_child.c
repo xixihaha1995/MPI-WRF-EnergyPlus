@@ -370,9 +370,6 @@ void receiveLongLat(void) {
     double lat, lon;
     for (int i = 0; i < NBR_IDF; i++) {
         fscanf(file, "%d, %lf, %lf", &id, &lat, &lon);
-        buildings[i].id = id;
-        buildings[i].lat = lat;
-        buildings[i].lon = lon;
         Mapping_Index mapping_index;
         mapping_index = closetGridIndex(lat, lon);
         printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
@@ -380,7 +377,7 @@ void receiveLongLat(void) {
             id, lat, lon, mapping_index.wrfIdx, mapping_index.gridIdx,
             latall[mapping_index.wrfIdx][mapping_index.gridIdx],
             longall[mapping_index.wrfIdx][mapping_index.gridIdx]);
-        mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = 1;
+        mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = id;
     }
     fclose(file);
 
