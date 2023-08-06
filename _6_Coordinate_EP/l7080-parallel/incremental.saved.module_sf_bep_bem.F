@@ -900,7 +900,7 @@ CONTAINS
                call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                           dzr, dzf, dzw, dzgb, its,ite,ims, ime, jms, jme, &
+                           dzr, dzf, dzw, dzgb, its,ite,jts, jte, ims, ime,jms, jme, &
                            xlat, xlong, &
                            xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
                            albg_u(iurb), albw_u(iurb), albr_u(iurb), &
@@ -1128,7 +1128,7 @@ CONTAINS
    end subroutine BEP_BEM
 
    subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
-      its, ite, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
+      its, ite, jts, jte, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
       implicit none
       include 'mpif.h'
       integer, parameter ::  nbr_steps_hr = 600 !540 is for 6.67s, 600 is for 6 s.
@@ -1149,7 +1149,7 @@ CONTAINS
       character(len=50) :: command
    !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
-      integer :: ims, ime, jms, jme, its, ite
+      integer :: ims, ime, jms, jme, its, ite, jts, jte
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
       REAL, DIMENSION(:,:,:), ALLOCATABLE, save :: saved_wM2_12k
@@ -1165,7 +1165,7 @@ CONTAINS
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
       call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
       call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-      print *, "rank", rank, "num_procs", num_procs, "its, ite", its, ite
+      print *, "rank", rank, "num_procs", num_procs, "its, ite", its, ite, "jts, jte", jts, jte
 
       if (spawned .eqv. .false.) then
             spawned = .true.
@@ -1300,7 +1300,7 @@ CONTAINS
    subroutine BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
                      zr, deltar, ah, rs, rld, alagb, &
                      alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                     dzr, dzf, dzw, dzgb, its, ite, ims, ime, jms, jme, &
+                     dzr, dzf, dzw, dzgb, its, ite, jts, jte, ims, ime, jms, jme, &
                      xlatall, xlongall, xlat, xlong,swddir, swddif, &
                      albg, albw, albr, albwin, emg, emw, emr, &
                      emwind, fww, fwg, fgw, fsw, fws, fsg, z0, &
@@ -1613,7 +1613,7 @@ CONTAINS
       real, dimension(3) :: wrf_weather
       real, dimension(13) :: wM2_12K;
       integer :: replaced !0, offline; 1, waste; 2, waste + surface;
-      integer wrfFlrIdx, ims, ime, jms, jme, its, ite
+      integer wrfFlrIdx, ims, ime, jms, jme, its, ite, jts, jte
 
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
@@ -1856,7 +1856,7 @@ CONTAINS
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(ix,iy,ibui,dt,itimestep,&
-               its, ite, ims,ime,jms,jme,xlatall, xlongall, &
+               its, ite, jts, jte, ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3 !it's currently averaged by bld footprint. And divided by three floors.
 
