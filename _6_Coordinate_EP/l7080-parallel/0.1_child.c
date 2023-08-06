@@ -9,6 +9,7 @@
 #include <EnergyPlus/api/func.h>
 #include <math.h>
 
+
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 26
 #define NBR_IDF 2
@@ -20,6 +21,11 @@
 #define COUPLING_TAG 5
 #define MAPPING_TAG 6
 #define EARTH_RADIUS_KM 6371.0
+
+typedef struct {
+    int gridIdx;
+    int wrfIdx;
+} Mapping_Index;
 
 double degreesToRadians(double degrees) {
     return degrees * M_PI / 180.0;
@@ -310,10 +316,13 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     
 }
 
-int closetGridIndex(float bldlat, float bldlong){
+Mapping_Index closetGridIndex(float bldlat, float bldlong){
     // go through all grids latall, longall, find the closest grid
     double minDist = 1000000000;
-    int minIndex = -1, minWRFIdx = -1;
+
+    Mapping_Index mapping_index;
+    mapping_index.gridIdx = -1;
+    mapping_index.wrfIdx = -1;
     for (int j = 0; j < NBR_WRF; j++) {
         for (int i = 0; i < allDomainLen[j]; i++) {
             // double dist = (bldlat - latall[j][i]) * (bldlat - latall[j][i]) + (bldlong - longall[j][i]) * (bldlong - longall[j][i]);
@@ -321,15 +330,14 @@ int closetGridIndex(float bldlat, float bldlong){
             // printf("dist = %.2f, minDist = %.2f\n", dist, minDist);
             if (dist < minDist) {
                 minDist = dist;
-                minIndex = i;
-                minWRFIdx = j;
-                printf("minDist = %.2f, minIndex = %d, minWRFIdx = %d\n", minDist, minIndex, minWRFIdx);
+                mapping_index.gridIdx = i;
+                mapping_index.wrfIdx = j;
+                printf("minDist = %.2f, gridIdx = %d, wrfIdx = %d\n", minDist, mapping_index.gridIdx, mapping_index.wrfIdx);
             }
         }
-
     }
 
-    return minIndex, minWRFIdx;
+    return mapping_index;
 }
 
 void receiveLongLat(void) {
@@ -365,13 +373,14 @@ void receiveLongLat(void) {
         buildings[i].id = id;
         buildings[i].lat = lat;
         buildings[i].lon = lon;
-        int gridIndex, wrfIndex;
-        gridIndex, wrfIndex = closetGridIndex(lat, lon);
-        printf("gridIndex = %d, wrfIndex = %d\n", gridIndex, wrfIndex);
+        Mapping_Index mapping_index;
+        mapping_index = closetGridIndex(lat, lon);
         printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
             "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
-            id, lat, lon, wrfIndex, gridIndex, latall[wrfIndex][gridIndex], longall[wrfIndex][gridIndex]);
-        mappings[wrfIndex][gridIndex * NBR_IDF + i] = 1;
+            id, lat, lon, mapping_index.wrfIdx, mapping_index.gridIdx,
+            latall[mapping_index.wrfIdx][mapping_index.gridIdx],
+            longall[mapping_index.wrfIdx][mapping_index.gridIdx]);
+        mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = id;
     }
     fclose(file);
 
