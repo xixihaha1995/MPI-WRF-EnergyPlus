@@ -1165,7 +1165,7 @@ CONTAINS
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
       call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
       call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-      print *, "rank", rank, "num_procs", num_procs
+      print *, "rank", rank, "num_procs", num_procs, "its, ite", its, ite
 
       if (spawned .eqv. .false.) then
             spawned = .true.
@@ -1214,7 +1214,7 @@ CONTAINS
             ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
             ! !each building IDF centroid.
             call MPI_Recv(IDF_Coupling, 1, MPI_INTEGER, 0, 0, new_comm, status, ierr)
-            call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
+            ! call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
             
             print *, "WRF rank ID", rank, "IDF_Coupling", IDF_Coupling
 
