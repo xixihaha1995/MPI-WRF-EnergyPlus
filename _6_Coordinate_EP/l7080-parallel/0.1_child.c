@@ -367,6 +367,7 @@ void receiveLongLat(void) {
         buildings[i].lon = lon;
         int gridIndex, wrfIndex;
         gridIndex, wrfIndex = closetGridIndex(lat, lon);
+        printf("gridIndex = %d, wrfIndex = %d\n", gridIndex, wrfIndex);
         printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
             "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
             id, lat, lon, wrfIndex, gridIndex, latall[wrfIndex][gridIndex], longall[wrfIndex][gridIndex]);
