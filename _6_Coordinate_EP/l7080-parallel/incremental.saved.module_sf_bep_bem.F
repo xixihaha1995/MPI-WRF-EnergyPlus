@@ -1165,7 +1165,6 @@ CONTAINS
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
       call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
       call MPI_Comm_size(MPI_COMM_WORLD, num_procs, ierr)
-      print *, "rank", rank, "num_procs", num_procs, "its, ite", its, ite, "jts, jte", jts, jte
 
       if (spawned .eqv. .false.) then
             spawned = .true.
@@ -1218,8 +1217,10 @@ CONTAINS
             ! !each building IDF centroid.
             call MPI_Recv(IDF_Coupling, 1, MPI_INTEGER, 0, 5, new_comm, status, ierr)
             call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 6, new_comm, status, ierr)
-            
+
+            print *, "rank", rank, "num_procs", num_procs, "its, ite", its, ite, "jts, jte", jts, jte
             print *, "WRF rank ID", rank, "IDF_Coupling", IDF_Coupling
+            print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
 
       end if
 
@@ -1232,6 +1233,7 @@ CONTAINS
             return
       else
             replaced = IDF_Coupling
+            print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "one_grid_mapping", one_grid_mapping
       end if
 
       if (saveitime(curix, curiy) == -886) then

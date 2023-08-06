@@ -44,14 +44,12 @@ int midLen = sizeof(midNames) / sizeof(midNames[0]);
 Real64* tempMidVal;
 
 typedef struct {
-    float footPrintM2;
     int bot[4];
     int* mid;
     int top[4];
 } GeoUWyo;
 
 GeoUWyo uwyo1 = {
-    .footPrintM2 = 162.15,
     .bot = {8, 20, 26, 14},
     .mid = midNames,
     .top = {98, 110, 116, 104}
