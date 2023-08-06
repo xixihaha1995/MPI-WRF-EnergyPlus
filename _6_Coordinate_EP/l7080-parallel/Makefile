@@ -3,7 +3,7 @@ MPICC = mpicc
 
 CFLAGS = -I/usr/local/EnergyPlus-23-1-0/include
 LDFLAGS = -L/usr/local/EnergyPlus-23-1-0
-LDLIBS = -lenergyplusapi
+LDLIBS = -lenergyplusapi -lm
 
 # Set LD_LIBRARY_PATH
 export LD_LIBRARY_PATH := /usr/local/EnergyPlus-23-1-0:$(LD_LIBRARY_PATH)
