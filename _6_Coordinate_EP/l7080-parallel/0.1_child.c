@@ -26,8 +26,8 @@ int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohr
 int rank = -1, performanc_length = 14; 
 
 float msg_arr[3] = {-1, -1, -1};
-float longall[NBR_WRF], latall[NBR_WRF];
-int mappings[NBR_WRF], allDomainLen[NBR_WRF];
+float *longall[NBR_WRF], *latall[NBR_WRF];
+int *mappings[NBR_WRF], allDomainLen[NBR_WRF];
 
 float footprintm2[38] = {
     162.15, 2513.40, 37.75, 355.15, 1049.87, 415.98,
