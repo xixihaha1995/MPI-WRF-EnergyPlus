@@ -356,8 +356,9 @@ void receiveLongLat(void) {
     for (int j = 0; j < NBR_WRF; j++) {
         // MPI_Send(&mappings, INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
         // MPI_Send(&IDF_Coupling, 1, MPI_INT, status.MPI_SOURCE, 0, parent_comm);
-        MPI_Send(&mappings[j], INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, j, 0, parent_comm);
         MPI_Send(&IDF_Coupling, 1, MPI_INT, j, 0, parent_comm);
+        MPI_Send(&mappings[j], INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, j, 0, parent_comm);
+        
         // printf("Child %d sent mappings to WRF%d\n", rank, j);
     }
 
