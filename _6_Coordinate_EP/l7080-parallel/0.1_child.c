@@ -314,6 +314,10 @@ void receiveLongLat(void) {
         longall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         latall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         mappings[i] = (int *) malloc(allDomainLen[i] * NBR_IDF * sizeof(int));
+        // assign mappings[i] to -1
+        for (int j = 0; j < allDomainLen[i] * NBR_IDF; j++) {
+            mappings[i][j] = -1;
+        }
         MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
         MPI_Recv(latall[i], allDomainLen[i], MPI_FLOAT, i, LAT_TAG, parent_comm, &status);
     }
