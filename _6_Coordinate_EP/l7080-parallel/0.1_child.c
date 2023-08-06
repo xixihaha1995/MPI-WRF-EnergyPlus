@@ -318,6 +318,7 @@ int closetGridIndex(float bldlat, float bldlong){
         for (int i = 0; i < allDomainLen[j]; i++) {
             // double dist = (bldlat - latall[j][i]) * (bldlat - latall[j][i]) + (bldlong - longall[j][i]) * (bldlong - longall[j][i]);
             double dist = distanceBetweenPoints((double) bldlat, (double) bldlong, (double) latall[j][i], (double) longall[j][i]);
+            printf("dist = %.2f, minDist = %.2f\n", dist, minDist);
             if (dist < minDist) {
                 minDist = dist;
                 minIndex = i;
