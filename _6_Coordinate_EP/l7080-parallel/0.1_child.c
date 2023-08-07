@@ -413,19 +413,25 @@ int main(int argc, char** argv) {
 
     switch (rank + 1) {
         case 1:
+            int mid_values[] = {38, 50, 56, 44, 68, 80, 86, 74};
             geoUWyoMyRank = (GeoUWyo){
                 .bot = {8, 20, 26, 14},
-                .mid = (int []){38, 50, 56, 44, 68, 80, 86, 74},
+                .mid = (int*)malloc(sizeof(mid_values)),
                 .top = {98, 110, 116, 104}
             };
+            for (int i = 0; i < sizeof(mid_values) / sizeof(mid_values[0]); i++) {
+                geoUWyoMyRank.mid[i] = mid_values[i];
+            };
             break;
-
         case 2:
-
+            int mid_values2[] = {124, 148, 154, 142, 203, 227, 233, 221};
             geoUWyoMyRank = (GeoUWyo){
                 .bot = {45, 69, 75, 63},
-                .mid = (int []){124, 148, 154, 142, 203, 227, 233, 221},
+                .mid = (int*)malloc(sizeof(mid_values2)),
                 .top = {282, 306, 312, 300}
+            };
+            for (int i = 0; i < sizeof(mid_values) / sizeof(mid_values[0]); i++) {
+                geoUWyoMyRank.mid[i] = mid_values[i];
             };
             break;
 
