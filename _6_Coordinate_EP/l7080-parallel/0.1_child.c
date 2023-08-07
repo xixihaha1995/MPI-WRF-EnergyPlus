@@ -70,21 +70,18 @@ float footprintm2[38] = {
     1808.91,889.49
 };
 
-int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
-int midLen = sizeof(midNames) / sizeof(midNames[0]);
+int midNames[];
+int midLen;
+
 Real64* tempMidVal;
 
 typedef struct {
-    int bot[4];
+    int bot[4]; //right, left, up, down
     int* mid;
-    int top[4];
+    int top[4]; //right, left, up, down
 } GeoUWyo;
 
-GeoUWyo uwyo1 = {
-    .bot = {8, 20, 26, 14},
-    .mid = midNames,
-    .top = {98, 110, 116, 104}
-};
+GeoUWyo geoUWyo;
 
 
 typedef struct {
@@ -244,7 +241,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        // surHandles = getSurHandle(state, uwyo1);
+        surHandles = getSurHandle(state, geoUWyo);
         
         if (simHVACSensor < 0)
         {
@@ -266,21 +263,21 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_W = simHVAC_J/ 3600;
 
-    // surValues = getSurVal(state, surHandles);
-    // // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
-    // Real64 avgMidVal[4];
-    // for (int i = 0; i < midLen; i++) {
-    //     avgMidVal[i % 4] += surValues.midVal[i];
-    // }
-    // for (int i = 0; i < 4; i++) {
-    //     int num = midLen / 4;
-    //     avgMidVal[i] /= num;
-    //     // printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
-    //     // printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
-    //     // printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
-    // }
+    surValues = getSurVal(state, surHandles);
+    // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
+    Real64 avgMidVal[4];
+    for (int i = 0; i < midLen; i++) {
+        avgMidVal[i % 4] += surValues.midVal[i];
+    }
+    for (int i = 0; i < 4; i++) {
+        int num = midLen / 4;
+        avgMidVal[i] /= num;
+        // printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
+        // printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
+        // printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
+    }
 
-    // free(tempMidVal);
+    free(tempMidVal);
     if (! wasteMPIon)
     {
         printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC_W = %.2f (W), \n", rank, simTime, simHVAC_W);
@@ -294,11 +291,11 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     else
         data[1] = (float) simHVAC_W;
     // bot 4, mid 4, top 4
-    // for (int i = 0; i < 4; i++) {
-    //     data[i + 2] = (float) (surValues.botVal[i] + 273.15);
-    //     data[i + 6] = (float) (avgMidVal[i] + 273.15);
-    //     data[i + 10] = (float) (surValues.topVal[i] + 273.15);
-    // }
+    for (int i = 0; i < 4; i++) {
+        data[i + 2] = (float) (surValues.botVal[i] + 273.15);
+        data[i + 6] = (float) (avgMidVal[i] + 273.15);
+        data[i + 10] = (float) (surValues.topVal[i] + 273.15);
+    }
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W),"
@@ -410,7 +407,38 @@ int main(int argc, char** argv) {
     if (rank == 0) {
         receiveLongLat();
     }
-    
+
+    switch (rank + 1) {
+        case 1:
+            midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
+            geoUWyo = (GeoUWyo){
+                .bot = {8, 20, 26, 14},
+                .mid = midNames,
+                .top = {98, 110, 116, 104}
+            };
+            break;
+        case 2:
+            midNames[] = {124, 148, 154, 142, 203, 227, 233, 221};
+            geoUWyo = (GeoUWyo){
+                .bot = {45, 69, 75, 63},
+                .mid = midNames,
+                .top = {282, 306, 312, 300}
+            };
+            break;
+        default:
+            // Assign default values for other ranks (if needed)
+            geoUWyo = (GeoUWyo){
+                .bot = {0, 0, 0, 0},
+                .mid = NULL,
+                .top = {0, 0, 0, 0}
+            };
+            break;
+    }
+
+    midLen = sizeof(midNames) / sizeof(midNames[0]);
+
+
+
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     printf("Child %d is processing IDF settings\n", rank);
@@ -421,7 +449,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-    // requestSur(state, uwyo1);
+    requestSur(state, geoUWyo);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
     printf("where am I? %s\n", curpath);
