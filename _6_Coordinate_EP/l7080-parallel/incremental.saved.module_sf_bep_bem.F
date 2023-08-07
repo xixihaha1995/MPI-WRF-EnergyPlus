@@ -1209,10 +1209,10 @@ CONTAINS
             print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
             call MPI_Send(ite - its + 1, 1, MPI_INTEGER, 0, 3, new_comm, ierr)
             call MPI_Send(jte - jts + 1, 1, MPI_INTEGER, 0, 4, new_comm, ierr)
-
-            print *, "WRF rank ID", rank, "to send xlatall1d, xlongall1d to EnergyPlus"
+           
             call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 1, new_comm, ierr)
             call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 2, new_comm, ierr)
+            print *, "WRF rank ID", rank, "Send xlatall1d, xlongall1d to EnergyPlus"
             ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
             ! !each building IDF centroid.
             call MPI_Recv(IDF_Coupling, 1, MPI_INTEGER, 0, 5, new_comm, status, ierr)

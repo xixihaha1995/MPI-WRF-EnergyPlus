@@ -354,9 +354,10 @@ void receiveLongLat(void) {
         for (int j = 0; j < allDomainLen[i] * NBR_IDF; j++) {
             mappings[i][j] = -1;
         }
-        MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
+        printf("Rank%d, about to receive longall and latall from rank%d\n", rank, i);
         MPI_Recv(latall[i], allDomainLen[i], MPI_FLOAT, i, LAT_TAG, parent_comm, &status);
-        printf("Is there a problem here?\n");
+        MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
+
     }
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
     if (file == NULL) {
