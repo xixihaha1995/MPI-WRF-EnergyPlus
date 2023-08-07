@@ -6,7 +6,7 @@
 #PBS -q regular
 #PBS -j oe
 #PBS -k eod
-#PBS -l select=1:mpiprocs=10
+#PBS -l select=10:mpiprocs=1
 
 cat $PBS_NODEFILE
 set nbr_parent = 1
