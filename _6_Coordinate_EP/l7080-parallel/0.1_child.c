@@ -70,7 +70,6 @@ float footprintm2[38] = {
     1808.91,889.49
 };
 
-int midNames[];
 int midLen;
 
 Real64* tempMidVal;
@@ -410,7 +409,7 @@ int main(int argc, char** argv) {
 
     switch (rank + 1) {
         case 1:
-            midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
+            int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
             geoUWyo = (GeoUWyo){
                 .bot = {8, 20, 26, 14},
                 .mid = midNames,
@@ -418,7 +417,7 @@ int main(int argc, char** argv) {
             };
             break;
         case 2:
-            midNames[] = {124, 148, 154, 142, 203, 227, 233, 221};
+            int midNames[] = {124, 148, 154, 142, 203, 227, 233, 221};
             geoUWyo = (GeoUWyo){
                 .bot = {45, 69, 75, 63},
                 .mid = midNames,
