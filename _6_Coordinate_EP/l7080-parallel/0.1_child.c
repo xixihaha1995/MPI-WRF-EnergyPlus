@@ -150,6 +150,7 @@ SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
     }
     for (int i = 0; i < midLen; i++) {
         sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
+        printf("Rank %d: surfaceName = %s\n", rank, surfaceName);
         surHandles.midHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
         if (surHandles.midHandle[i] < 0) {
             printf("Rank %d: Error: surHandles.midHandle[%d] = %d\n", rank, i, surHandles.midHandle[i]);
