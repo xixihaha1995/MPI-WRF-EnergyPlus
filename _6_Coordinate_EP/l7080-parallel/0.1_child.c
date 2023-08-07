@@ -430,8 +430,8 @@ int main(int argc, char** argv) {
                 .mid = (int*)malloc(sizeof(mid_values2)),
                 .top = {282, 306, 312, 300}
             };
-            for (int i = 0; i < sizeof(mid_values) / sizeof(mid_values[0]); i++) {
-                geoUWyoMyRank.mid[i] = mid_values[i];
+            for (int i = 0; i < sizeof(mid_values2) / sizeof(mid_values2[0]); i++) {
+                geoUWyoMyRank.mid[i] = mid_values2[i];
             };
             break;
 
