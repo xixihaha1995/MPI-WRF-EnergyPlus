@@ -407,33 +407,20 @@ int main(int argc, char** argv) {
         receiveLongLat();
     }
 
-
-    int midNames[]; // Declare midNames array outside the switch
     switch (rank + 1) {
         case 1:
-            // Initialize midNames array with values for rank 1
-            {
-                int midValues[] = {38, 50, 56, 44, 68, 80, 86, 74};
-                memcpy(midNames, midValues, sizeof(midValues));
-            }
-
             geoUWyoMyRank = (GeoUWyo){
                 .bot = {8, 20, 26, 14},
-                .mid = midNames,
+                .mid = {38, 50, 56, 44, 68, 80, 86, 74},
                 .top = {98, 110, 116, 104}
             };
             break;
 
         case 2:
-            // Initialize midNames array with values for rank 2
-            {
-                int midValues[] = {124, 148, 154, 142, 203, 227, 233, 221};
-                memcpy(midNames, midValues, sizeof(midValues));
-            }
 
             geoUWyoMyRank = (GeoUWyo){
                 .bot = {45, 69, 75, 63},
-                .mid = midNames,
+                .mid = {124, 148, 154, 142, 203, 227, 233, 221},
                 .top = {282, 306, 312, 300}
             };
             break;
@@ -448,7 +435,7 @@ int main(int argc, char** argv) {
             break;
     }
 
-    midLen = sizeof(midNames) / sizeof(midNames[0]); // Now midNames is accessible here
+    midLen = sizeof(geoUWyoMyRank.mid) / sizeof(geoUWyoMyRank.mid[0]);
 
 
     char output_path[MPI_MAX_PROCESSOR_NAME];
