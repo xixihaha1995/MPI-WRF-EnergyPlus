@@ -411,7 +411,7 @@ int main(int argc, char** argv) {
         case 1:
             geoUWyoMyRank = (GeoUWyo){
                 .bot = {8, 20, 26, 14},
-                .mid = {38, 50, 56, 44, 68, 80, 86, 74},
+                .mid = (int []){38, 50, 56, 44, 68, 80, 86, 74},
                 .top = {98, 110, 116, 104}
             };
             break;
@@ -420,7 +420,7 @@ int main(int argc, char** argv) {
 
             geoUWyoMyRank = (GeoUWyo){
                 .bot = {45, 69, 75, 63},
-                .mid = {124, 148, 154, 142, 203, 227, 233, 221},
+                .mid = (int []){124, 148, 154, 142, 203, 227, 233, 221},
                 .top = {282, 306, 312, 300}
             };
             break;
