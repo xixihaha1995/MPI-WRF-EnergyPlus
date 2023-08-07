@@ -81,7 +81,7 @@ typedef struct {
     int top[4]; //right, left, up, down
 } GeoUWyo;
 
-GeoUWyo geoUWyo;
+GeoUWyo geoUWyoMyRank;
 
 
 typedef struct {
@@ -241,7 +241,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        surHandles = getSurHandle(state, geoUWyo);
+        surHandles = getSurHandle(state, geoUWyoMyRank);
         
         if (simHVACSensor < 0)
         {
@@ -449,7 +449,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-    requestSur(state, geoUWyo);
+    requestSur(state, geoUWyoMyRank);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
     printf("where am I? %s\n", curpath);
