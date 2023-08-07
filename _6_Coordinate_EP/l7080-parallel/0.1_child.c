@@ -51,7 +51,7 @@ double distanceBetweenPoints(double lat1, double long1, double lat2, double long
 
 
 int weatherMPIon = 1, wasteMPIon = 1;
-int IDF_Coupling = 0; //0, offline; 1, waste; 2, waste + surface;
+int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1, performanc_length = 14; 
