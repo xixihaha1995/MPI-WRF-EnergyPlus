@@ -12,7 +12,7 @@
 
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 26
-#define NBR_IDF 2
+#define NBR_IDF 1
 #define NBR_WRF 1
 #define LAT_TAG 1
 #define LONG_TAG 2
@@ -342,11 +342,9 @@ void receiveLongLat(void) {
 
     int horLen = 0, verLen = 0;
     for (int i = 0; i < NBR_WRF; i++) {
-        
         MPI_Recv(&horLen, 1, MPI_INT, i, HOR_LEN_TAG, parent_comm, &status);
         MPI_Recv(&verLen, 1, MPI_INT, i, VER_LEN_TAG, parent_comm, &status);
         allDomainLen[i] = horLen * verLen; 
-        printf("Child %d receiving allDomainLen[%d] = %d\n", rank, i, allDomainLen[i]);
         longall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         latall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         mappings[i] = (int *) malloc(allDomainLen[i] * NBR_IDF * sizeof(int));
