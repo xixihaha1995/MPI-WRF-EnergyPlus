@@ -345,9 +345,11 @@ void receiveLongLat(void) {
         MPI_Recv(&horLen, 1, MPI_INT, i, HOR_LEN_TAG, parent_comm, &status);
         MPI_Recv(&verLen, 1, MPI_INT, i, VER_LEN_TAG, parent_comm, &status);
         allDomainLen[i] = horLen * verLen; 
+        printf("Rank %d received horLen = %d, verLen = %d, allDomainLen = %d\n", rank, horLen, verLen, allDomainLen[i]);
         longall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         latall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         mappings[i] = (int *) malloc(allDomainLen[i] * NBR_IDF * sizeof(int));
+        printf("Is there a problem here?\n")
         // assign mappings[i] to -1
         for (int j = 0; j < allDomainLen[i] * NBR_IDF; j++) {
             mappings[i][j] = -1;
