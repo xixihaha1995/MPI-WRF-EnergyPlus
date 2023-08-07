@@ -342,10 +342,11 @@ void receiveLongLat(void) {
 
     int horLen = 0, verLen = 0;
     for (int i = 0; i < NBR_WRF; i++) {
-        printf("Child %d receiving longall, latall, mappings from parent %d\n", rank, i);
+        
         MPI_Recv(&horLen, 1, MPI_INT, i, HOR_LEN_TAG, parent_comm, &status);
         MPI_Recv(&verLen, 1, MPI_INT, i, VER_LEN_TAG, parent_comm, &status);
-        allDomainLen[i] = horLen * verLen;
+        allDomainLen[i] = horLen * verLen; 
+        printf("Child %d receiving allDomainLen[%d] = %d\n", rank, i, allDomainLen[i]);
         longall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         latall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         mappings[i] = (int *) malloc(allDomainLen[i] * NBR_IDF * sizeof(int));
