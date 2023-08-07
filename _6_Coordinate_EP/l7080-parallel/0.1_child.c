@@ -345,6 +345,7 @@ void receiveLongLat(void) {
         printf("Child %d receiving longall, latall, mappings from parent %d\n", rank, i);
         MPI_Recv(&horLen, 1, MPI_INT, i, HOR_LEN_TAG, parent_comm, &status);
         MPI_Recv(&verLen, 1, MPI_INT, i, VER_LEN_TAG, parent_comm, &status);
+        printf("Child %d received longall, latall, mappings from parent %d\n", rank, i);
         allDomainLen[i] = horLen * verLen;
         longall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
         latall[i] = (float *) malloc(allDomainLen[i] * sizeof(float));
@@ -355,7 +356,7 @@ void receiveLongLat(void) {
         }
         MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
         MPI_Recv(latall[i], allDomainLen[i], MPI_FLOAT, i, LAT_TAG, parent_comm, &status);
-        printf("Child %d received longall, latall, mappings from parent %d\n", rank, i);
+        
     }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
