@@ -382,7 +382,7 @@ void receiveLongLat(void) {
 
     for (int j = 0; j < NBR_WRF; j++) {
         MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
-        MPI_Send(mappings[j], allDomainLen[j] * NBR_IDF, MPI_INT, j, MAPPING_TAG, parent_comm);
+        // MPI_Send(mappings[j], allDomainLen[j] * NBR_IDF, MPI_INT, j, MAPPING_TAG, parent_comm);
         printf("Child %d sent mappings to WRF%d\n", rank, j);
     }
 
