@@ -354,7 +354,6 @@ void receiveLongLat(void) {
         }
         MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
         MPI_Recv(latall[i], allDomainLen[i], MPI_FLOAT, i, LAT_TAG, parent_comm, &status);
-        
     }
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
     if (file == NULL) {
@@ -363,7 +362,7 @@ void receiveLongLat(void) {
     // Skip the first line (header) in centroid.csv
     char line[100];
     fgets(line, sizeof(line), file);
-
+    printf("Rank%d, get geo info from WRF and .csv file; about to find closet grid for each building.\n", rank);
     int id;
     double lat, lon;
     for (int i = 0; i < NBR_IDF; i++) {
