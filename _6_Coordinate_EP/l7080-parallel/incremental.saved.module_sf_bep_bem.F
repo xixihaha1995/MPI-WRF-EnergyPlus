@@ -1201,13 +1201,13 @@ CONTAINS
                print *, "MPI not initialized, initializing"
                call MPI_Init(ierr)
             end if
-         !  print *, "WRF rank ID", rank, "its, ite", its, ite,"ims, ime", ims, ime, "jms, jme", jms, jme
+          print *, "WRF rank ID", rank, "its, ite", its, ite,"ims, ime", ims, ime, "jms, jme", jms, jme
             call MPI_Comm_dup(MPI_COMM_WORLD, parent_comm, ierr)
             command = "./child.exe"
             call MPI_Comm_spawn(command, MPI_ARGV_NULL, num_children, MPI_INFO_NULL, &
                   0, parent_comm, new_comm, MPI_ERRCODES_IGNORE, ierr)
          !  print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
-         !  print *, "WRF rank ID", rank, "to send xlatall1d, xlongall1d to EnergyPlus"
+          print *, "WRF rank ID", rank, "to send xlatall1d, xlongall1d to EnergyPlus"
             call MPI_Send(ite - its + 1, 1, MPI_INTEGER, 0, 3, new_comm, ierr)
             call MPI_Send(jte - jts + 1, 1, MPI_INTEGER, 0, 4, new_comm, ierr)
 
