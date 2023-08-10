@@ -1874,7 +1874,7 @@ CONTAINS
                      do wrfFlrIdx = 1, 3
                         twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
                      end do
-                     ! print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+                     print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                   end if
                end if
          end if
