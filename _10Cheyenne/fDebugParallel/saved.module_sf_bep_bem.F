@@ -900,7 +900,7 @@ CONTAINS
                call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                           dzr, dzf, dzw, dzgb, its,ite,ims, ime, jms, jme, &
+                           dzr, dzf, dzw, dzgb, its,ite,jts, jte, ims, ime, jms, jme, &
                            xlat, xlong, &
                            xlat(ix, iy), xlong(ix,iy),swddir1D, swddif1D, &
                            albg_u(iurb), albw_u(iurb), albr_u(iurb), &
@@ -1293,7 +1293,7 @@ CONTAINS
    subroutine BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
                      zr, deltar, ah, rs, rld, alagb, &
                      alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
-                     dzr, dzf, dzw, dzgb, its, ite, ims, ime, jms, jme, &
+                     dzr, dzf, dzw, dzgb, its, ite, jts, jte, ims, ime, jms, jme, &
                      xlatall, xlongall, xlat, xlong,swddir, swddif, &
                      albg, albw, albr, albwin, emg, emw, emr, &
                      emwind, fww, fwg, fgw, fsw, fws, fsg, z0, &
@@ -1606,7 +1606,7 @@ CONTAINS
       real, dimension(3) :: wrf_weather
       real, dimension(1) :: wM2_12K;
       logical :: replaced
-      integer wrfFlrIdx, ims, ime, jms, jme, its, ite
+      integer wrfFlrIdx, ims, ime, jms, jme, its, ite, jts, jte
 
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
