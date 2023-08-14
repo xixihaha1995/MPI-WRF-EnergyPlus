@@ -1128,7 +1128,7 @@ CONTAINS
    end subroutine BEP_BEM
 
    subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
-      its, ite, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
+      its, ite, jts, jte, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
       implicit none
       include 'mpif.h'
       integer, parameter ::  nbr_steps_hr = 600
@@ -1146,7 +1146,7 @@ CONTAINS
       character(len=50) :: command
   !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
-      integer :: ims, ime, jms, jme, its, ite
+      integer :: ims, ime, jms, jme, its, ite, jts, jte
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
       REAL, DIMENSION(:,:,:), ALLOCATABLE, save :: saved_wM2_12k
@@ -1849,7 +1849,7 @@ CONTAINS
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          if (7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(ix,iy,ibui,dt,itimestep,&
-               its, ite, ims,ime,jms,jme,xlatall, xlongall, &
+               its, ite, jts, jte,ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3 !it's currently averaged by bld footprint. And divided by three floors.
 
