@@ -11,6 +11,9 @@
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 51
 #define NBR_IDF 3
+#define NBR_WRF 4
+#define HOR_LEN_TAG 3
+#define VER_LEN_TAG 4
 
 typedef struct {
     int id;
@@ -292,6 +295,12 @@ int closetGridIndex(float bldlat, float bldlong){
 }
 
 void receiveLongLat(void) {
+    int horLen = 0, verLen = 0;
+    for (int i = 0; i < NBR_WRF; i++) {
+        MPI_Recv(&horLen, 1, MPI_INT, i, HOR_LEN_TAG, parent_comm, &status);
+        MPI_Recv(&verLen, 1, MPI_INT, i, VER_LEN_TAG, parent_comm, &status);
+        printf("Child %d received horLen = %d, verLen = %d from parent %d\n", rank, horLen, verLen, status.MPI_SOURCE);
+    }
     // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
@@ -357,8 +366,6 @@ int main(int argc, char** argv) {
             isMapped = 1;
         }
     }
-
-
 
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
