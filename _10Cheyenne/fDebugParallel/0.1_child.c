@@ -78,7 +78,6 @@ int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohr
 int rank = -1, performanc_length =2;
 float msg_arr[3] = {-1, -1, -1};
 // float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
-int mappings[INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
 int allDomainLen[NBR_WRF];
 float *longall[NBR_WRF], *latall[NBR_WRF];
 int *mappings[NBR_WRF];
