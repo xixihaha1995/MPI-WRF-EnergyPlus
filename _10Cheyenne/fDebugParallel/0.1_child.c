@@ -17,6 +17,8 @@
 #define VER_LEN_TAG 4
 #define LAT_TAG 1
 #define LONG_TAG 2
+#define COUPLING_TAG 5
+#define MAPPING_TAG 6
 #define EARTH_RADIUS_KM 6371.0
 
 typedef struct {
@@ -79,6 +81,7 @@ float msg_arr[3] = {-1, -1, -1};
 int mappings[INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF];
 int allDomainLen[NBR_WRF];
 float *longall[NBR_WRF], *latall[NBR_WRF];
+int *mappings[NBR_WRF];
 
 Building buildings[NBR_IDF]; 
 float footprintm2[38] = {
@@ -91,6 +94,7 @@ float footprintm2[38] = {
     1808.91,889.49
 };
 int weatherMPIon = 1, wasteMPIon = 1;
+int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 int isOnline = 1, isMapped = 0;
 MPI_Comm parent_comm;
 MPI_Status status;
@@ -345,26 +349,21 @@ void receiveLongLat(void) {
         allDomainLen[i] = horLen * verLen;
         longall[i] = malloc(allDomainLen[i] * sizeof(float));
         latall[i] = malloc(allDomainLen[i] * sizeof(float));
+        mappings[i] = malloc(allDomainLen[i] * sizeof(int) * NBR_IDF);
+
+        for (int j = 0; j < allDomainLen[j] * NBR_IDF; j++) {
+            mappings[i][j] = -1;
+        }
+
         MPI_Recv(latall[i], allDomainLen[i], MPI_FLOAT, i, LAT_TAG, parent_comm, &status);
         MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
-        
+
         // print the received latlongalls
         for (int k = 0; k < allDomainLen[i]; k++) {
             // print the received data with higheset precision
             printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
             rank,i, k, longall[i][k], k, latall[i][k]);
         }
-    }
-    // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    // MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
-    MPI_Recv(&latall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT, 
-        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    MPI_Recv(&longall, INNERMOST_POINTS * INNERMOST_POINTS, MPI_FLOAT,
-        MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    // print the received latlongalls
-    for (int k = 0; k < INNERMOST_POINTS * INNERMOST_POINTS; k++) {
-        // print the received data with higheset precision
-        printf("Child %d received longall[%d] = %.10f, latall[%d] = %.10f\n", rank, k, longall[k], k, latall[k]);
     }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
@@ -375,16 +374,14 @@ void receiveLongLat(void) {
     char line[100];
     fgets(line, sizeof(line), file);
 
-    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF; i++) {
-        mappings[i] = -1;
-    }
-
     int id;
     double lat, lon;
     for (int i = 0; i < NBR_IDF; i++) {
         fscanf(file, "%d, %lf, %lf", &id, &lat, &lon);
         Mapping_Index mapping_index;
         mapping_index = closetGridIndex(lat, lon);
+        mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = id;
+
         printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
             "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
             id, lat, lon, mapping_index.wrfIdx, mapping_index.gridIdx,
@@ -393,12 +390,8 @@ void receiveLongLat(void) {
     }
     fclose(file);
 
-    MPI_Send(&mappings, INNERMOST_POINTS * INNERMOST_POINTS * NBR_IDF, MPI_INT, 0, 0, parent_comm);
-    // for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
-    //     for (int j = 0; j < NBR_IDF; j++) {
-    //         printf("%d ", mappings[i * NBR_IDF + j]);
-    //     }
-    //     printf("\n");
+    // for (int j = 0; j < NBR_WRF; j++) {
+    //     MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
     // }
 
 }
