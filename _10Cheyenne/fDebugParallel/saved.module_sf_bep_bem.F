@@ -1208,8 +1208,8 @@ CONTAINS
           call MPI_Send(ite - its + 1, 1, MPI_INTEGER, 0, 3, new_comm, ierr)
           call MPI_Send(jte - jts + 1, 1, MPI_INTEGER, 0, 4, new_comm, ierr)
           print *, "WRF sent ite - its + 1", ite - its + 1, "jte - jts + 1", jte - jts + 1
-          call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
-          call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 0, new_comm, ierr)
+          call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 1, new_comm, ierr)
+          call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 2, new_comm, ierr)
           ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
           ! !each building IDF centroid.
           call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)

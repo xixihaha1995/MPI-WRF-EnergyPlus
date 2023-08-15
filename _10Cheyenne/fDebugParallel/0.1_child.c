@@ -345,8 +345,8 @@ void receiveLongLat(void) {
         allDomainLen[i] = horLen * verLen;
         longall[i] = malloc(allDomainLen[i] * sizeof(float));
         latall[i] = malloc(allDomainLen[i] * sizeof(float));
-        MPI_Recv(latall[i], allDomainLen[i], MPI_FLOAT, i, 0, parent_comm, &status);
-        MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, 0, parent_comm, &status);
+        MPI_Recv(latall[i], allDomainLen[i], MPI_FLOAT, i, LAT_TAG, parent_comm, &status);
+        MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
         
         // print the received latlongalls
         for (int k = 0; k < allDomainLen[i]; k++) {
