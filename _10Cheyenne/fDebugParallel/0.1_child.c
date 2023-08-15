@@ -16,6 +16,34 @@
 #define VER_LEN_TAG 4
 #define LAT_TAG 1
 #define LONG_TAG 2
+#define EARTH_RADIUS_KM 6371.0
+
+typedef struct {
+    int gridIdx;
+    int wrfIdx;
+} Mapping_Index;
+
+double degreesToRadians(double degrees) {
+    return degrees * M_PI / 180.0;
+}
+
+double distanceBetweenPoints(double lat1, double long1, double lat2, double long2) {
+    // Convert latitude and longitude from degrees to radians
+    lat1 = degreesToRadians(lat1);
+    long1 = degreesToRadians(long1);
+    lat2 = degreesToRadians(lat2);
+    long2 = degreesToRadians(long2);
+
+    // Haversine formula
+    double dlat = lat2 - lat1;
+    double dlong = long2 - long1;
+    double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlong / 2), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    
+    // Calculate the distance in kilometers
+    double distance = EARTH_RADIUS_KM * c;
+    return distance;
+}
 
 typedef struct {
     int id;
@@ -284,18 +312,27 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     
 }
 
-int closetGridIndex(float bldlat, float bldlong){
+Mapping_Index closetGridIndex(float bldlat, float bldlong){
     // go through all grids latall, longall, find the closest grid
     double minDist = 1000000000;
-    int minIndex = -1;
-    for (int i = 0; i < INNERMOST_POINTS * INNERMOST_POINTS; i++) {
-        double dist = (bldlat - latall[i]) * (bldlat - latall[i]) + (bldlong - longall[i]) * (bldlong - longall[i]);
-        if (dist < minDist) {
-            minDist = dist;
-            minIndex = i;
+    Mapping_Index mapping_index;
+    mapping_index.gridIdx = -1;
+    mapping_index.wrfIdx = -1;
+    for (int j = 0; j < NBR_WRF; j++) {
+        for (int i = 0; i < allDomainLen[j]; i++) {
+            // double dist = (bldlat - latall[j][i]) * (bldlat - latall[j][i]) + (bldlong - longall[j][i]) * (bldlong - longall[j][i]);
+            double dist = distanceBetweenPoints((double) bldlat, (double) bldlong, (double) latall[j][i], (double) longall[j][i]);
+            // printf("dist = %.2f, minDist = %.2f\n", dist, minDist);
+            if (dist < minDist) {
+                minDist = dist;
+                mapping_index.gridIdx = i;
+                mapping_index.wrfIdx = j;
+                printf("minDist = %.2f, gridIdx = %d, wrfIdx = %d\n", minDist, mapping_index.gridIdx, mapping_index.wrfIdx);
+            }
         }
     }
-    return minIndex;
+
+    return mapping_index;
 }
 
 void receiveLongLat(void) {
