@@ -330,7 +330,7 @@ Mapping_Index closetGridIndex(float bldlat, float bldlong){
                 minDist = dist;
                 mapping_index.gridIdx = i;
                 mapping_index.wrfIdx = j;
-                printf("minDist = %.2f, gridIdx = %d, wrfIdx = %d\n", minDist, mapping_index.gridIdx, mapping_index.wrfIdx);
+                // printf("minDist = %.2f, gridIdx = %d, wrfIdx = %d\n", minDist, mapping_index.gridIdx, mapping_index.wrfIdx);
             }
         }
     }
@@ -392,7 +392,9 @@ void receiveLongLat(void) {
         MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
         printf("Child %d sent IDF_Coupling to WRF%d\n", rank, j);
         MPI_Send(mappings[j], allDomainLen[j] * NBR_IDF, MPI_INT, j, MAPPING_TAG, parent_comm);
-        
+        for (int k = 0; k < allDomainLen[j] * NBR_IDF; k++) {
+            printf("Child %d sent mappings[%d][%d] = %d to WRF%d\n", rank, j, k, mappings[j][k], j);
+        }
     }
 
     for (int i = 0; i < NBR_WRF; i++) {
