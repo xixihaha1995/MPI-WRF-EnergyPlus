@@ -1176,6 +1176,7 @@ CONTAINS
           saved_wM2_12k = 0
           print *, "saveitime", saveitime
           print *, "its, ite", its, ite, "jts, jte", jts, jte
+          print *, "ims, ime", ims, ime, "jms, jme", jms, jme
           !print the shape of xlatall, xlongall
           print *, "shape of xlatall", shape(xlatall), "shape of xlongall", shape(xlongall)
           print *, "xlatall", xlatall
