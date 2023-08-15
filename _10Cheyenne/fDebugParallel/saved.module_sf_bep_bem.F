@@ -1178,12 +1178,12 @@ CONTAINS
           
           !flatten the 2d arrays
           k = 1
-          do i = its, ite
-          do j = its, ite
-              xlatall1d(k) = xlatall(i, j)
-              xlongall1d(k) = xlongall(i, j)
-              k = k + 1
-          end do
+          do j = jts, jte
+            do i = its, ite
+               xlatall1d(k) = xlatall(i, j)
+               xlongall1d(k) = xlongall(i, j)
+               k = k + 1
+            end do
           end do
           print *, "curitime", curitime
           print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)

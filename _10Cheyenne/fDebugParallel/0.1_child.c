@@ -351,7 +351,8 @@ void receiveLongLat(void) {
         // print the received latlongalls
         for (int k = 0; k < allDomainLen[i]; k++) {
             // print the received data with higheset precision
-            printf("Child %d received longall[%d] = %.10f, latall[%d] = %.10f\n", rank, k, longall[i][k], k, latall[i][k]);
+            printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
+            rank,i, k, longall[i][k], k, latall[i][k]);
         }
     }
     // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
