@@ -1187,6 +1187,7 @@ CONTAINS
             do i = its, ite
                xlatall1d(k) = xlatall(i, j)
                xlongall1d(k) = xlongall(i, j)
+               print *, "i, j", i, j, "xlatall(i, j)", xlatall(i, j), "xlongall(i, j)", xlongall(i, j)
                k = k + 1
             end do
           end do
