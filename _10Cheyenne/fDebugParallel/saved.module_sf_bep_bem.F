@@ -1175,7 +1175,11 @@ CONTAINS
           mapping_wrf_ep = -1
           saved_wM2_12k = 0
           print *, "saveitime", saveitime
-          
+          print *, "its, ite", its, ite, "jts, jte", jts, jte
+          !print the shape of xlatall, xlongall
+          print *, "shape of xlatall", shape(xlatall), "shape of xlongall", shape(xlongall)
+          print *, "xlatall", xlatall
+          print *, "xlongall", xlongall
           !flatten the 2d arrays
           k = 1
           do j = jts, jte
