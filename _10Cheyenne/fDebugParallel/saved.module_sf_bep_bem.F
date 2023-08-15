@@ -1165,7 +1165,7 @@ CONTAINS
           wM2_12K = 300
           wM2_12K(1) = 0
           allocate(saveitime(its:ite, its:ite))
-          latlongall_length = (ite - its + 1)*(ite - its + 1)
+          latlongall_length = (ite - its + 1)*(jte - jts + 1)
           mapping_length = latlongall_length * num_children
           allocate(xlatall1d(latlongall_length))
           allocate(xlongall1d(latlongall_length))
