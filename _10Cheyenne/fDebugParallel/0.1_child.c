@@ -382,13 +382,13 @@ void receiveLongLat(void) {
     double lat, lon;
     for (int i = 0; i < NBR_IDF; i++) {
         fscanf(file, "%d, %lf, %lf", &id, &lat, &lon);
-        buildings[i].id = id;
-        buildings[i].lat = lat;
-        buildings[i].lon = lon;
-        int gridIndex = closetGridIndex(lat, lon);
+        Mapping_Index mapping_index;
+        mapping_index = closetGridIndex(lat, lon);
         printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
-            "is assigned to grid %d, lat = %.14lf, lon = %.14lf\n", id, lat, lon, gridIndex, latall[gridIndex], longall[gridIndex]);
-        mappings[gridIndex * NBR_IDF + i] = 1;
+            "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
+            id, lat, lon, mapping_index.wrfIdx, mapping_index.gridIdx,
+            latall[mapping_index.wrfIdx][mapping_index.gridIdx],
+            longall[mapping_index.wrfIdx][mapping_index.gridIdx]);
     }
     fclose(file);
 
