@@ -7,6 +7,7 @@
 #include <EnergyPlus/api/datatransfer.h>
 #include <EnergyPlus/api/runtime.h>
 #include <EnergyPlus/api/func.h>
+#include <math.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
 #define INNERMOST_POINTS 51
