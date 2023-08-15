@@ -1138,11 +1138,11 @@ CONTAINS
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
       integer ::  ending_steps = (23 ) * nbr_steps_hr, ucm_tag = 0
-      integer, parameter ::  num_children = 3, performance_length = 2, weatherLength = 3, wrfNeedLen = 1
+      integer, parameter ::  num_children = 3, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
-      logical :: initedMPI, spawned = .false., replaced
+      logical :: initedMPI, spawned = .false.
       character(len=50) :: command
   !   output variables
       real, dimension(wrfNeedLen) :: wM2_12K
@@ -1156,6 +1156,7 @@ CONTAINS
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
+      integer :: replaced, IDF_Coupling
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
@@ -1218,9 +1219,11 @@ CONTAINS
           call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 2, new_comm, ierr)
           ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
           ! !each building IDF centroid.
-          call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 0, new_comm, status, ierr)
+          call MPI_Recv(IDF_Coupling, 1, MPI_INTEGER, 0, 5, new_comm, status, ierr)
+          print *, "WRF rank ID", rank, "IDF_Coupling", IDF_Coupling
 
-          print *, "mapping_wrf_ep", mapping_wrf_ep
+          call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 6, new_comm, status, ierr)
+          print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
 
       end if
 
@@ -1229,10 +1232,10 @@ CONTAINS
       one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
 
       if (.not. any(one_grid_mapping .gt. 0)) then
-          replaced = .false.
-          return
+         replaced = 0
+         return
       else
-          replaced = .true.
+         replaced = IDF_Coupling
       end if
 
       if (saveitime(curix, curiy) == -886) then
@@ -1273,9 +1276,6 @@ CONTAINS
       print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
       print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
-      if (wM2_12K(1) < 0) then
-         replaced = .false.
-      end if
       saved_wM2_12k(curix, curiy, :) = wM2_12K
       print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
@@ -1610,8 +1610,8 @@ CONTAINS
       real sfr_avb(ndm, nbui_max)
       real :: mean_recv_waste_w
       real, dimension(3) :: wrf_weather
-      real, dimension(1) :: wM2_12K;
-      logical :: replaced
+      real, dimension(13) :: wM2_12K;
+      integer :: replaced
       integer wrfFlrIdx, ims, ime, jms, jme, its, ite, jts, jte
 
       REAL, DIMENSION(ims:ime, jms:jme), &
@@ -1859,23 +1859,18 @@ CONTAINS
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3 !it's currently averaged by bld footprint. And divided by three floors.
 
-               if (replaced) then 
-                  ! override the first 3 values of sflev1D with mean_recv_waste_w
-                  ! override the first 12 values of twb1D with wM2_12K
-                  ! print *, 'EP waste heat(w) for one room/floor', mean_recv_waste_w 
-                  ! print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
-                  ! print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
-                  sflev1D(1:3) = mean_recv_waste_w
-                  ! do wrfFlrIdx = 1, 3
-                  !    twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
-                  ! end do
-                  print *, "INF waste heat? wM2_12K", wM2_12K, "bs_u(1, iurb) * bs_u(2, iurb)", bs_u(1, iurb) * bs_u(2, iurb)
-                  print *, "mean_recv_waste_w", mean_recv_waste_w
-
-                  print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
-                  print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
-               else
+               if (replaced == 0) then 
                   ! print *, 'offline; one way coupling from WRF -> EP'
+               else
+                  print *, "mean_recv_waste_w", mean_recv_waste_w
+                  sflev1D(1:3) = mean_recv_waste_w
+                  print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
+                  if (replaced == 2) then
+                     do wrfFlrIdx = 1, 3
+                        twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
+                     end do
+                     print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+                  end if
                end if
          endif
 !

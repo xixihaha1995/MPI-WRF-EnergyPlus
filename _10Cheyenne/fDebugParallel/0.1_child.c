@@ -93,8 +93,7 @@ float footprintm2[38] = {
     1808.91,889.49
 };
 int weatherMPIon = 1, wasteMPIon = 1;
-int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
-int isOnline = 1, isMapped = 0;
+int IDF_Coupling = 1; //0, offline; 1, waste; 2, waste + surface;
 MPI_Comm parent_comm;
 MPI_Status status;
 SurfaceHandles surHandles;
@@ -289,10 +288,10 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 
     float data[performanc_length];
     data[0] = footprintm2[rank];
-    if (isOnline)
-        data[1] = (float) simHVAC_W;
-    else
+    if (IDF_Coupling == 0)
         data[1] = -66.0;
+    else
+        data[1] = (float) simHVAC_W;
     // bot 4, mid 4, top 4
     // for (int i = 0; i < 4; i++) {
     //     data[i + 2] = (float) (surValues.botVal[i] + 273.15);
@@ -389,9 +388,18 @@ void receiveLongLat(void) {
     }
     fclose(file);
 
-    // for (int j = 0; j < NBR_WRF; j++) {
-    //     MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
-    // }
+    for (int j = 0; j < NBR_WRF; j++) {
+        MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
+        printf("Child %d sent IDF_Coupling to WRF%d\n", rank, j);
+        MPI_Send(mappings[j], allDomainLen[j] * NBR_IDF, MPI_INT, j, MAPPING_TAG, parent_comm);
+        
+    }
+
+    for (int i = 0; i < NBR_WRF; i++) {
+        free(longall[i]);
+        free(latall[i]);
+        free(mappings[i]);
+    }
 
 }
 
@@ -407,10 +415,7 @@ int main(int argc, char** argv) {
     MPI_Get_processor_name(processor_name, &namelen);
     printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
     if (rank == 0) {
-        if (!isMapped) {
-            receiveLongLat();
-            isMapped = 1;
-        }
+        receiveLongLat();
     }
 
     char output_path[MPI_MAX_PROCESSOR_NAME];
@@ -424,19 +429,14 @@ int main(int argc, char** argv) {
     // requestSur(state, uwyo1);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
-    if (strstr(curpath, "glade")) {
-        if (isOnline) 
-             sprintf(output_path, "/glade/scratch/lichenwu/ep_temp/saved_online_ep_trivial_%d", rank + 1);
-        else
-            sprintf(output_path, "/glade/scratch/lichenwu/ep_temp/saved_offline_ep_trivial_%d", rank + 1);
-    } else {
-        if (isOnline) 
-            sprintf(output_path, "./saved_online_ep_trivial_%d", rank + 1);
-        else
-            sprintf(output_path, "./saved_offline_ep_trivial_%d", rank + 1);
-    }
-    
+    const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/ep_temp" : ".";
+    // Choose the appropriate folder based on IDF_Coupling value
+    printf("base_path = %s\n", base_path);
+    sprintf(output_path, "%s/saved_%s_ep_trivial_%d", base_path,
+            (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
+            rank + 1);
     sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf", rank+1);
+    printf("output_path = %s\n", output_path);
 
     char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
