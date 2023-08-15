@@ -349,7 +349,7 @@ void receiveLongLat(void) {
         latall[i] = malloc(allDomainLen[i] * sizeof(float));
         mappings[i] = malloc(allDomainLen[i] * sizeof(int) * NBR_IDF);
 
-        for (int j = 0; j < allDomainLen[j] * NBR_IDF; j++) {
+        for (int j = 0; j < allDomainLen[i] * NBR_IDF; j++) {
             mappings[i][j] = -1;
         }
 
