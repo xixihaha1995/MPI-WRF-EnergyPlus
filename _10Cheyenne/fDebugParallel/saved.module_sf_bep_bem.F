@@ -1175,27 +1175,27 @@ CONTAINS
           saveitime = -1 
           mapping_wrf_ep = -1
           saved_wM2_12k = 0
-          print *, "saveitime", saveitime
+         !  print *, "saveitime", saveitime
           print *, "its, ite", its, ite, "jts, jte", jts, jte
           print *, "ims, ime", ims, ime, "jms, jme", jms, jme
           !print the shape of xlatall, xlongall
-          print *, "shape of xlatall", shape(xlatall), "shape of xlongall", shape(xlongall)
-          print *, "xlatall", xlatall
-          print *, "xlongall", xlongall
+         !  print *, "shape of xlatall", shape(xlatall), "shape of xlongall", shape(xlongall)
+         !  print *, "xlatall", xlatall
+         !  print *, "xlongall", xlongall
           !flatten the 2d arrays
           k = 1
           do j = jts, jte
             do i = its, ite
                xlatall1d(k) = xlatall(i, j)
                xlongall1d(k) = xlongall(i, j)
-               print *, "i, j", i, j, "xlatall(i, j)", xlatall(i, j), "xlongall(i, j)", xlongall(i, j)
+               ! print *, "i, j", i, j, "xlatall(i, j)", xlatall(i, j), "xlongall(i, j)", xlongall(i, j)
                k = k + 1
             end do
           end do
           print *, "curitime", curitime
           print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)
-          print *, "xlongall1d", xlongall1d
-          print *, "xlatall1d", xlatall1d
+         !  print *, "xlongall1d", xlongall1d
+         !  print *, "xlatall1d", xlatall1d
 
           call MPI_Initialized(initedMPI, ierr)
           if (.not. initedMPI) then
@@ -1214,7 +1214,7 @@ CONTAINS
           !print *, "Parent comm: ", parent_comm, " new comm: ", new_comm
           call MPI_Send(ite - its + 1, 1, MPI_INTEGER, 0, 3, new_comm, ierr)
           call MPI_Send(jte - jts + 1, 1, MPI_INTEGER, 0, 4, new_comm, ierr)
-          print *, "WRF sent ite - its + 1", ite - its + 1, "jte - jts + 1", jte - jts + 1
+         !  print *, "WRF sent ite - its + 1", ite - its + 1, "jte - jts + 1", jte - jts + 1
           call MPI_Send(xlatall1d, latlongall_length, MPI_REAL, 0, 1, new_comm, ierr)
           call MPI_Send(xlongall1d, latlongall_length, MPI_REAL, 0, 2, new_comm, ierr)
           ! !Sent lat, long info to EnergyPlus, then a searching algo will be done to find the closest lat, long for 
@@ -1223,11 +1223,11 @@ CONTAINS
           print *, "WRF rank ID", rank, "IDF_Coupling", IDF_Coupling
 
           call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 6, new_comm, status, ierr)
-          print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
+         !  print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
 
       end if
 
-      map_right_idx = ((curix - 1) * (ite - its + 1) + curiy) * num_children
+      map_right_idx = ((curiy - jts + 1 - 1) * (ite - its + 1) + curix - its + 1) * num_children
       map_left_idx = map_right_idx - num_children + 1
       one_grid_mapping = mapping_wrf_ep(map_left_idx:map_right_idx)
 
@@ -1236,6 +1236,7 @@ CONTAINS
          return
       else
          replaced = IDF_Coupling
+         print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "one_grid_mapping", one_grid_mapping
       end if
 
       if (saveitime(curix, curiy) == -886) then
@@ -1269,8 +1270,8 @@ CONTAINS
       received_data = 0
       do child_idx = 1, num_children
           if (one_grid_mapping(child_idx) .gt. 0) then
-          call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
-                  received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
+            call MPI_Sendrecv(wrf_weather, weatherLength, MPI_REAL, child_idx - 1, ucm_tag, &
+                     received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
           end if
       end do
       print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))

@@ -359,7 +359,7 @@ void receiveLongLat(void) {
         // print the received latlongalls
         for (int k = 0; k < allDomainLen[i]; k++) {
             // print the received data with higheset precision
-            printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
+            // printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
             rank,i, k, longall[i][k], k, latall[i][k]);
         }
     }
