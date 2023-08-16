@@ -1223,7 +1223,7 @@ CONTAINS
           print *, "WRF rank ID", rank, "IDF_Coupling", IDF_Coupling
 
           call MPI_Recv(mapping_wrf_ep, mapping_length, MPI_INTEGER, 0, 6, new_comm, status, ierr)
-         !  print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
+          print *, "WRF rank ID", rank, "mapping_wrf_ep", mapping_wrf_ep
 
       end if
 

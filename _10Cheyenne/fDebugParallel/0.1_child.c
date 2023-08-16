@@ -385,7 +385,7 @@ void receiveLongLat(void) {
 
     for (int j = 0; j < NBR_WRF; j++) {
         MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
-        printf("Child %d sent IDF_Coupling to WRF%d\n", rank, j);
+        printf("Child %d sent IDF_Coupling %d to WRF%d\n", rank, IDF_Coupling, j);
         MPI_Send(mappings[j], allDomainLen[j] * NBR_IDF, MPI_INT, j, MAPPING_TAG, parent_comm);
         // for (int k = 0; k < allDomainLen[j] * NBR_IDF; k++) {
         //     printf("Child %d sent mappings[%d][%d] = %d to WRF%d\n", rank, j, k, mappings[j][k], j);
@@ -417,7 +417,7 @@ void assignGeoData(int currentRank) {
         }
     }
 
-    printf("Rank = %d, line = %s\n", &currentRank, line);
+    printf("Rank = %d, line = %s\n", currentRank, line);
 
     char *token;
     token = strtok(line, ";"); // Split the line into blocks
