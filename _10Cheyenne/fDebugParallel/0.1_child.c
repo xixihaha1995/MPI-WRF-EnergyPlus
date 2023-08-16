@@ -55,11 +55,12 @@ typedef struct {
 } Building;
 
 typedef struct {
-    float footPrintM2;
     int bot[4];
     int* mid;
     int top[4];
 } GeoUWyo;
+
+GeoUWyo geoUWyoMyRank; // Global variable
 
 typedef struct {
     int botHandle[4];
@@ -405,6 +406,62 @@ void receiveLongLat(void) {
 
 }
 
+void assignGeoData(int currentRank) {
+    FILE *file = fopen("surfaceNames.txt", "r");
+    if (file == NULL) {
+        perror("Failed to open file");
+        exit(1);
+    }
+
+    char line[1000];
+    
+    for (int i = 0; i < currentRank + 2; i++) {
+        if (fgets(line, sizeof(line), file) == NULL) {
+            fprintf(stderr, "Invalid rank\n");
+            fclose(file);
+            exit(1);
+        }
+    }
+
+    printf("line = %s\n", line);
+
+    char *token;
+    token = strtok(line, ";"); // Split the line into blocks
+    
+    // Parsing bot values
+    token = strtok(NULL, ";");
+    sscanf(token, "%d, %d, %d, %d", 
+        &geoUWyoMyRank.bot[0], &geoUWyoMyRank.bot[1], &geoUWyoMyRank.bot[2], &geoUWyoMyRank.bot[3]);
+    
+
+    // Parsing mid values
+    token = strtok(NULL, ";");
+    int midCount = 0;
+    char *midToken = strtok(token, ",");
+    while (midToken != NULL) {
+        midCount++;
+        midToken = strtok(NULL, ",");
+    }
+    geoUWyoMyRank.mid = malloc(midCount * sizeof(int));
+    midToken = strtok(token, ",");
+    for (int i = 0; i < midCount; i++) {
+        sscanf(midToken, "%d", &geoUWyoMyRank.mid[i]);
+        midToken = strtok(NULL, ",");
+        printf("geoUWyoMyRank.mid[%d] = %d\n", i, geoUWyoMyRank.mid[i]);
+    }
+
+    // Parsing top values
+    token = strtok(NULL, ";");
+    sscanf(token, "%d, %d, %d, %d", &geoUWyoMyRank.top[0], &geoUWyoMyRank.top[1], &geoUWyoMyRank.top[2], &geoUWyoMyRank.top[3]);
+    fclose(file);
+
+    for (int i = 0; i < 4; i++) {
+        printf("geoUWyoMyRank.bot[%d] = %d\n", i, geoUWyoMyRank.bot[i]);
+        printf("geoUWyoMyRank.top[%d] = %d\n", i, geoUWyoMyRank.top[i]);
+    }
+}
+
+
 int main(int argc, char** argv) {
 
     int size, namelen;
@@ -419,7 +476,7 @@ int main(int argc, char** argv) {
     if (rank == 0) {
         receiveLongLat();
     }
-
+    assignGeoData(rank);
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
