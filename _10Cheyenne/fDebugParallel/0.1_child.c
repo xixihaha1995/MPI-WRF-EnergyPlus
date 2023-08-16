@@ -401,7 +401,7 @@ void receiveLongLat(void) {
 }
 
 void assignGeoData(int currentRank) {
-    FILE *file = fopen("surfaceNames.txt", "r");
+    FILE *file = fopen("./resources-23-1-0/surfaceNames.txt", "r");
     if (file == NULL) {
         perror("Failed to open file");
         exit(1);
