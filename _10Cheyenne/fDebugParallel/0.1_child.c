@@ -387,9 +387,9 @@ void receiveLongLat(void) {
         MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
         printf("Child %d sent IDF_Coupling %d to WRF%d\n", rank, IDF_Coupling, j);
         MPI_Send(mappings[j], allDomainLen[j] * NBR_IDF, MPI_INT, j, MAPPING_TAG, parent_comm);
-        for (int k = 0; k < allDomainLen[j] * NBR_IDF; k++) {
-            printf("Child %d sent mappings[%d][%d] = %d to WRF%d\n", rank, j, k, mappings[j][k], j);
-        }
+        // for (int k = 0; k < allDomainLen[j] * NBR_IDF; k++) {
+        //     printf("Child %d sent mappings[%d][%d] = %d to WRF%d\n", rank, j, k, mappings[j][k], j);
+        // }
     }
 
     for (int i = 0; i < NBR_WRF; i++) {
@@ -471,7 +471,8 @@ int main(int argc, char** argv) {
     if (rank == 0) {
         receiveLongLat();
     }
-    // assignGeoData(rank);
+    printf("Child %d: after receiveLongLat\n", rank);
+    assignGeoData(rank);
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
