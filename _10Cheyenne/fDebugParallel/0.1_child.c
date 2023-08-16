@@ -76,7 +76,7 @@ typedef struct {
 
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
-int rank = -1, performanc_length =2;
+int rank = -1, performanc_length =14;
 float msg_arr[3] = {-1, -1, -1};
 // float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
 int allDomainLen[NBR_WRF];
@@ -238,7 +238,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        surHandles = getSurHandle(state, geoUWyoMyRank);
+        // surHandles = getSurHandle(state, geoUWyoMyRank);
         
         if (simHVACSensor < 0)
         {
@@ -260,19 +260,19 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_W = simHVAC_J/ 3600;
 
-    surValues = getSurVal(state, surHandles);
+    // surValues = getSurVal(state, surHandles);
     // // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
-    Real64 avgMidVal[4];
-    for (int i = 0; i < midLen; i++) {
-        avgMidVal[i % 4] += surValues.midVal[i];
-    }
-    for (int i = 0; i < 4; i++) {
-        int num = midLen / 4;
-        avgMidVal[i] /= num;
-        printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
-        printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
-        printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
-    }
+    // Real64 avgMidVal[4];
+    // for (int i = 0; i < midLen; i++) {
+    //     avgMidVal[i % 4] += surValues.midVal[i];
+    // }
+    // for (int i = 0; i < 4; i++) {
+    //     int num = midLen / 4;
+    //     avgMidVal[i] /= num;
+    //     printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
+    //     printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
+    //     printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
+    // }
 
     // free(tempMidVal);
     if (! wasteMPIon)
@@ -287,12 +287,12 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         data[1] = -66.0;
     else
         data[1] = (float) simHVAC_W;
-    // bot 4, mid 4, top 4
-    for (int i = 0; i < 4; i++) {
-        data[i + 2] = (float) (surValues.botVal[i] + 273.15);
-        data[i + 6] = (float) (avgMidVal[i] + 273.15);
-        data[i + 10] = (float) (surValues.topVal[i] + 273.15);
-    }
+    // // bot 4, mid 4, top 4
+    // for (int i = 0; i < 4; i++) {
+    //     data[i + 2] = (float) (surValues.botVal[i] + 273.15);
+    //     data[i + 6] = (float) (avgMidVal[i] + 273.15);
+    //     data[i + 10] = (float) (surValues.topVal[i] + 273.15);
+    // }
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W),"
@@ -436,6 +436,7 @@ void assignGeoData(int currentRank) {
         midCount++;
         midToken = strtok(NULL, ",");
     }
+    printf("Rank = %d, midCount = %d\n", currentRank, midCount);
     geoUWyoMyRank.mid = malloc(midCount * sizeof(int));
     midToken = strtok(token, ",");
     for (int i = 0; i < midCount; i++) {
@@ -479,7 +480,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-    requestSur(state, geoUWyoMyRank);
+    // requestSur(state, geoUWyoMyRank);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
     const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/ep_temp" : ".";
