@@ -352,11 +352,11 @@ void receiveLongLat(void) {
         MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
 
         // print the received latlongalls
-        // for (int k = 0; k < allDomainLen[i]; k++) {
-        //     // print the received data with higheset precision
-        //     // printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
-        //     rank,i, k, longall[i][k], k, latall[i][k]);
-        // }
+        for (int k = 0; k < allDomainLen[i]; k++) {
+            // print the received data with higheset precision
+            // printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
+            rank,i, k, longall[i][k], k, latall[i][k]);
+        }
     }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
@@ -471,7 +471,7 @@ int main(int argc, char** argv) {
     if (rank == 0) {
         receiveLongLat();
     }
-    assignGeoData(rank);
+    // assignGeoData(rank);
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
