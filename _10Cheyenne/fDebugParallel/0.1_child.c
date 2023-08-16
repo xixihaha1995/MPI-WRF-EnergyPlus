@@ -106,12 +106,6 @@ int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
 int midLen = sizeof(midNames) / sizeof(midNames[0]);
 Real64* tempMidVal;
 
-GeoUWyo uwyo1 = {
-    .footPrintM2 = 162.15,
-    .bot = {8, 20, 26, 14},
-    .mid = midNames,
-    .top = {98, 110, 116, 104}
-};
 
 // I'd like add three more functions related with GeoUWyo1 surfaces,
 // one is used to request the surface variables
@@ -244,7 +238,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        // surHandles = getSurHandle(state, uwyo1);
+        // surHandles = getSurHandle(state, geoUWyoMyRank);
         
         if (simHVACSensor < 0)
         {
@@ -358,11 +352,11 @@ void receiveLongLat(void) {
         MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
 
         // print the received latlongalls
-        for (int k = 0; k < allDomainLen[i]; k++) {
-            // print the received data with higheset precision
-            // printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
-            rank,i, k, longall[i][k], k, latall[i][k]);
-        }
+        // for (int k = 0; k < allDomainLen[i]; k++) {
+        //     // print the received data with higheset precision
+        //     // printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
+        //     rank,i, k, longall[i][k], k, latall[i][k]);
+        // }
     }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
@@ -485,7 +479,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-    // requestSur(state, uwyo1);
+    // requestSur(state, geoUWyoMyRank);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
     const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/ep_temp" : ".";
