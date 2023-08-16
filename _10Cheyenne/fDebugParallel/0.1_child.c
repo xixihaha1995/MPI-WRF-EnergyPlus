@@ -430,18 +430,14 @@ void assignGeoData(int currentRank) {
 
     // Parsing mid values
     token = strtok(NULL, ";");
-    int midCount = 0;
-    char *midToken = strtok(token, ",");
-    while (midToken != NULL) {
-        midCount++;
-        midToken = strtok(NULL, ",");
-    }
+    int midCount;
+    sscanf(token, "%d", &midCount);
     printf("Rank = %d, midCount = %d\n", currentRank, midCount);
     geoUWyoMyRank.mid = malloc(midCount * sizeof(int));
-    midToken = strtok(token, ",");
+    token = strtok(NULL, ";");
     for (int i = 0; i < midCount; i++) {
-        sscanf(midToken, "%d", &geoUWyoMyRank.mid[i]);
-        midToken = strtok(NULL, ",");
+        sscanf(token, "%d", &geoUWyoMyRank.mid[i]);
+        token = strtok(NULL, ",");
         printf("geoUWyoMyRank.mid[%d] = %d\n", i, geoUWyoMyRank.mid[i]);
     }
 
