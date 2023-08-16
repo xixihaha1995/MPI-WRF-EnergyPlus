@@ -352,11 +352,11 @@ void receiveLongLat(void) {
         MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
 
         // print the received latlongalls
-        for (int k = 0; k < allDomainLen[i]; k++) {
-            // print the received data with higheset precision
-            printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
-            rank,i, k, longall[i][k], k, latall[i][k]);
-        }
+        // for (int k = 0; k < allDomainLen[i]; k++) {
+        //     // print the received data with higheset precision
+        //     printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
+        //     rank,i, k, longall[i][k], k, latall[i][k]);
+        // }
     }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
@@ -387,9 +387,9 @@ void receiveLongLat(void) {
         MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
         printf("Child %d sent IDF_Coupling %d to WRF%d\n", rank, IDF_Coupling, j);
         MPI_Send(mappings[j], allDomainLen[j] * NBR_IDF, MPI_INT, j, MAPPING_TAG, parent_comm);
-        // for (int k = 0; k < allDomainLen[j] * NBR_IDF; k++) {
-        //     printf("Child %d sent mappings[%d][%d] = %d to WRF%d\n", rank, j, k, mappings[j][k], j);
-        // }
+        for (int k = 0; k < allDomainLen[j] * NBR_IDF; k++) {
+            printf("Child %d sent mappings[%d][%d] = %d to WRF%d\n", rank, j, k, mappings[j][k], j);
+        }
     }
 
     for (int i = 0; i < NBR_WRF; i++) {
