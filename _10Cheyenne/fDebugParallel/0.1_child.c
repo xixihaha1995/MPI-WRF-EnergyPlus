@@ -122,12 +122,14 @@ void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
 
     char surfaceName[100];
     for (int i = 0; i < 4; i++) {
+        printf("rank = %d, bot[%d] = %d, top[%d] = %d\n", rank, i, geoUWyo.bot[i], i, geoUWyo.top[i]");
         sprintf(surfaceName, "Surface %d", geoUWyo.bot[i]);
         requestVariable(state, "Surface Outside Face Temperature", surfaceName);
         sprintf(surfaceName, "Surface %d", geoUWyo.top[i]);
         requestVariable(state, "Surface Outside Face Temperature", surfaceName);
     }
     for (int i = 0; i < midLen; i++) {
+        printf("rank = %d, mid[%d] = %d\n", rank, i, geoUWyo.mid[i]);
         sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
         requestVariable(state, "Surface Outside Face Temperature", surfaceName);
     }
@@ -166,11 +168,13 @@ SurfaceValues getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
     for (int i = 0; i < 4; i++) {
         surValues.botVal[i] = getVariableValue(state, surHandles.botHandle[i]);
         surValues.topVal[i] = getVariableValue(state, surHandles.topHandle[i]);
+        printf("rank = %d, botVal[%d] = %.2f, topVal[%d] = %.2f\n", rank, i, surValues.botVal[i], i, surValues.topVal[i]);
     }
     tempMidVal = malloc(midLen * sizeof(Real64));
     for (int i = 0; i < midLen; i++) {
         Real64 midVal = getVariableValue(state, surHandles.midHandle[i]);
         tempMidVal[i] = midVal;
+        printf("rank = %d, midVal[%d] = %.2f\n", rank, i, midVal);
     }
     surValues.midVal = tempMidVal;
     return surValues;
@@ -509,7 +513,7 @@ int main(int argc, char** argv) {
             (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
             rank + 1);
     sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf", rank+1);
-    printf("output_path = %s\n", output_path);
+    // printf("output_path = %s\n", output_path);
 
     char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
