@@ -410,6 +410,10 @@ void parseLine(const char *line, int currentRank) {
     token = strtok(NULL, ";");
     sscanf(token, "%d, %d, %d, %d", 
         &geoUWyoMyRank.bot[0], &geoUWyoMyRank.bot[1], &geoUWyoMyRank.bot[2], &geoUWyoMyRank.bot[3]);
+    
+    for (int i = 0; i < 4; i++) {
+        printf("Rank = %d, geoUWyoMyRank.bot[%d] = %d\n", currentRank, i, geoUWyoMyRank.bot[i]);
+    }
 
     // Parsing mid values
     token = strtok(NULL, ";");
@@ -420,7 +424,7 @@ void parseLine(const char *line, int currentRank) {
     token = strtok(NULL, ";");
     for (int i = 0; i < midCount; i++) {
         sscanf(token, "%d", &geoUWyoMyRank.mid[i]);
-        token = strtok(NULL, ",");
+        token = strtok(token, ",");
         printf("Rank %d, geoUWyoMyRank.mid[%d] = %d\n", currentRank, i, geoUWyoMyRank.mid[i]);
     }
 
@@ -429,8 +433,8 @@ void parseLine(const char *line, int currentRank) {
     sscanf(token, "%d, %d, %d, %d", &geoUWyoMyRank.top[0], &geoUWyoMyRank.top[1], &geoUWyoMyRank.top[2], &geoUWyoMyRank.top[3]);
 
     for (int i = 0; i < 4; i++) {
-        printf("Rank = %d, geoUWyoMyRank.bot[%d] = %d\n", currentRank, i, geoUWyoMyRank.bot[i]);
         printf("Rank = %d, geoUWyoMyRank.top[%d] = %d\n", currentRank, i, geoUWyoMyRank.top[i]);
+
     }
 
     free(lineCopy); // Free the deep copied line
