@@ -422,9 +422,13 @@ void parseLine(const char *line, int currentRank) {
     printf("Rank = %d, midCount = %d\n", currentRank, midCount);
     geoUWyoMyRank.mid = malloc(midCount * sizeof(int));
     token = strtok(NULL, ";");
+    char *tmpMid = strdup(token); // Deep copy of the mid values
+    char *value = strtok(tmpMid, ",");
+    geoUWyoMyRank.mid = malloc(midCount * sizeof(int));
+    
     for (int i = 0; i < midCount; i++) {
-        sscanf(token, "%d", &geoUWyoMyRank.mid[i]);
-        token = strtok(token, ",");
+        value = strtok(NULL, ",");
+        sscanf(value, "%d", &geoUWyoMyRank.mid[i]);
         printf("Rank %d, geoUWyoMyRank.mid[%d] = %d\n", currentRank, i, geoUWyoMyRank.mid[i]);
     }
 
@@ -434,9 +438,8 @@ void parseLine(const char *line, int currentRank) {
 
     for (int i = 0; i < 4; i++) {
         printf("Rank = %d, geoUWyoMyRank.top[%d] = %d\n", currentRank, i, geoUWyoMyRank.top[i]);
-
     }
-
+    free(tmpMid); // Free the deep copied mid values
     free(lineCopy); // Free the deep copied line
 }
 
