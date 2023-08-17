@@ -144,6 +144,7 @@ SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
         surHandles.botHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
         sprintf(surfaceName, "Surface %d", geoUWyo.top[i]);
         surHandles.topHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
+        printf("rank%d, getSurHandles, bot[%d] = %d, top[%d] = %d\n", rank, i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
         if (surHandles.botHandle[i] < 0 || surHandles.topHandle[i] < 0) {
             printf("Error: surHandles.botHandle[%d] = %d, surHandles.topHandle[%d] = %d\n",
                    i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
@@ -152,6 +153,7 @@ SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
     }
     for (int i = 0; i < midLen; i++) {
         sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
+        printf("rank%d, getSurHandles, mid[%d] = %d\n", rank, i, geoUWyo.mid[i]);
         surHandles.midHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
         if (surHandles.midHandle[i] < 0) {
             printf("Error: surHandles.midHandle[%d] = %d\n", i, surHandles.midHandle[i]);
@@ -168,13 +170,13 @@ SurfaceValues getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
     for (int i = 0; i < 4; i++) {
         surValues.botVal[i] = getVariableValue(state, surHandles.botHandle[i]);
         surValues.topVal[i] = getVariableValue(state, surHandles.topHandle[i]);
-        printf("rank = %d, botVal[%d] = %.2f, topVal[%d] = %.2f\n", rank, i, surValues.botVal[i], i, surValues.topVal[i]);
+        printf("rank = %d, getSurVal, botVal[%d] = %.2f, topVal[%d] = %.2f\n", rank, i, surValues.botVal[i], i, surValues.topVal[i]);
     }
     tempMidVal = malloc(midLen * sizeof(Real64));
     for (int i = 0; i < midLen; i++) {
         Real64 midVal = getVariableValue(state, surHandles.midHandle[i]);
         tempMidVal[i] = midVal;
-        printf("rank = %d, midVal[%d] = %.2f\n", rank, i, midVal);
+        printf("rank = %d, getSurVal, midVal[%d] = %.2f\n", rank, i, midVal);
     }
     surValues.midVal = tempMidVal;
     return surValues;
@@ -245,7 +247,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        // surHandles = getSurHandle(state, geoUWyoMyRank);
+        surHandles = getSurHandle(state, geoUWyoMyRank);
         
         if (simHVACSensor < 0)
         {
@@ -267,7 +269,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_W = simHVAC_J/ 3600;
 
-    // surValues = getSurVal(state, surHandles);
+    surValues = getSurVal(state, surHandles);
     // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
     // Real64 avgMidVal[4];
     // for (int i = 0; i < midLen; i++) {
