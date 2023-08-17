@@ -122,7 +122,7 @@ void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
 
     char surfaceName[100];
     for (int i = 0; i < 4; i++) {
-        printf("rank = %d, bot[%d] = %d, top[%d] = %d\n", rank, i, geoUWyo.bot[i], i, geoUWyo.top[i]");
+        printf("rank = %d, bot[%d] = %d, top[%d] = %d\n", rank, i, geoUWyo.bot[i], i, geoUWyo.top[i]);
         sprintf(surfaceName, "Surface %d", geoUWyo.bot[i]);
         requestVariable(state, "Surface Outside Face Temperature", surfaceName);
         sprintf(surfaceName, "Surface %d", geoUWyo.top[i]);
