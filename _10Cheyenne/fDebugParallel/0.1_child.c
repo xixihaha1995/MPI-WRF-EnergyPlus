@@ -429,9 +429,9 @@ void parseLine(const char *line, int currentRank) {
     for (int i = 0; i < geoUWyoMyRank.midcount; i++) {
         printf("Rank = %d, mid %d token = %s\n", currentRank, i, token);
         sscanf(token, "%d", &geoUWyoMyRank.mid[i]);
-        if (i != geoUWyoMyRank.midcount - 1) {
+        if (i < geoUWyoMyRank.midcount - 2) {
             token = strtok(NULL, ",");
-        } else {
+        } else if (i == geoUWyoMyRank.midcount - 2) {
             token = strtok(NULL, ";");
         }
     }
