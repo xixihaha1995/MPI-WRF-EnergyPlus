@@ -76,6 +76,11 @@ typedef struct {
     Real64 topVal[4];
 } SurfaceValues;
 
+SurfaceHandles surHandles;
+SurfaceValues surValues;
+
+int midLen = 0;
+
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1, performanc_length =14;
@@ -99,13 +104,8 @@ int weatherMPIon = 1, wasteMPIon = 1;
 int IDF_Coupling = 1; //0, offline; 1, waste; 2, waste + surface;
 MPI_Comm parent_comm;
 MPI_Status status;
-SurfaceHandles surHandles;
-SurfaceValues surValues;
 
 
-
-int midNames[] = {38, 50, 56, 44, 68, 80, 86, 74};
-int midLen = sizeof(midNames) / sizeof(midNames[0]);
 Real64* tempMidVal;
 
 
@@ -135,9 +135,8 @@ void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
     }
 }
 
-SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
+void getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
     // This function is used to iterate bot, mid, top surfaces. get their handles
-    SurfaceHandles surHandles;
     char surfaceName[100];
     for (int i = 0; i < 4; i++) {
         sprintf(surfaceName, "Surface %d", geoUWyo.bot[i]);
@@ -160,26 +159,20 @@ SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
             exit(1);
         }
     }
-    free(geoUWyo.mid);
-    return surHandles;
 }
 
-SurfaceValues getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
+void getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
     // This function is used to iterate bot, mid, top surfaces. get their values
-    SurfaceValues surValues;
     for (int i = 0; i < 4; i++) {
         surValues.botVal[i] = getVariableValue(state, surHandles.botHandle[i]);
         surValues.topVal[i] = getVariableValue(state, surHandles.topHandle[i]);
         printf("rank = %d, getSurVal, botVal[%d] = %.2f, topVal[%d] = %.2f\n", rank, i, surValues.botVal[i], i, surValues.topVal[i]);
     }
-    tempMidVal = malloc(midLen * sizeof(Real64));
+
     for (int i = 0; i < midLen; i++) {
-        Real64 midVal = getVariableValue(state, surHandles.midHandle[i]);
-        tempMidVal[i] = midVal;
-        printf("rank = %d, getSurVal, midVal[%d] = %.2f\n", rank, i, midVal);
+        surValues.midVal[i] = getVariableValue(state, surHandles.midHandle[i]);
+        printf("rank = %d, getSurVal, midVal[%d] = %.2f\n", rank, i, surValues.midVal[i]);
     }
-    surValues.midVal = tempMidVal;
-    return surValues;
 }
 
 void overwriteEpWeather(EnergyPlusState state) {
@@ -247,7 +240,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        surHandles = getSurHandle(state, geoUWyoMyRank);
+        getSurHandle(state, geoUWyoMyRank);
         
         if (simHVACSensor < 0)
         {
@@ -269,7 +262,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_W = simHVAC_J/ 3600;
 
-    surValues = getSurVal(state, surHandles);
+    getSurVal(state, surHandles);
     // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
     // Real64 avgMidVal[4];
     // for (int i = 0; i < midLen; i++) {
@@ -428,10 +421,15 @@ void parseLine(const char *line, int currentRank) {
     // Parse midcount
     token = strtok(NULL, ";");
     sscanf(token, "%d", &geoUWyoMyRank.midcount);
+    midLen = geoUWyoMyRank.midcount;
+
     // printf("midcount = %d\n", geoUWyoMyRank.midcount);
     
     // Parse mid values
     geoUWyoMyRank.mid = malloc(geoUWyoMyRank.midcount * sizeof(int));
+    surHandles.midHandle = malloc(geoUWyoMyRank.midcount * sizeof(int));
+    surValues.midVal = malloc(geoUWyoMyRank.midcount * sizeof(Real64));
+
     token = strtok(NULL, ",");
     for (int i = 0; i < geoUWyoMyRank.midcount; i++) {
         // printf("Rank = %d, mid %d token = %s\n", currentRank, i, token);
