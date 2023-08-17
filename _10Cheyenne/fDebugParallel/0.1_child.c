@@ -431,8 +431,6 @@ void parseLine(const char *line, int currentRank) {
         sscanf(token, "%d", &geoUWyoMyRank.mid[i]);
         if (i != geoUWyoMyRank.midcount - 1) {
             token = strtok(NULL, ",");
-        } else {
-            token = strtok(NULL, ";");
         }
     }
 
