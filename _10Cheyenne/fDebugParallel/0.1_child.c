@@ -439,7 +439,7 @@ void parseLine(const char *line, int currentRank) {
         printf("%d ", geoUWyoMyRank.mid[i]);
     }
     // Parse top values
-    // token = strtok(NULL, ";");
+    token = strtok(NULL, ";");
     sscanf(token, "%d, %d, %d, %d", 
         &geoUWyoMyRank.top[0], &geoUWyoMyRank.top[1], &geoUWyoMyRank.top[2], &geoUWyoMyRank.top[3]);
     printf("\ntop = %d %d %d %d\n", 
