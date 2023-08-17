@@ -156,6 +156,7 @@ SurfaceHandles getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
             exit(1);
         }
     }
+    free(geoUWyo.mid);
     return surHandles;
 }
 
@@ -240,7 +241,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        // surHandles = getSurHandle(state, geoUWyoMyRank);
+        surHandles = getSurHandle(state, geoUWyoMyRank);
         
         if (simHVACSensor < 0)
         {
@@ -262,22 +263,22 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_W = simHVAC_J/ 3600;
 
-    // surValues = getSurVal(state, surHandles);
-    // // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
-    // Real64 avgMidVal[4];
-    // for (int i = 0; i < midLen; i++) {
-    //     avgMidVal[i % 4] += surValues.midVal[i];
-    // }
-    // for (int i = 0; i < 4; i++) {
-    //     int num = midLen / 4;
-    //     avgMidVal[i] /= num;
-    //     printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
-    //     printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
-    //     printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
-    // }
+    surValues = getSurVal(state, surHandles);
+    // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
+    Real64 avgMidVal[4];
+    for (int i = 0; i < midLen; i++) {
+        avgMidVal[i % 4] += surValues.midVal[i];
+    }
+    for (int i = 0; i < 4; i++) {
+        int num = midLen / 4;
+        avgMidVal[i] /= num;
+        printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
+        printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
+        printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
+    }
 
     // free(tempMidVal);
-    if (! wasteMPIon)
+    if (!wasteMPIon)
     {
         printf("Child rank = %d wasteMPIon=0, No more MPI, simTime = %.2f (s), simHVAC_W = %.2f (W), \n", rank, simTime, simHVAC_W);
         return;
@@ -290,11 +291,11 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     else
         data[1] = (float) simHVAC_W;
     // // bot 4, mid 4, top 4
-    // for (int i = 0; i < 4; i++) {
-    //     data[i + 2] = (float) (surValues.botVal[i] + 273.15);
-    //     data[i + 6] = (float) (avgMidVal[i] + 273.15);
-    //     data[i + 10] = (float) (surValues.topVal[i] + 273.15);
-    // }
+    for (int i = 0; i < 4; i++) {
+        data[i + 2] = (float) (surValues.botVal[i] + 273.15);
+        data[i + 6] = (float) (avgMidVal[i] + 273.15);
+        data[i + 10] = (float) (surValues.topVal[i] + 273.15);
+    }
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W),"
@@ -410,24 +411,24 @@ void parseLine(const char *line, int currentRank) {
     
     // Parse id
     sscanf(token, "%d", &geoUWyoMyRank.id);
-    printf("id = %d\n", geoUWyoMyRank.id);
+    // printf("id = %d\n", geoUWyoMyRank.id);
     // Parse bot values
     token = strtok(NULL, ";");
     sscanf(token, "%d, %d, %d, %d", 
         &geoUWyoMyRank.bot[0], &geoUWyoMyRank.bot[1], &geoUWyoMyRank.bot[2], &geoUWyoMyRank.bot[3]);
-    printf("bot = %d %d %d %d\n", 
-        geoUWyoMyRank.bot[0], geoUWyoMyRank.bot[1], geoUWyoMyRank.bot[2], geoUWyoMyRank.bot[3]);
+    // printf("bot = %d %d %d %d\n", 
+    //     geoUWyoMyRank.bot[0], geoUWyoMyRank.bot[1], geoUWyoMyRank.bot[2], geoUWyoMyRank.bot[3]);
     
     // Parse midcount
     token = strtok(NULL, ";");
     sscanf(token, "%d", &geoUWyoMyRank.midcount);
-    printf("midcount = %d\n", geoUWyoMyRank.midcount);
+    // printf("midcount = %d\n", geoUWyoMyRank.midcount);
     
     // Parse mid values
     geoUWyoMyRank.mid = malloc(geoUWyoMyRank.midcount * sizeof(int));
     token = strtok(NULL, ",");
     for (int i = 0; i < geoUWyoMyRank.midcount; i++) {
-        printf("Rank = %d, mid %d token = %s\n", currentRank, i, token);
+        // printf("Rank = %d, mid %d token = %s\n", currentRank, i, token);
         sscanf(token, "%d", &geoUWyoMyRank.mid[i]);
         if (i < geoUWyoMyRank.midcount - 2) {
             token = strtok(NULL, ",");
@@ -436,15 +437,15 @@ void parseLine(const char *line, int currentRank) {
         }
     }
 
-    printf("mid = ");
-    for (int i = 0; i < geoUWyoMyRank.midcount; i++) {
-        printf("%d ", geoUWyoMyRank.mid[i]);
-    }
+    // printf("mid = ");
+    // for (int i = 0; i < geoUWyoMyRank.midcount; i++) {
+    //     printf("%d ", geoUWyoMyRank.mid[i]);
+    // }
     // Parse top values
     token = strtok(NULL, ";");
     sscanf(token, "%d, %d, %d, %d", 
         &geoUWyoMyRank.top[0], &geoUWyoMyRank.top[1], &geoUWyoMyRank.top[2], &geoUWyoMyRank.top[3]);
-    printf("\ntop = %d %d %d %d\n", 
+    printf("Rank %d, top = %d %d %d %d\n", currentRank,
         geoUWyoMyRank.top[0], geoUWyoMyRank.top[1], geoUWyoMyRank.top[2], geoUWyoMyRank.top[3]);
 
     // Free memory allocated for mid array
@@ -468,12 +469,9 @@ void assignGeoData(int currentRank) {
     }
 
     printf("Rank = %d, line = %s\n", currentRank, line);
-
     parseLine(line, currentRank);
-
     fclose(file);
-
-    free(geoUWyoMyRank.mid);
+    // free(geoUWyoMyRank.mid);
 }
 
 
@@ -501,7 +499,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-    // requestSur(state, geoUWyoMyRank);
+    requestSur(state, geoUWyoMyRank);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
     const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/ep_temp" : ".";
