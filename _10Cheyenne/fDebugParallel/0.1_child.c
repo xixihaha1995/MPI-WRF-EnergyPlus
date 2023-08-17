@@ -264,17 +264,17 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 
     getSurVal(state, surHandles);
     // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
-    // Real64 avgMidVal[4];
-    // for (int i = 0; i < midLen; i++) {
-    //     avgMidVal[i % 4] += surValues.midVal[i];
-    // }
-    // for (int i = 0; i < 4; i++) {
-    //     int num = midLen / 4;
-    //     avgMidVal[i] /= num;
-    //     printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
-    //     printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
-    //     printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
-    // }
+    Real64 avgMidVal[4];
+    for (int i = 0; i < midLen; i++) {
+        avgMidVal[i % 4] += surValues.midVal[i];
+    }
+    for (int i = 0; i < 4; i++) {
+        int num = midLen / 4;
+        avgMidVal[i] /= num;
+        printf("Botom surface %d temperature = %.2f (C)\n", i, surValues.botVal[i]);
+        printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
+        printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
+    }
 
     // free(tempMidVal);
     if (!wasteMPIon)
@@ -290,11 +290,11 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     else
         data[1] = (float) simHVAC_W;
     // // bot 4, mid 4, top 4
-    // for (int i = 0; i < 4; i++) {
-    //     data[i + 2] = (float) (surValues.botVal[i] + 273.15);
-    //     data[i + 6] = (float) (avgMidVal[i] + 273.15);
-    //     data[i + 10] = (float) (surValues.topVal[i] + 273.15);
-    // }
+    for (int i = 0; i < 4; i++) {
+        data[i + 2] = (float) (surValues.botVal[i] + 273.15);
+        data[i + 6] = (float) (avgMidVal[i] + 273.15);
+        data[i + 10] = (float) (surValues.topVal[i] + 273.15);
+    }
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W),"
