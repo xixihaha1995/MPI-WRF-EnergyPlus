@@ -400,33 +400,16 @@ void receiveLongLat(void) {
 
 }
 
-void assignGeoData(int currentRank) {
-    FILE *file = fopen("./resources-23-1-0/surfaceNames.txt", "r");
-    if (file == NULL) {
-        perror("Failed to open file");
-        exit(1);
-    }
-
-    char line[1000];
+void parseLine(const char *line, int currentRank) {
+    char *lineCopy = strdup(line); // Perform a deep copy of the line
     
-    for (int i = 0; i < currentRank + 2; i++) {
-        if (fgets(line, sizeof(line), file) == NULL) {
-            fprintf(stderr, "Invalid rank\n");
-            fclose(file);
-            exit(1);
-        }
-    }
-
-    printf("Rank = %d, line = %s\n", currentRank, line);
-
     char *token;
-    token = strtok(line, ";"); // Split the line into blocks
+    token = strtok(lineCopy, ";"); // Split the line into blocks
     
     // Parsing bot values
     token = strtok(NULL, ";");
     sscanf(token, "%d, %d, %d, %d", 
         &geoUWyoMyRank.bot[0], &geoUWyoMyRank.bot[1], &geoUWyoMyRank.bot[2], &geoUWyoMyRank.bot[3]);
-    
 
     // Parsing mid values
     token = strtok(NULL, ";");
@@ -438,18 +421,44 @@ void assignGeoData(int currentRank) {
     for (int i = 0; i < midCount; i++) {
         sscanf(token, "%d", &geoUWyoMyRank.mid[i]);
         token = strtok(NULL, ",");
-        printf("geoUWyoMyRank.mid[%d] = %d\n", i, geoUWyoMyRank.mid[i]);
+        printf("Rank %d, geoUWyoMyRank.mid[%d] = %d\n", currentRank, i, geoUWyoMyRank.mid[i]);
     }
 
     // Parsing top values
     token = strtok(NULL, ";");
     sscanf(token, "%d, %d, %d, %d", &geoUWyoMyRank.top[0], &geoUWyoMyRank.top[1], &geoUWyoMyRank.top[2], &geoUWyoMyRank.top[3]);
-    fclose(file);
 
     for (int i = 0; i < 4; i++) {
-        printf("geoUWyoMyRank.bot[%d] = %d\n", i, geoUWyoMyRank.bot[i]);
-        printf("geoUWyoMyRank.top[%d] = %d\n", i, geoUWyoMyRank.top[i]);
+        printf("Rank = %d, geoUWyoMyRank.bot[%d] = %d\n", currentRank, i, geoUWyoMyRank.bot[i]);
+        printf("Rank = %d, geoUWyoMyRank.top[%d] = %d\n", currentRank, i, geoUWyoMyRank.top[i]);
     }
+
+    free(lineCopy); // Free the deep copied line
+}
+
+void assignGeoData(int currentRank) {
+    FILE *file = fopen("./resources-23-1-0/surfaceNames.txt", "r");
+    if (file == NULL) {
+        perror("Failed to open file");
+        exit(1);
+    }
+
+    char line[1000];
+    for (int i = 0; i < currentRank + 2; i++) {
+        if (fgets(line, sizeof(line), file) == NULL) {
+            fprintf(stderr, "Invalid rank\n");
+            fclose(file);
+            exit(1);
+        }
+    }
+
+    printf("Rank = %d, line = %s\n", currentRank, line);
+
+    parseLine(line, currentRank);
+
+    fclose(file);
+
+    free(geoUWyoMyRank.mid);
 }
 
 
