@@ -427,9 +427,9 @@ void parseLine(const char *line, int currentRank) {
     geoUWyoMyRank.mid = malloc(midCount * sizeof(int));
     
     for (int i = 0; i < midCount; i++) {
-        value = strtok(NULL, ",");
         sscanf(value, "%d", &geoUWyoMyRank.mid[i]);
         printf("Rank %d, geoUWyoMyRank.mid[%d] = %d\n", currentRank, i, geoUWyoMyRank.mid[i]);
+        value = strtok(NULL, ",");
     }
 
     // Parsing top values
