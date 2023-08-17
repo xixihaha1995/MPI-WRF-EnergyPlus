@@ -55,8 +55,10 @@ typedef struct {
 } Building;
 
 typedef struct {
+    int id;
     int bot[4];
-    int* mid;
+    int *mid;
+    int midcount;
     int top[4];
 } GeoUWyo;
 
@@ -401,45 +403,46 @@ void receiveLongLat(void) {
 }
 
 void parseLine(const char *line, int currentRank) {
+    GeoUWyo geo;
     char *lineCopy = strdup(line); // Perform a deep copy of the line
     
     char *token;
-    token = strtok(lineCopy, ";"); // Split the line into blocks
+    token = strtok(lineCopy, ";"); // Split the line into parts
     
-    // Parsing bot values
-    token = strtok(NULL, ";");
-    sscanf(token, "%d, %d, %d, %d", 
-        &geoUWyoMyRank.bot[0], &geoUWyoMyRank.bot[1], &geoUWyoMyRank.bot[2], &geoUWyoMyRank.bot[3]);
+    // Parse id
+    sscanf(token, "%d", &geo.id);
     
-    for (int i = 0; i < 4; i++) {
-        printf("Rank = %d, geoUWyoMyRank.bot[%d] = %d\n", currentRank, i, geoUWyoMyRank.bot[i]);
-    }
-
-    // Parsing mid values
+    // Parse bot values
     token = strtok(NULL, ";");
-    int midCount;
-    sscanf(token, "%d", &midCount);
-    printf("Rank = %d, midCount = %d\n", currentRank, midCount);
-    geoUWyoMyRank.mid = malloc(midCount * sizeof(int));
-    token = strtok(NULL, ";");
-    char *tmpMid = strdup(token); // Deep copy of the mid values
-    char *value = strtok(tmpMid, ",");
-    geoUWyoMyRank.mid = malloc(midCount * sizeof(int));
+    sscanf(token, "%d, %d, %d, %d", &geo.bot[0], &geo.bot[1], &geo.bot[2], &geo.bot[3]);
     
-    for (int i = 0; i < midCount; i++) {
-        sscanf(value, "%d", &geoUWyoMyRank.mid[i]);
-        printf("Rank %d, geoUWyoMyRank.mid[%d] = %d\n", currentRank, i, geoUWyoMyRank.mid[i]);
-        value = strtok(NULL, ",");
-    }
-
-    // Parsing top values
+    // Parse midcount
     token = strtok(NULL, ";");
-    sscanf(token, "%d, %d, %d, %d", &geoUWyoMyRank.top[0], &geoUWyoMyRank.top[1], &geoUWyoMyRank.top[2], &geoUWyoMyRank.top[3]);
-
-    for (int i = 0; i < 4; i++) {
-        printf("Rank = %d, geoUWyoMyRank.top[%d] = %d\n", currentRank, i, geoUWyoMyRank.top[i]);
+    sscanf(token, "%d", &geo.midcount);
+    
+    // Parse mid values
+    token = strtok(NULL, ";");
+    geo.mid = malloc(geo.midcount * sizeof(int));
+    for (int i = 0; i < geo.midcount; i++) {
+        sscanf(token, "%d", &geo.mid[i]);
+        token = strtok(NULL, ",");
     }
-    free(tmpMid); // Free the deep copied mid values
+    
+    // Parse top values
+    token = strtok(NULL, ";");
+    sscanf(token, "%d, %d, %d, %d", &geo.top[0], &geo.top[1], &geo.top[2], &geo.top[3]);
+    
+    // Print the parsed values for verification
+    printf("id = %d\n", geo.id);
+    printf("bot = %d %d %d %d\n", geo.bot[0], geo.bot[1], geo.bot[2], geo.bot[3]);
+    printf("midcount = %d\n", geo.midcount);
+    printf("mid = ");
+    for (int i = 0; i < geo.midcount; i++) {
+        printf("%d ", geo.mid[i]);
+    }
+    printf("\ntop = %d %d %d %d\n", geo.top[0], geo.top[1], geo.top[2], geo.top[3]);
+
+    // Free memory allocated for mid array
     free(lineCopy); // Free the deep copied line
 }
 
