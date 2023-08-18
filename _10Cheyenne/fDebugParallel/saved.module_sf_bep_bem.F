@@ -1156,7 +1156,7 @@ CONTAINS
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
-      integer :: IDF_Coupling
+      integer,save :: IDF_Coupling
       integer :: replaced
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
