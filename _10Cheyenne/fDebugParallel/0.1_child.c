@@ -306,7 +306,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     if (IDF_Coupling == 0)
         data[1] = -66.0;
     else
-        data[1] = (float) simHVAC_W;
+        data[1] = (float) simHVAC_W * 10;
     // // bot 4, mid 4, top 4
     for (int i = 0; i < 4; i++) {
         data[i + 2] = (float) (surValues.botVal[i] + 273.15);
