@@ -1156,7 +1156,8 @@ CONTAINS
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
-      integer, save :: replaced, IDF_Coupling
+      integer :: IDF_Coupling
+      integer, intent(inout) :: replaced
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
@@ -1613,7 +1614,7 @@ CONTAINS
       real :: mean_recv_waste_w
       real, dimension(3) :: wrf_weather
       real, dimension(14) :: wM2_12K;
-      integer,save :: replaced
+      integer :: replaced
       integer wrfFlrIdx, ims, ime, jms, jme, its, ite, jts, jte
 
       REAL, DIMENSION(ims:ime, jms:jme), &
