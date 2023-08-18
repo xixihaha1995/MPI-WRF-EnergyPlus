@@ -10,7 +10,6 @@
 #include <math.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define INNERMOST_POINTS 51
 #define NBR_IDF 3
 #define NBR_WRF 1
 #define HOR_LEN_TAG 3
@@ -88,7 +87,6 @@ int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
 int rank = -1, performanc_length =15;
 float msg_arr[3] = {-1, -1, -1};
-// float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
 int allDomainLen[NBR_WRF];
 float *longall[NBR_WRF], *latall[NBR_WRF];
 int *mappings[NBR_WRF];
@@ -376,11 +374,11 @@ void receiveLongLat(void) {
         MPI_Recv(longall[i], allDomainLen[i], MPI_FLOAT, i, LONG_TAG, parent_comm, &status);
 
         // print the received latlongalls
-        // for (int k = 0; k < allDomainLen[i]; k++) {
-        //     // print the received data with higheset precision
-        //     printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
-        //     rank,i, k, longall[i][k], k, latall[i][k]);
-        // }
+        for (int k = 0; k < allDomainLen[i]; k++) {
+            // print the received data with higheset precision
+            printf("Child %d received info from WRF %d, longall[%d] = %.10f, latall[%d] = %.10f\n", 
+            rank,i, k, longall[i][k], k, latall[i][k]);
+        }
     }
 
     FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
@@ -519,6 +517,7 @@ int main(int argc, char** argv) {
     if (rank == 0) {
         receiveLongLat();
     }
+    MPI_Barrier(MPI_COMM_WORLD);
     printf("Child %d: after receiveLongLat\n", rank);
     assignGeoData(rank);
     char output_path[MPI_MAX_PROCESSOR_NAME];
