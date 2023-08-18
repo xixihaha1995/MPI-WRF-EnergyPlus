@@ -294,7 +294,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
         printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
     }
-    printf("Roof surface temperature = %.2f (C)\n", surValues.roofVal);
+    // printf("Roof surface temperature = %.2f (C)\n", surValues.roofVal);
 
     // free(tempMidVal);
     if (!wasteMPIon)
@@ -319,7 +319,8 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W),"
-        "data[0], data[1] = %.2f, %.2f\n", rank, footprintm2[rank], simHVAC_W, data[0], data[1]);
+        "data[0], data[1] = %.2f, %.2f, data[performanc_length - 1] = %.2f\n", 
+        rank, footprintm2[rank], simHVAC_W, data[0], data[1], data[performanc_length - 1]);
     
     if (!weatherMPIon) {
         printf("Child %d reached collective barrier, all my siblings here, let's end MPI. \n", rank);
