@@ -1862,9 +1862,9 @@ CONTAINS
                ! print *, "trb1D", trb1D
                ! print *, "nlev", nlev
                ! print *, "ibui", ibui, "iurb", iurb, "nz_um", nz_um
-               print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
-               print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
-               print *, 'Before trb1d', trb1D
+               ! print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
+               ! print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+               ! print *, 'Before trb1d', trb1D
                if (replaced == 0) then 
                   ! print *, 'offline; one way coupling from WRF -> EP'
                else
@@ -1877,6 +1877,7 @@ CONTAINS
                      end do
                      trb1D(10) = wM2_12K(14)
                      print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+                     print *, 'After trb1d(10)', trb1D(10)
                   end if
                end if
          endif
