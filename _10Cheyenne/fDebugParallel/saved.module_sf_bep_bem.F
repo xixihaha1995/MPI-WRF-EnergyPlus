@@ -1138,7 +1138,7 @@ CONTAINS
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
       integer ::  ending_steps = (23 ) * nbr_steps_hr, ucm_tag = 0
-      integer, parameter ::  num_children = 3, performance_length = 14, weatherLength = 3, wrfNeedLen = 13
+      integer, parameter ::  num_children = 3, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
@@ -1611,7 +1611,7 @@ CONTAINS
       real sfr_avb(ndm, nbui_max)
       real :: mean_recv_waste_w
       real, dimension(3) :: wrf_weather
-      real, dimension(13) :: wM2_12K;
+      real, dimension(14) :: wM2_12K;
       integer :: replaced
       integer wrfFlrIdx, ims, ime, jms, jme, its, ite, jts, jte
 
@@ -1864,6 +1864,7 @@ CONTAINS
                ! print *, "ibui", ibui, "iurb", iurb, "nz_um", nz_um
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+               print *, 'Before trb1d', trb1D
                if (replaced == 0) then 
                   ! print *, 'offline; one way coupling from WRF -> EP'
                else
@@ -1874,6 +1875,7 @@ CONTAINS
                      do wrfFlrIdx = 1, 3
                         twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
                      end do
+                     trb1D(10) = wM2_12K(14)
                      print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                   end if
                end if

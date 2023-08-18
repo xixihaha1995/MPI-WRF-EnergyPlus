@@ -86,7 +86,7 @@ int midLen = 0;
 
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
-int rank = -1, performanc_length =14;
+int rank = -1, performanc_length =15;
 float msg_arr[3] = {-1, -1, -1};
 // float longall[INNERMOST_POINTS * INNERMOST_POINTS], latall[INNERMOST_POINTS * INNERMOST_POINTS];
 int allDomainLen[NBR_WRF];
@@ -136,6 +136,10 @@ void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
         sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
         requestVariable(state, "Surface Outside Face Temperature", surfaceName);
     }
+
+    printf("rank = %d, roof = %d\n", rank, geoUWyo.roof);
+    sprintf(surfaceName, "Surface %d", geoUWyo.roof);
+    requestVariable(state, "Surface Outside Face Temperature", surfaceName);
 }
 
 void getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
@@ -162,6 +166,15 @@ void getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
             exit(1);
         }
     }
+
+    sprintf(surfaceName, "Surface %d", geoUWyo.roof);
+    printf("rank%d, getSurHandles, roof = %d\n", rank, geoUWyo.roof);
+    surHandles.roofHandle = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
+    if (surHandles.roofHandle < 0) {
+        printf("Error: surHandles.roofHandle = %d\n", surHandles.roofHandle);
+        exit(1);
+    }
+
 }
 
 void getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
@@ -176,6 +189,9 @@ void getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
         surValues.midVal[i] = getVariableValue(state, surHandles.midHandle[i]);
         printf("rank = %d, getSurVal, midVal[%d] = %.2f\n", rank, i, surValues.midVal[i]);
     }
+
+    surValues.roofVal = getVariableValue(state, surHandles.roofHandle);
+    printf("rank = %d, getSurVal, roofVal = %.2f\n", rank, surValues.roofVal);
 }
 
 void overwriteEpWeather(EnergyPlusState state) {
@@ -278,6 +294,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         printf("Mid surface %d temperature = %.2f (C)\n", i, avgMidVal[i]);
         printf("Top surface %d temperature = %.2f (C)\n", i, surValues.topVal[i]);
     }
+    printf("Roof surface temperature = %.2f (C)\n", surValues.roofVal);
 
     // free(tempMidVal);
     if (!wasteMPIon)
@@ -298,6 +315,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         data[i + 6] = (float) (avgMidVal[i] + 273.15);
         data[i + 10] = (float) (surValues.topVal[i] + 273.15);
     }
+    data[performanc_length - 1] = surValues.roofVal + 273.15;
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W),"
