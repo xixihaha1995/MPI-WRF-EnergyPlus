@@ -1274,11 +1274,11 @@ CONTAINS
                      received_data(child_idx, :), performance_length,MPI_REAL, child_idx - 1, MPI_ANY_TAG, new_comm, status, ierr)
           end if
       end do
-      print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
-      print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
+      ! print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
+      ! print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
       saved_wM2_12k(curix, curiy, :) = wM2_12K
-      print *, "WRF (Parent(s)) wM2_12K", wM2_12K
+      ! print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
       !wM2_12K(2:13) = sum(received_data(:, 3:14), dim=1) / num_children
       ! print *, "WRF (Parent(s)) received_data (m2;w;12 surface[K])", received_data
@@ -1858,16 +1858,17 @@ CONTAINS
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                its, ite, jts, jte,ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
-               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3 !it's currently averaged by bld footprint. And divided by three floors.
+               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /nlev(ibui) !it's currently averaged by bld footprint. And divided by three floors.
                ! print *, "trb1D", trb1D
-               print *, "nlev", nlev
-               print *, "ibui", ibui, "iurb", iurb, "nz_um", nz_um
+               ! print *, "nlev", nlev
+               ! print *, "ibui", ibui, "iurb", iurb, "nz_um", nz_um
                print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
+               print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                if (replaced == 0) then 
                   ! print *, 'offline; one way coupling from WRF -> EP'
                else
                   ! print *, "mean_recv_waste_w", mean_recv_waste_w
-                  sflev1D(1:3) = mean_recv_waste_w
+                  sflev1D(1:nlev(ibui)) = mean_recv_waste_w
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   if (replaced == 2) then
                      do wrfFlrIdx = 1, 3

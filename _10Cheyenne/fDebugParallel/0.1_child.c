@@ -60,6 +60,7 @@ typedef struct {
     int *mid;
     int midcount;
     int top[4];
+    int roof;
 } GeoUWyo;
 
 GeoUWyo geoUWyoMyRank; // Global variable
@@ -68,12 +69,14 @@ typedef struct {
     int botHandle[4];
     int* midHandle;
     int topHandle[4];
+    int roofHandle;
 } SurfaceHandles;
 
 typedef struct {
     Real64 botVal[4];
     Real64* midVal;
     Real64 topVal[4];
+    Real64 roofVal;
 } SurfaceValues;
 
 SurfaceHandles surHandles;
@@ -451,6 +454,10 @@ void parseLine(const char *line, int currentRank) {
         &geoUWyoMyRank.top[0], &geoUWyoMyRank.top[1], &geoUWyoMyRank.top[2], &geoUWyoMyRank.top[3]);
     printf("Rank %d, top = %d %d %d %d\n", currentRank,
         geoUWyoMyRank.top[0], geoUWyoMyRank.top[1], geoUWyoMyRank.top[2], geoUWyoMyRank.top[3]);
+    // Parse roof value
+    token = strtok(NULL, ";");
+    sscanf(token, "%d", &geoUWyoMyRank.roof);
+    printf("Rank %d, roof = %d\n", currentRank, geoUWyoMyRank.roof);
 
     // Free memory allocated for mid array
     free(lineCopy); // Free the deep copied line
