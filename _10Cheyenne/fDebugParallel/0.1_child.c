@@ -150,7 +150,7 @@ void getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
         surHandles.botHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
         sprintf(surfaceName, "Surface %d", geoUWyo.top[i]);
         surHandles.topHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
-        printf("rank%d, getSurHandles, bot[%d] = %d, top[%d] = %d\n", rank, i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
+        // printf("rank%d, getSurHandles, bot[%d] = %d, top[%d] = %d\n", rank, i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
         if (surHandles.botHandle[i] < 0 || surHandles.topHandle[i] < 0) {
             printf("Error: surHandles.botHandle[%d] = %d, surHandles.topHandle[%d] = %d\n",
                    i, surHandles.botHandle[i], i, surHandles.topHandle[i]);
@@ -159,7 +159,7 @@ void getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
     }
     for (int i = 0; i < midLen; i++) {
         sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
-        printf("rank%d, getSurHandles, mid[%d] = %d\n", rank, i, geoUWyo.mid[i]);
+        // printf("rank%d, getSurHandles, mid[%d] = %d\n", rank, i, geoUWyo.mid[i]);
         surHandles.midHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
         if (surHandles.midHandle[i] < 0) {
             printf("Error: surHandles.midHandle[%d] = %d\n", i, surHandles.midHandle[i]);
@@ -168,7 +168,7 @@ void getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
     }
 
     sprintf(surfaceName, "Surface %d", geoUWyo.roof);
-    printf("rank%d, getSurHandles, roof = %d\n", rank, geoUWyo.roof);
+    // printf("rank%d, getSurHandles, roof = %d\n", rank, geoUWyo.roof);
     surHandles.roofHandle = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
     if (surHandles.roofHandle < 0) {
         printf("Error: surHandles.roofHandle = %d\n", surHandles.roofHandle);
@@ -182,16 +182,16 @@ void getSurVal(EnergyPlusState state, SurfaceHandles surHandles) {
     for (int i = 0; i < 4; i++) {
         surValues.botVal[i] = getVariableValue(state, surHandles.botHandle[i]);
         surValues.topVal[i] = getVariableValue(state, surHandles.topHandle[i]);
-        printf("rank = %d, getSurVal, botVal[%d] = %.2f, topVal[%d] = %.2f\n", rank, i, surValues.botVal[i], i, surValues.topVal[i]);
+        // printf("rank = %d, getSurVal, botVal[%d] = %.2f, topVal[%d] = %.2f\n", rank, i, surValues.botVal[i], i, surValues.topVal[i]);
     }
 
     for (int i = 0; i < midLen; i++) {
         surValues.midVal[i] = getVariableValue(state, surHandles.midHandle[i]);
-        printf("rank = %d, getSurVal, midVal[%d] = %.2f\n", rank, i, surValues.midVal[i]);
+        // printf("rank = %d, getSurVal, midVal[%d] = %.2f\n", rank, i, surValues.midVal[i]);
     }
 
     surValues.roofVal = getVariableValue(state, surHandles.roofHandle);
-    printf("rank = %d, getSurVal, roofVal = %.2f\n", rank, surValues.roofVal);
+    // printf("rank = %d, getSurVal, roofVal = %.2f\n", rank, surValues.roofVal);
 }
 
 void overwriteEpWeather(EnergyPlusState state) {
