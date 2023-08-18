@@ -1859,11 +1859,14 @@ CONTAINS
                its, ite, jts, jte,ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /3 !it's currently averaged by bld footprint. And divided by three floors.
-               print *, "trb1D", trb1D
+               ! print *, "trb1D", trb1D
+               print *, "nlev", nlev
+               print *, "ibui", ibui, "iurb", iurb, "nz_um", nz_um
+               print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                if (replaced == 0) then 
                   ! print *, 'offline; one way coupling from WRF -> EP'
                else
-                  print *, "mean_recv_waste_w", mean_recv_waste_w
+                  ! print *, "mean_recv_waste_w", mean_recv_waste_w
                   sflev1D(1:3) = mean_recv_waste_w
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   if (replaced == 2) then
