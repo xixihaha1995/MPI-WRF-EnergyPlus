@@ -1280,7 +1280,7 @@ CONTAINS
       ! print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
       print *, "received_data", received_data
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
-      wM2_12K(2:14) = sum(received_data(:, 3:15), dim=1) / num_children
+      wM2_12K(2:14) = sum(received_data(:, 3:15), dim=1) / count(one_grid_mapping .gt. 0)
       saved_wM2_12k(curix, curiy, :) = wM2_12K
       ! print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
@@ -1862,7 +1862,7 @@ CONTAINS
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                its, ite, jts, jte,ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, wM2_12K)
-               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) !it's currently averaged by bld footprint. And divided by three floors.
+               mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /nlev(ibui) !it's currently averaged by bld footprint. And divided by three floors.
                ! print *, "trb1D", trb1D
                ! print *, "nlev", nlev
                ! print *, "ibui", ibui, "iurb", iurb, "nz_um", nz_um
@@ -1873,7 +1873,7 @@ CONTAINS
                   ! print *, 'offline; one way coupling from WRF -> EP'
                else
                   ! print *, "mean_recv_waste_w", mean_recv_waste_w
-                  sflev1D(1:3) = mean_recv_waste_w
+                  sflev1D(1:/nlev(ibui)) = mean_recv_waste_w
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   print *, "replaced", replaced
                   if (replaced == 2) then
