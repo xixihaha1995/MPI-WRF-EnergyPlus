@@ -1873,7 +1873,7 @@ CONTAINS
                   ! print *, 'offline; one way coupling from WRF -> EP'
                else
                   ! print *, "mean_recv_waste_w", mean_recv_waste_w
-                  sflev1D(1:/nlev(ibui)) = mean_recv_waste_w
+                  sflev1D(1:nlev(ibui)) = mean_recv_waste_w
                   print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   print *, "replaced", replaced
                   if (replaced == 2) then
