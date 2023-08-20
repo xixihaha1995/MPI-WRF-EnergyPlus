@@ -491,7 +491,7 @@ void assignGeoData(int currentRank) {
     char line[1000];
     for (int i = 0; i < currentRank + 2; i++) {
         if (fgets(line, sizeof(line), file) == NULL) {
-            fprintf(stderr, "Invalid rank\n");
+            fprintf(stderr, "Invalid rank %d and currentRank %d\n", rank, currentRank);
             fclose(file);
             exit(1);
         }
