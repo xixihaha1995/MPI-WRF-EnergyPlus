@@ -1138,7 +1138,7 @@ CONTAINS
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
       integer ::  ending_steps = (23) * nbr_steps_hr, ucm_tag = 0
-      integer, parameter ::  num_children = 35, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
+      integer, parameter ::  num_children = 30, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
