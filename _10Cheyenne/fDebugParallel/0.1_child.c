@@ -303,7 +303,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     }
 
     float data[performanc_length];
-    data[0] = footprintm2[rank];
+    data[0] = footprintm2[rank%5];
     if (IDF_Coupling == 0)
         data[1] = -66.0;
     else
