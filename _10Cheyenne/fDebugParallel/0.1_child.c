@@ -10,8 +10,8 @@
 #include <math.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define NBR_IDF 3
-#define NBR_WRF 1
+#define NBR_IDF 35
+#define NBR_WRF 4
 #define HOR_LEN_TAG 3
 #define VER_LEN_TAG 4
 #define LAT_TAG 1
@@ -529,7 +529,7 @@ int main(int argc, char** argv) {
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-    requestSur(state, geoUWyoMyRank);
+    requestSur(state, geoUWyoMyRank%5);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
     const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/ep_temp" : ".";
@@ -538,7 +538,7 @@ int main(int argc, char** argv) {
     sprintf(output_path, "%s/saved_%s_ep_trivial_%d", base_path,
             (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
             rank + 1);
-    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf", rank+1);
+    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf", (rank+1)%5);
     // printf("output_path = %s\n", output_path);
 
     char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
