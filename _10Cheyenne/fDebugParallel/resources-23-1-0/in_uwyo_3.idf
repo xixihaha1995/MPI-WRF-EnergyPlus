@@ -206,7 +206,7 @@
     ,                        !- North Axis {deg}
     City,                    !- Terrain
     ,                        !- Loads Convergence Tolerance Value {W}
-    ,                        !- Temperature Convergence Tolerance Value {deltaC}
+    0.5,                        !- Temperature Convergence Tolerance Value {deltaC}
     ,                        !- Solar Distribution
     50,                        !- Maximum Number of Warmup Days
     ;                        !- Minimum Number of Warmup Days
