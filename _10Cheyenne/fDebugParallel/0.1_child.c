@@ -102,7 +102,7 @@ float footprintm2[38] = {
     1808.91,889.49
 };
 int weatherMPIon = 1, wasteMPIon = 1;
-int IDF_Coupling = 0; //0, offline; 1, waste; 2, waste + surface;
+int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 MPI_Comm parent_comm;
 MPI_Status status;
 
