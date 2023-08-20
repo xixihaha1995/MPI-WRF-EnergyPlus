@@ -4,7 +4,7 @@
 
   Version,23.1;
 
-  Timestep,12;
+  Timestep,1;
 
   LifeCycleCost:Parameters,
     Life Cycle Cost Parameters,  !- Name
@@ -208,7 +208,7 @@
     ,                        !- Loads Convergence Tolerance Value {W}
     ,                        !- Temperature Convergence Tolerance Value {deltaC}
     ,                        !- Solar Distribution
-    ,                        !- Maximum Number of Warmup Days
+    50,                        !- Maximum Number of Warmup Days
     ;                        !- Minimum Number of Warmup Days
 
   Shading:Building:Detailed,
