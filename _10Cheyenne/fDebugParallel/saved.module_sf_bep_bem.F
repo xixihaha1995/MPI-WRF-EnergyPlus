@@ -1131,7 +1131,7 @@ CONTAINS
       its, ite, jts, jte, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
       implicit none
       include 'mpif.h'
-      integer, parameter ::  nbr_steps_hr = 600
+      integer, parameter ::  nbr_steps_hr = 600, nbr_steps_exchange = 50
       integer :: ierr, num_procs, parent_comm, child_idx
       integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm, rank
@@ -1251,7 +1251,7 @@ CONTAINS
       ! print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping, "curitime", curitime
       
       !hourly timestep
-      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_hr) /= 0 .and. curitime /= 1) then
+      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_exchange) /= 0 .and. curitime /= 1) then
           ! to communicate with EnergyPlus for updating
           wM2_12K = saved_wM2_12k(curix, curiy, :)
           return
