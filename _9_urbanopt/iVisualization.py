@@ -1,20 +1,11 @@
-import folium
+# please generate code to plot the following temperatures
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Latitude and Longitude pairs
-coordinates = [
-    (41.31397449192338, -105.5776558322157),
-    (42.3601, -71.0589),
-    (37.7749, -122.4194),
-    # Add more pairs here...
-]
+temp =[19.72, 20.17, 18.63, 17.11, 15.92, 14.66, 13.38, 12.59, 
+12.22, 11.93, 12.32, 11.85, 11.47, 11.89,14.73,18.48, 20.85,
+ 22.63, 23.60, 23.82, 23.91,23.73,23.03, 22.36]
 
-# Create a map centered on the first pair
-map_center = coordinates[0]
-m = folium.Map(location=map_center, zoom_start=10)
-
-# Add markers for each coordinate pair
-for coord in coordinates:
-    folium.Marker(location=coord).add_to(m)
-
-# Save the map as an HTML file
-m.save("map.html")
+# 1. plot the temperature data
+plt.plot(temp)
+plt.show()

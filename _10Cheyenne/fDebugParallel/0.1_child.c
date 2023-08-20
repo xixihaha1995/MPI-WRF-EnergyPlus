@@ -236,6 +236,7 @@ void overwriteEpWeather(EnergyPlusState state) {
                "Then no more MPI at all on both sides.", rank);
         weatherMPIon = 0;
     }
+    msg_arr[0] += 10; //mannually increase OAT_C by 10 to get Heatwave event
     Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
         printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga), %.2f (Pa)"
             " and calculated RH = %.2f (%%) from parent %d, at time %.2f(s)\n",
