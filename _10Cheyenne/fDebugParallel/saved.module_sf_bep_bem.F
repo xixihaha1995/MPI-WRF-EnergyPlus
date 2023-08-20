@@ -1131,7 +1131,7 @@ CONTAINS
       its, ite, jts, jte, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
       implicit none
       include 'mpif.h'
-      integer, parameter ::  nbr_steps_hr = 600, nbr_steps_exchange = 50
+      integer, parameter ::  nbr_steps_hr = 600, nbr_steps_exchange = 600
       integer :: ierr, num_procs, parent_comm, child_idx
       integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm, rank
