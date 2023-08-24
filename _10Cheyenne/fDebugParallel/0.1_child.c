@@ -384,7 +384,7 @@ void receiveLongLat(void) {
         }
     }
 
-    FILE *file = fopen("./resources-23-1-0/la_centroid.csv", "r");
+    FILE *file = fopen("./la-resources-23-1-0/la_centroid.csv", "r");
     if (file == NULL) {
         printf("Failed to open la_centroid.csv file.\n");
     }
@@ -484,7 +484,7 @@ void parseLine(const char *line, int currentRank) {
 }
 
 void assignGeoData(int currentRank) {
-    FILE *file = fopen("./resources-23-1-0/surfaceNames.txt", "r");
+    FILE *file = fopen("./la-resources-23-1-0/surfaceNames.txt", "r");
     if (file == NULL) {
         perror("Failed to open file");
         exit(1);
@@ -540,7 +540,7 @@ int main(int argc, char** argv) {
     sprintf(output_path, "%s/LA_saved_%s_ep_trivial_%d", base_path,
             (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
             rank + 1);
-    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf",  rank % 5 + 1);
+    sprintf(idfFilePath, "./la-resources-23-1-0/in_la_%d.idf",  rank % 5 + 1);
     // printf("output_path = %s\n", output_path);
 
     char* weather_file_path = "./resources-23-1-0/USA_CA_Hawthorne-Jack.Northrop.Field.722956_TMY3.epw";

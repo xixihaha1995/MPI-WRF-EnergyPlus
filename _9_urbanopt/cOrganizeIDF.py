@@ -6,7 +6,9 @@ copy all the `in.idf` files to the saved_folder, rename them as `in_uwyo_1.idf`,
 '''
 
 source_folder = r"C:\Users\wulic\uouwyo38\run\baseline_scenario"
+source_folder = r"C:\Users\wulic\la3urbanopt\run\baseline_scenario"
 saved_folder = "./resources-22-2-0"
+saved_folder = "./la3-22-2-0"
 #make the saved_folder if it does not exist
 if not os.path.exists(saved_folder):
     os.makedirs(saved_folder)
@@ -43,7 +45,7 @@ for curfolder in subfolders:
     #add lines_to_add to the beginning of the file
     filedata = lines_to_add + filedata
 
-    saved_file = saved_folder + "\\" + "in_uwyo_" + str(curfolder) + ".idf"
+    saved_file = saved_folder + "\\" + "in_la_" + str(curfolder) + ".idf"
     #save the modified file in saved_file
     with open(saved_file, 'w') as file:
         file.write(filedata)
