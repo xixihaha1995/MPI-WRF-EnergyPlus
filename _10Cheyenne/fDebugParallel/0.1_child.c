@@ -543,7 +543,7 @@ int main(int argc, char** argv) {
     sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf",  rank % 5 + 1);
     // printf("output_path = %s\n", output_path);
 
-    char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
+    char* weather_file_path = "./resources-23-1-0/USA_CA_Hawthorne-Jack.Northrop.Field.722956_TMY3.epw";
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
     int argc_ = sizeof(sys_args) / sizeof(char*) - 1;
     printf("argc_ = %d\n", argc_);
