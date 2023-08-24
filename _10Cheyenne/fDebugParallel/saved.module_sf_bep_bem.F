@@ -1137,7 +1137,7 @@ CONTAINS
       integer, save :: new_comm, rank
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
-      integer ::  ending_steps = (23) * nbr_steps_hr, ucm_tag = 0
+      integer ::  ending_steps = (23) * nbr_steps_hr, ucm_tag = 7
       integer, parameter ::  num_children = 2, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
@@ -1266,7 +1266,7 @@ CONTAINS
           saveitime(curix, curiy) = -886
           print *,"assign -886 to curix curiy", curix, curiy
       else
-          ucm_tag = 0
+          ucm_tag = 7
       end if
       ! set all received_data to 0
       received_data = 0
