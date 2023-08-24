@@ -535,7 +535,7 @@ int main(int argc, char** argv) {
     const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/ep_temp" : ".";
     // Choose the appropriate folder based on IDF_Coupling value
     printf("base_path = %s\n", base_path);
-    sprintf(output_path, "%s/saved_%s_ep_trivial_%d", base_path,
+    sprintf(output_path, "%s/LA_saved_%s_ep_trivial_%d", base_path,
             (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
             rank + 1);
     sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf",  rank % 5 + 1);
