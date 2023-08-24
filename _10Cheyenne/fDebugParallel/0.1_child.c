@@ -382,9 +382,9 @@ void receiveLongLat(void) {
         }
     }
 
-    FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
+    FILE *file = fopen("./resources-23-1-0/la_centroid.csv", "r");
     if (file == NULL) {
-        printf("Failed to open centroid.csv file.\n");
+        printf("Failed to open la_centroid.csv file.\n");
     }
     // Skip the first line (header) in centroid.csv
     char line[100];
