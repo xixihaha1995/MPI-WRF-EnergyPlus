@@ -8,10 +8,10 @@
 #PBS -m abe
 #PBS -M lwu4@uwyo.edu
 #PBS -k eod
-#PBS -l select=1:mpiprocs=36
+#PBS -l select=1:mpiprocs=10
 
 cat $PBS_NODEFILE
-set nbr_parent = 4
+set nbr_parent = 1
 ###Run
 # cd /glade/u/home/lichenwu/project/fortran_experiments/_10Cheyenne/cCoordinateEP
 module load gnu/11.2.0
@@ -23,4 +23,3 @@ module load gnu/11.2.0
 cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 pwd
 mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/ep_temp/log.energyplus
-

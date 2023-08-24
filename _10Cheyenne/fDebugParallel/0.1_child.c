@@ -10,15 +10,14 @@
 #include <math.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define NBR_IDF 2
-#define NBR_WRF 4
+#define NBR_IDF 3
+#define NBR_WRF 1
 #define HOR_LEN_TAG 3
 #define VER_LEN_TAG 4
 #define LAT_TAG 1
 #define LONG_TAG 2
 #define COUPLING_TAG 5
 #define MAPPING_TAG 6
-#define WEATHER_TAG 7
 #define EARTH_RADIUS_KM 6371.0
 
 typedef struct {
@@ -229,7 +228,7 @@ void overwriteEpWeather(EnergyPlusState state) {
         return;
     }
     // MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, WEATHER_TAG, parent_comm, &status);
+    MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     if (status.MPI_TAG == 886)
     {
         printf("EnergyPlus(BEMs):%d received 'ending messsage (EP 886, WRF-886)', "
