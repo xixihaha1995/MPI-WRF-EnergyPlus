@@ -1864,7 +1864,7 @@ CONTAINS
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /nlev(ibui) !it's currently averaged by bld footprint. And divided by three floors.
                ! print *, "trb1D", trb1D
-               ! print *, "nlev", nlev
+               print *, "nlev(ibui) ", nlev(ibui) 
                ! print *, "ibui", ibui, "iurb", iurb, "nz_um", nz_um
                ! print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                ! print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
