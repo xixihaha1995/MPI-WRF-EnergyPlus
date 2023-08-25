@@ -23,6 +23,7 @@ else
   set cert_opt = ""
 endif
 
+# download weather files from 2009-09-24 to 2009-09-28
 set filelist= ( \
   https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090924_00_00.grib2  \
   https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090924_06_00.grib2  \
@@ -32,6 +33,16 @@ set filelist= ( \
   https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090925_06_00.grib2  \
   https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090925_12_00.grib2  \
   https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090925_18_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090926_00_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090926_06_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090926_12_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090926_18_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090927_00_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090927_06_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090927_12_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090927_18_00.grib2  \
+  https://data.rda.ucar.edu/ds083.2/grib2/2009/2009.09/fnl_20090928_00_00.grib2  \
+
 )
 while($#filelist > 0)
   set syscmd = "wget $cert_opt $opts $filelist[1]"

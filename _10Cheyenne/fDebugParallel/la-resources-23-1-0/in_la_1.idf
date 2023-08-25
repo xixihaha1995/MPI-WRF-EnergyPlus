@@ -17015,7 +17015,7 @@
     25,                      !- Begin Day of Month
     2009,                    !- Begin Year
     9,                       !- End Month
-    25,                      !- End Day of Month
+    27,                      !- End Day of Month
     2009,                    !- End Year
     Friday,                  !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days

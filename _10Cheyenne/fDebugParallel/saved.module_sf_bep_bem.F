@@ -1137,7 +1137,7 @@ CONTAINS
       integer, save :: new_comm, rank
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
-      integer ::  ending_steps = (23) * nbr_steps_hr, ucm_tag = 0
+      integer ::  ending_steps = (71) * nbr_steps_hr, ucm_tag = 0
       integer, parameter ::  num_children = 3, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
@@ -1864,7 +1864,7 @@ CONTAINS
                xlat,xlong,wrf_weather,replaced, wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /nlev(ibui) !it's currently averaged by bld footprint. And divided by three floors.
                ! print *, "trb1D", trb1D
-               print *, "nlev(ibui) ", nlev(ibui) 
+               ! print *, "nlev(ibui) ", nlev(ibui) 
                ! print *, "ibui", ibui, "iurb", iurb, "nz_um", nz_um
                ! print *, 'Before sflev1D(w) due to a.c.', sflev1D(1:7)
                ! print *, 'Before twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)

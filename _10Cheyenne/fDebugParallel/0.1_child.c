@@ -87,6 +87,7 @@ int midLen = 0;
 
 int handlesRetrieved = 0, weatherHandleRetrieved = 0;
 int simHVACSensor = 0, odbActHandle = 0, orhActHandle = 0, odbSenHandle = 0, ohrSenHandle = 0;
+int otdpActHandle = 0, otdpSenHandle = 0;
 int rank = -1, performanc_length =15;
 float msg_arr[3] = {-1, -1, -1};
 int allDomainLen[NBR_WRF];
@@ -203,8 +204,10 @@ void overwriteEpWeather(EnergyPlusState state) {
         weatherHandleRetrieved = 1;
         odbActHandle = getActuatorHandle(state, "Weather Data", "Outdoor Dry Bulb", "ENVIRONMENT");
         orhActHandle = getActuatorHandle(state, "Weather Data", "Outdoor Relative Humidity", "ENVIRONMENT");
+        otdpActHandle = getActuatorHandle(state, "Weather Data", "Outdoor Dew Point", "ENVIRONMENT");
         odbSenHandle = getVariableHandle(state, "SITE OUTDOOR AIR DRYBULB TEMPERATURE", "ENVIRONMENT");
         ohrSenHandle = getVariableHandle(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
+        otdpSenHandle = getVariableHandle(state, "Site Outdoor Air Dewpoint Temperature", "ENVIRONMENT");
 
 
         if (odbActHandle < 0 || orhActHandle < 0 || odbSenHandle < 0 || ohrSenHandle < 0)
@@ -240,15 +243,18 @@ void overwriteEpWeather(EnergyPlusState state) {
     }
     // msg_arr[0] += 10; //mannually increase OAT_C by 10 to get Heatwave event
     Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
+    Real64 tdp = psyTdpFnWPb(state, msg_arr[1], msg_arr[2]);
         printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga), %.2f (Pa)"
-            " and calculated RH = %.2f (%%) from parent %d, at time %.2f(s)\n",
-            rank, msg_arr[0], msg_arr[1], msg_arr[2], rh, status.MPI_SOURCE, 3600*currentSimTime(state));
-
+            " and calculated RH = %.2f (%%), Tdp = %.2f (C)  from parent %d, at time %.2f(s)\n",
+            rank, msg_arr[0], msg_arr[1], msg_arr[2], rh, tdp, status.MPI_SOURCE, currentSimTime(state));
+    
     setActuatorValue(state, odbActHandle, msg_arr[0]);
     setActuatorValue(state, orhActHandle, rh);
+    setActuatorValue(state, otdpActHandle, tdp);
 
     Real64 odbSen = getVariableValue(state, odbSenHandle);
     Real64 ohrSen = getVariableValue(state, ohrSenHandle);
+    Real64 otdpSen = getVariableValue(state, otdpSenHandle);
 
 }
 
