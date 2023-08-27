@@ -1157,7 +1157,7 @@ CONTAINS
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
       integer,save :: IDF_Coupling
-      integer :: replaced = 0
+      integer :: replaced 
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
@@ -1166,6 +1166,7 @@ CONTAINS
          spawned = .true.
          allocate(bemcalled(its:ite, its:ite))
          bemcalled = -1
+         replaced = 0
       end if
 
       if (bemcalled(curix, curiy) .eq. -1) then
