@@ -11,7 +11,7 @@
 
 #define MPI_MAX_PROCESSOR_NAME 128
 #define NBR_IDF 3
-#define NBR_WRF 1
+#define NBR_WRF 4
 #define HOR_LEN_TAG 3
 #define VER_LEN_TAG 4
 #define LAT_TAG 1
@@ -245,7 +245,7 @@ void overwriteEpWeather(EnergyPlusState state) {
     Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
     Real64 tdp = psyTdpFnWPb(state, msg_arr[1], msg_arr[2]);
         printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga), %.2f (Pa)"
-            " and calculated RH = %.2f (%%), Tdp = %.2f (C)  from parent %d, at time %.2f(s)\n",
+            " and calculated RH = %.2f (%%), Tdp = %.2f (C)  from parent %d, at time %.2f(h)\n",
             rank, msg_arr[0], msg_arr[1], msg_arr[2], rh, tdp, status.MPI_SOURCE, currentSimTime(state));
     
     setActuatorValue(state, odbActHandle, msg_arr[0]);
