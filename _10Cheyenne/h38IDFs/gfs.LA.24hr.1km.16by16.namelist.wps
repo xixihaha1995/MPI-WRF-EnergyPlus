@@ -1,8 +1,8 @@
 &share
  wrf_core = 'ARW',
  max_dom = 1,
- start_date = '2022-07-02_00:00:00','2022-07-02_00:00:00',
- end_date   = '2022-07-03_00:00:00','2022-07-02_00:00:00',
+ start_date = '2009-09-24_06:00:00','2022-07-02_00:00:00',
+ end_date   = '2009-09-25_06:00:00','2022-07-02_00:00:00',
  interval_seconds = 21600
 /
 
@@ -18,11 +18,11 @@
  dx = 1000,
  dy = 1000,
  map_proj = 'lambert',
- ref_lat   =   41.313, !40.01, 41.313
- ref_lon   = -105.581, !-105.27, -105.581
+ ref_lat   =   34.0549, !40.01, 41.313
+ ref_lon   = -118.2426, !-105.27, -105.581
  truelat1  =  30.0,
  truelat2  =  60.0,
- stand_lon = -105.581,
+ stand_lon = -118.2426,
  geog_data_path = '/glade/work/lichenwu/NWP/DATA/WPS_GEOG/'
  !geog_data_path = '/home/xxx/NWP/DATA/WPS_GEOG/'
 /
