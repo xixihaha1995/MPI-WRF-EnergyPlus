@@ -1157,7 +1157,7 @@ CONTAINS
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
       integer,save :: IDF_Coupling
-      integer :: replaced
+      integer :: replaced = 0
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
