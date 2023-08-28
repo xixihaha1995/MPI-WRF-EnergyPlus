@@ -1157,27 +1157,35 @@ CONTAINS
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
       integer,save :: IDF_Coupling
-      integer :: replaced 
+      integer :: replaced, centerx, centery
 
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
+      ! if (spawned .eqv. .false.) then
+      !    spawned = .true.
+      !    allocate(bemcalled(its:ite, its:ite))
+      !    bemcalled = -1
+      !    replaced = 0
+      ! end if
+
+      ! if (bemcalled(curix, curiy) .eq. -1) then
+      !    bemcalled(curix, curiy) = 0
+      ! end if
+
+      ! ! print *, "number of bemcalled", count(bemcalled .eq. 0)
+      ! print *,"WRF calling for curix, cuiy, curibui, curitime", curix, curiy, curibui, curitime
+      ! return
+
       if (spawned .eqv. .false.) then
-         spawned = .true.
-         allocate(bemcalled(its:ite, its:ite))
-         bemcalled = -1
-         replaced = 0
-      end if
+            if (mod(ite + its, 2) == 0) then
+                  centerx = (ite + its) / 2
+                  centery = (jte + jts) / 2
+            else
+                  centerx = (ite + its + 1) / 2
+                  centery = (jte + jts + 1) / 2
+            end if
 
-      if (bemcalled(curix, curiy) .eq. -1) then
-         bemcalled(curix, curiy) = 0
-      end if
-
-      ! print *, "number of bemcalled", count(bemcalled .eq. 0)
-      print *,"WRF calling for curix, cuiy, curibui, curitime", curix, curiy, curibui, curitime
-      return
-
-      if (spawned .eqv. .false.) then
             spawned = .true.
             wM2_12K = 300
             wM2_12K(1) = 0
@@ -1264,9 +1272,9 @@ CONTAINS
 
       ! print *, "curix", curix, "curiy", curiy, "saveitime", saveitime(curix, curiy)
       ! print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping, "curitime", curitime
-      
       !hourly timestep
-      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_exchange) /= 0 .and. curitime /= 1) then
+      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_exchange) /= 0 .and. curitime /= 1 &
+         .or. curix /= centerx .or. curiy /= centery ) then
             ! to communicate with EnergyPlus for updating
             wM2_12K = saved_wM2_12k(curix, curiy, :)
             return
