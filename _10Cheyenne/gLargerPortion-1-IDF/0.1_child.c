@@ -20,7 +20,7 @@
 #define MAPPING_TAG 6
 #define EARTH_RADIUS_KM 6371.0
 
-int IDF_Coupling = 0; //0, offline; 1, waste; 2, waste + surface;
+int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 
 typedef struct {
     int gridIdx;
@@ -540,7 +540,7 @@ int main(int argc, char** argv) {
     requestSur(state, geoUWyoMyRank);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
-    const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/IDFs38_ep_temp" : ".";
+    const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/largerPortion_ep_temp" : ".";
     // Choose the appropriate folder based on IDF_Coupling value
     printf("base_path = %s\n", base_path);
     sprintf(output_path, "%s/LA_saved_%s_ep_trivial_%d", base_path,
