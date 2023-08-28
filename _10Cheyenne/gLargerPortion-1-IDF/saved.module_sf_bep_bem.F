@@ -1138,7 +1138,7 @@ CONTAINS
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
       integer ::  ending_steps = (23) * nbr_steps_hr, ucm_tag = 0
-      integer, parameter ::  num_children = 3, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
+      integer, parameter ::  num_children = 1, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
@@ -1162,19 +1162,19 @@ CONTAINS
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
-      if (spawned .eqv. .false.) then
-         spawned = .true.
-         allocate(bemcalled(its:ite, its:ite))
-         bemcalled = -1
-         replaced = 0
-      end if
+      ! if (spawned .eqv. .false.) then
+      !    spawned = .true.
+      !    allocate(bemcalled(its:ite, its:ite))
+      !    bemcalled = -1
+      !    replaced = 0
+      ! end if
 
-      if (bemcalled(curix, curiy) .eq. -1) then
-         bemcalled(curix, curiy) = 0
-      end if
+      ! if (bemcalled(curix, curiy) .eq. -1) then
+      !    bemcalled(curix, curiy) = 0
+      ! end if
 
-      print *, "number of bemcalled", count(bemcalled .eq. 0)
-      return
+      ! print *, "number of bemcalled", count(bemcalled .eq. 0)
+      ! return
 
       if (spawned .eqv. .false.) then
             spawned = .true.
@@ -1272,7 +1272,7 @@ CONTAINS
       end if
 
       if (saveitime(curix, curiy) /= -886) then
-         saveitime(curix, curiy) = curitime
+         saveitime = curitime
       end if
 
       if (curitime > ending_steps - 1) then
@@ -1295,7 +1295,7 @@ CONTAINS
       print *, "received_data", received_data
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
       wM2_12K(2:14) = sum(received_data(:, 3:15), dim=1) / count(one_grid_mapping .gt. 0)
-      saved_wM2_12k(curix, curiy, :) = wM2_12K
+      saved_wM2_12k = wM2_12K
       ! print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
       

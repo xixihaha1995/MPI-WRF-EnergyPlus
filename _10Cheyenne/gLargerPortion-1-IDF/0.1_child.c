@@ -10,7 +10,7 @@
 #include <math.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define NBR_IDF 3
+#define NBR_IDF 1
 #define NBR_WRF 4
 #define HOR_LEN_TAG 3
 #define VER_LEN_TAG 4
@@ -375,8 +375,8 @@ void receiveLongLat(void) {
         latall[i] = malloc(allDomainLen[i] * sizeof(float));
         mappings[i] = malloc(allDomainLen[i] * sizeof(int) * NBR_IDF);
 
-        for (int j = 0; j < allDomainLen[i] * NBR_IDF; j++) {
-            mappings[i][j] = -1;
+        for (int j = 0; j < allDomainLen[i] * NBR_IDF; j += NBR_IDF) {
+            mappings[i][j] = 1;
         }
 
         MPI_Recv(latall[i], allDomainLen[i], MPI_FLOAT, i, LAT_TAG, parent_comm, &status);
@@ -390,29 +390,29 @@ void receiveLongLat(void) {
         }
     }
 
-    FILE *file = fopen("./la-resources-23-1-0/la_centroid.csv", "r");
-    if (file == NULL) {
-        printf("Failed to open la_centroid.csv file.\n");
-    }
-    // Skip the first line (header) in centroid.csv
-    char line[100];
-    fgets(line, sizeof(line), file);
+    // FILE *file = fopen("./la-resources-23-1-0/la_centroid.csv", "r");
+    // if (file == NULL) {
+    //     printf("Failed to open la_centroid.csv file.\n");
+    // }
+    // // Skip the first line (header) in centroid.csv
+    // char line[100];
+    // fgets(line, sizeof(line), file);
 
-    int id;
-    double lat, lon;
-    for (int i = 0; i < NBR_IDF; i++) {
-        fscanf(file, "%d, %lf, %lf", &id, &lat, &lon);
-        Mapping_Index mapping_index;
-        mapping_index = closetGridIndex(lat, lon);
-        mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = id;
+    // int id;
+    // double lat, lon;
+    // for (int i = 0; i < NBR_IDF; i++) {
+    //     fscanf(file, "%d, %lf, %lf", &id, &lat, &lon);
+    //     Mapping_Index mapping_index;
+    //     mapping_index = closetGridIndex(lat, lon);
+    //     mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = id;
 
-        printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
-            "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
-            id, lat, lon, mapping_index.wrfIdx, mapping_index.gridIdx,
-            latall[mapping_index.wrfIdx][mapping_index.gridIdx],
-            longall[mapping_index.wrfIdx][mapping_index.gridIdx]);
-    }
-    fclose(file);
+    //     printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
+    //         "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
+    //         id, lat, lon, mapping_index.wrfIdx, mapping_index.gridIdx,
+    //         latall[mapping_index.wrfIdx][mapping_index.gridIdx],
+    //         longall[mapping_index.wrfIdx][mapping_index.gridIdx]);
+    // }
+    // fclose(file);
 
     for (int j = 0; j < NBR_WRF; j++) {
         MPI_Send(&IDF_Coupling, 1, MPI_INT, j, COUPLING_TAG, parent_comm);
