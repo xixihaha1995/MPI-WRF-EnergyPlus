@@ -1180,13 +1180,13 @@ CONTAINS
             spawned = .true.
             wM2_12K = 300
             wM2_12K(1) = 0
-            allocate(saveitime(its:ite, its:ite))
+            allocate(saveitime(its:ite, jts:jte))
             latlongall_length = (ite - its + 1)*(jte - jts + 1)
             mapping_length = latlongall_length * num_children
             allocate(xlatall1d(latlongall_length))
             allocate(xlongall1d(latlongall_length))
             allocate(mapping_wrf_ep(mapping_length))
-            allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
+            allocate(saved_wM2_12k(its:ite, jts:jte, wrfNeedLen))
             saveitime = -1 
             mapping_wrf_ep = -1
             saved_wM2_12k = 0
@@ -1295,7 +1295,11 @@ CONTAINS
       print *, "received_data", received_data
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
       wM2_12K(2:14) = sum(received_data(:, 3:15), dim=1) / count(one_grid_mapping .gt. 0)
-      saved_wM2_12k = wM2_12K
+      do j = jts, jte
+         do i = its, ite
+            saved_wM2_12k(i, j, :) = wM2_12K
+         end do
+      end do
       ! print *, "WRF (Parent(s)) wM2_12K", wM2_12K
       ! for received_data(:, 3:14), 3:14 are the 12 surface temperatures, average them
       
