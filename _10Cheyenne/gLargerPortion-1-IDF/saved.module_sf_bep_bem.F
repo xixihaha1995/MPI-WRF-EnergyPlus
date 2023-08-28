@@ -1209,12 +1209,12 @@ CONTAINS
             !flatten the 2d arrays
             k = 1
             do j = jts, jte
-            do i = its, ite
-               xlatall1d(k) = xlatall(i, j)
-               xlongall1d(k) = xlongall(i, j)
-               ! print *, "i, j", i, j, "xlatall(i, j)", xlatall(i, j), "xlongall(i, j)", xlongall(i, j)
-               k = k + 1
-            end do
+               do i = its, ite
+                  xlatall1d(k) = xlatall(i, j)
+                  xlongall1d(k) = xlongall(i, j)
+                  ! print *, "i, j", i, j, "xlatall(i, j)", xlatall(i, j), "xlongall(i, j)", xlongall(i, j)
+                  k = k + 1
+               end do
             end do
             print *, "curitime", curitime
             print *, "xlatall(curix, curiy)", xlatall(curix, curiy), "xlongall(curix, curiy)", xlongall(curix, curiy)

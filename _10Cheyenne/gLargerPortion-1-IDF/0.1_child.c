@@ -250,7 +250,7 @@ void overwriteEpWeather(EnergyPlusState state) {
     
     setActuatorValue(state, odbActHandle, msg_arr[0]);
     setActuatorValue(state, orhActHandle, rh);
-    setActuatorValue(state, otdpActHandle, tdp);
+    // setActuatorValue(state, otdpActHandle, tdp);
 
     Real64 odbSen = getVariableValue(state, odbSenHandle);
     Real64 ohrSen = getVariableValue(state, ohrSenHandle);
