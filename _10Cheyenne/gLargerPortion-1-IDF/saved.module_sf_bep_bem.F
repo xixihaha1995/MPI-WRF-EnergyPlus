@@ -1200,7 +1200,7 @@ CONTAINS
             mapping_wrf_ep = -1
             saved_wM2_12k = 0
          !  print *, "saveitime", saveitime
-            print *, "its, ite", its, ite, "jts, jte", jts, jte
+            print *, "its, ite", its, ite, "jts, jte", jts, jte,"centerx, centery", centerx, centery
             print *, "ims, ime", ims, ime, "jms, jme", jms, jme
             !print the shape of xlatall, xlongall
          !  print *, "shape of xlatall", shape(xlatall), "shape of xlongall", shape(xlongall)
@@ -1273,8 +1273,7 @@ CONTAINS
       ! print *, "curix", curix, "curiy", curiy, "saveitime", saveitime(curix, curiy)
       ! print *, "WRF grid index", ((curix - 1) * (ite - its + 1) + curiy),"corresponding IDF indices", one_grid_mapping, "curitime", curitime
       !hourly timestep
-      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_exchange) /= 0 .and. curitime /= 1 &
-         .or. curix /= centerx .or. curiy /= centery ) then
+      if (curitime == saveitime(curix, curiy) .or. mod(curitime, nbr_steps_exchange) /= 0 .and. curitime /= 1 ) then
             ! to communicate with EnergyPlus for updating
             wM2_12K = saved_wM2_12k(curix, curiy, :)
             return
@@ -1290,6 +1289,10 @@ CONTAINS
             print *,"assign -886 to curix curiy", curix, curiy
       else
             ucm_tag = 0
+      end if
+      if ( curix /= centerx .or. curiy /= centery) then
+         wM2_12K = saved_wM2_12k(curix, curiy, :)
+         return
       end if
       ! set all received_data to 0
       received_data = 0
