@@ -1277,7 +1277,7 @@ CONTAINS
 
       if (curitime > ending_steps - 1) then
             ucm_tag = 886
-            saveitime(curix, curiy) = -886
+            saveitime = -886
             print *,"assign -886 to curix curiy", curix, curiy
       else
             ucm_tag = 0
@@ -1293,7 +1293,7 @@ CONTAINS
       ! print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
       ! print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
       print *, "received_data", received_data
-      print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "one_grid_mapping", one_grid_mapping
+      print *, "WRF rank ID", rank, "one_grid_mapping", one_grid_mapping, "curix, curiy, curitime", curix, curiy,curitime
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
       wM2_12K(2:14) = sum(received_data(:, 3:15), dim=1) / count(one_grid_mapping .gt. 0)
       do j = jts, jte
