@@ -8,7 +8,7 @@
 #PBS -m abe
 #PBS -M lwu4@uwyo.edu
 #PBS -k eod
-#PBS -l select=1:mpiprocs=1
+#PBS -l select=1:mpiprocs=2
 
 cat $PBS_NODEFILE
 set nbr_parent = 1
