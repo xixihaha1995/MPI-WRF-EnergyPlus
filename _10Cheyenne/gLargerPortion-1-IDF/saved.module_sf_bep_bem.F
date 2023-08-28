@@ -1162,19 +1162,20 @@ CONTAINS
       !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
-      ! if (spawned .eqv. .false.) then
-      !    spawned = .true.
-      !    allocate(bemcalled(its:ite, its:ite))
-      !    bemcalled = -1
-      !    replaced = 0
-      ! end if
+      if (spawned .eqv. .false.) then
+         spawned = .true.
+         allocate(bemcalled(its:ite, its:ite))
+         bemcalled = -1
+         replaced = 0
+      end if
 
-      ! if (bemcalled(curix, curiy) .eq. -1) then
-      !    bemcalled(curix, curiy) = 0
-      ! end if
+      if (bemcalled(curix, curiy) .eq. -1) then
+         bemcalled(curix, curiy) = 0
+      end if
 
       ! print *, "number of bemcalled", count(bemcalled .eq. 0)
-      ! return
+      print *,"WRF calling for curix, cuiy, curibui, curitime", curix, curiy, curibui, curitime
+      return
 
       if (spawned .eqv. .false.) then
             spawned = .true.
