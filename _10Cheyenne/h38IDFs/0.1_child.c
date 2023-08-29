@@ -10,7 +10,7 @@
 #include <math.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define NBR_IDF 3
+#define NBR_IDF 10
 #define NBR_WRF 1
 #define HOR_LEN_TAG 3
 #define VER_LEN_TAG 4
@@ -311,7 +311,7 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     }
 
     float data[performanc_length];
-    data[0] = footprintm2[rank%5];
+    data[0] = footprintm2[rank];
     if (IDF_Coupling == 0)
         data[1] = -66.0;
     else
@@ -528,7 +528,7 @@ int main(int argc, char** argv) {
     }
     MPI_Barrier(MPI_COMM_WORLD);
     printf("Child %d: after receiveLongLat\n", rank);
-    assignGeoData(rank%5);
+    assignGeoData(rank);
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
@@ -546,7 +546,7 @@ int main(int argc, char** argv) {
     sprintf(output_path, "%s/saved_%s_ep_trivial_%d", base_path,
             (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
             rank + 1);
-    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf",  rank % 5 + 1);
+    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf",  rank);
     // printf("output_path = %s\n", output_path);
 
     char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
