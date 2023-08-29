@@ -1259,7 +1259,6 @@ CONTAINS
       else
          replaced = IDF_Coupling
          ! print *, "within spawn_children, replaced", replaced , "IDF_Coupling", IDF_Coupling
-
       end if
 
       if (saveitime(curix, curiy) == -886) then
@@ -1289,10 +1288,12 @@ CONTAINS
             ucm_tag = 0
       end if
       if ( curix /= centerx .or. curiy /= centery) then
-         print *, "curix, curiy", curix, curiy, "centerx, centery", centerx, centery
          wM2_12K = saved_wM2_12k(curix, curiy, :)
          return
       end if
+      
+      print *, "curix, curiy", curix, curiy, "centerx, centery", centerx, centery
+      print *, "map_left_idx", map_left_idx, "map_right_idx", map_right_idx, "one_grid_mapping", one_grid_mapping
       ! set all received_data to 0
       received_data = 0
       do child_idx = 1, num_children
