@@ -1175,7 +1175,7 @@ CONTAINS
 
       print *, "number of bemcalled", count(bemcalled .eq. 0)
       print *,"WRF calling for curix, cuiy, curibui, curitime", curix, curiy, curibui, curitime
-      ! return
+      return
 
       if (spawned .eqv. .false.) then
             if (mod(ite + its, 2) == 0) then
