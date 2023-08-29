@@ -13,4 +13,4 @@
 ###Run real.exe
 module load gnu/11.2.0
 cd /glade/work/lichenwu/NWP/WRF/
-./compile em_real_online -j 10 >& compile.log
+./compile em_real -j 10 >& compile.log
