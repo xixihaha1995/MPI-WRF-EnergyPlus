@@ -1237,8 +1237,10 @@ CONTAINS
          return
       else
          replaced = IDF_Coupling
-         print *, "within spawn_children, replaced", replaced , "IDF_Coupling", IDF_Coupling
+         ! print *, "within spawn_children, replaced", replaced , "IDF_Coupling", IDF_Coupling
          print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "one_grid_mapping", one_grid_mapping
+         print *, "Cur xlatall(curix, curiy), xlongall(curix, curiy)", xlatall(curix, curiy), xlongall(curix, curiy)
+         print *, "Cur xlat xlong", xlat, xlong
       end if
 
       if (saveitime(curix, curiy) == -886) then
