@@ -1156,26 +1156,24 @@ CONTAINS
       INTEGER, DIMENSION(num_children) :: one_grid_mapping
       INTEGER :: latlongall_length, mapping_length
       integer :: i, j, k, map_left_idx, map_right_idx
-      integer,save :: IDF_Coupling
-      integer :: replaced, centerx, centery
+      integer,save :: IDF_Coupling, centerx, centery
+      integer :: replaced
 
-      !ix,iy,ibui,dt,itimestep,xlat,xlong,wrf_weather, wM2_12K
-      ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
-      if (spawned .eqv. .false.) then
-         spawned = .true.
-         allocate(bemcalled(its:ite, jts:jte))
-         bemcalled = -1
-         replaced = 0
-      end if
+      ! if (spawned .eqv. .false.) then
+      !    spawned = .true.
+      !    allocate(bemcalled(its:ite, jts:jte))
+      !    bemcalled = -1
+      !    replaced = 0
+      ! end if
 
-      if (bemcalled(curix, curiy) .eq. -1) then
-         bemcalled(curix, curiy) = 0
-      end if
+      ! if (bemcalled(curix, curiy) .eq. -1) then
+      !    bemcalled(curix, curiy) = 0
+      ! end if
 
-      print *, "number of bemcalled", count(bemcalled .eq. 0)
-      print *,"WRF calling for curix, cuiy, curibui, curitime", curix, curiy, curibui, curitime
-      return
+      ! print *, "number of bemcalled", count(bemcalled .eq. 0)
+      ! print *,"WRF calling for curix, cuiy, curibui, curitime", curix, curiy, curibui, curitime
+      ! return
 
       if (spawned .eqv. .false.) then
             if (mod(ite + its, 2) == 0) then
