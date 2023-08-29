@@ -1166,13 +1166,13 @@ CONTAINS
             spawned = .true.
             wM2_12K = 300
             wM2_12K(1) = 0
-            allocate(saveitime(its:ite, its:ite))
+            allocate(saveitime(its:ite, jts:jte))
             latlongall_length = (ite - its + 1)*(jte - jts + 1)
             mapping_length = latlongall_length * num_children
             allocate(xlatall1d(latlongall_length))
             allocate(xlongall1d(latlongall_length))
             allocate(mapping_wrf_ep(mapping_length))
-            allocate(saved_wM2_12k(its:ite, its:ite, wrfNeedLen))
+            allocate(saved_wM2_12k(its:ite, jts:jte, wrfNeedLen))
             saveitime = -1 
             mapping_wrf_ep = -1
             saved_wM2_12k = 0

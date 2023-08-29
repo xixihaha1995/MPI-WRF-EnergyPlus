@@ -12,7 +12,6 @@ saved_folder = r"C:\Users\wulic\Documents\GitHub\fortran_experiments\_10Cheyenne
 if not os.path.exists(saved_folder):
     os.makedirs(saved_folder)
 # get all the file names in the source_folder
-subfolders = os.listdir(source_folder)
 
 source_text = """
   RunPeriod,
@@ -48,31 +47,19 @@ target_text = """
     Yes;                     !- Use Weather File Snow Indicators
 """
 
-# copy all the `in.idf` files to the saved_folder, rename them as `in_uwyo_1.idf`, `in_uwyo_2.idf`, etc.
-for curfolder in subfolders:
-    #if curfolder is not a folder, skip
-    if not os.path.isdir(source_folder + "\\" + curfolder):
+# iterate source_folder, find all *.idf files
+for curidf in os.listdir(source_folder):
+    #if curfolder is not a idf file, skip
+    if not curidf.endswith(".idf"):
         continue
-    source_file = source_folder + "\\" + curfolder + "\\" + "in.idf"
-    if not os.path.exists(source_file):
-        continue
-
-    #  change1= C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/future_hourly_co2e_2030.csv, !- File Name
-    #  change2 = C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/historical_hourly_co2e_2019.csv, !- File Name
-
-    #find the lines containing change1str, change it to "future_hourly_co2e_2030.csv, !- File Name"
-    #find the lines containing change2str, change it to "historical_hourly_co2e_2019.csv, !- File Name"
-
+    #get the full path of the idf file
+    source_file = source_folder + "\\" + curidf
 
     with open(source_file, 'r') as file:
         filedata = file.read()
     #find lines containing change1str and change2str, change them to the new strings
-    filedata = filedata.replacereplace(source_text, target_text)
-    #add lines_to_add to the beginning of the file
-
-    saved_file = saved_folder + "\\" + "in_" + str(curfolder) + ".idf"
-    #save the modified file in saved_file
-    with open(saved_file, 'w') as file:
+    filedata = filedata.replace(source_text, target_text)
+    #save the file to original file
+    with open(source_file, 'w') as file:
         file.write(filedata)
-
 
