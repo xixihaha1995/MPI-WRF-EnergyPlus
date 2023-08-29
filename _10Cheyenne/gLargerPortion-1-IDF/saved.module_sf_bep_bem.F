@@ -1289,6 +1289,7 @@ CONTAINS
             ucm_tag = 0
       end if
       if ( curix /= centerx .or. curiy /= centery) then
+         print *, "curix, curiy", curix, curiy, "centerx, centery", centerx, centery
          wM2_12K = saved_wM2_12k(curix, curiy, :)
          return
       end if
