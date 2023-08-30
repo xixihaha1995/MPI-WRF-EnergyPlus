@@ -2,13 +2,13 @@
 
 #PBS -N lwu4_wrf_ep
 #PBS -A WYOM0106
-#PBS -l walltime=03:00:00
+#PBS -l walltime=00:30:00
 #PBS -q premium
 #PBS -j oe
 #PBS -m abe
 #PBS -M lwu4@uwyo.edu
 #PBS -k eod
-#PBS -l select=1:mpiprocs=14
+#PBS -l select=2:mpiprocs=36
 
 cat $PBS_NODEFILE
 set nbr_parent = 4
@@ -22,4 +22,4 @@ module load gnu/11.2.0
 # cp -f child.exe /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 pwd
-mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/IDFs38_ep_temp/log.energyplus
+mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/IDFs38_ep_temp/online.log.energyplus

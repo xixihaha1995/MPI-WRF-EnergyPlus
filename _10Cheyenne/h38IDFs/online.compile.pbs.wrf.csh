@@ -12,9 +12,9 @@
 
 ###Run real.exe
 module load gnu/11.2.0
-cd /glade/work/lichenwu/NWP-Offline/WRF/
-echo "Start compiling offline WRF at"
+cd /glade/work/lichenwu/NWP/WRF/
+echo "Start compiling online WRF at"
 date "+%Y-%m-%d %H:%M:%S"
-./compile em_real -j 10 >& compile.log
-echo "End compiling offline WRF at"
+./compile em_real -j 10 >& online.compile.log
+echo "End compiling online WRF at"
 date "+%Y-%m-%d %H:%M:%S"

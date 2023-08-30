@@ -10,7 +10,7 @@
 #include <math.h>
 
 #define MPI_MAX_PROCESSOR_NAME 128
-#define NBR_IDF 10
+#define NBR_IDF 38
 #define NBR_WRF 4
 #define HOR_LEN_TAG 3
 #define VER_LEN_TAG 4

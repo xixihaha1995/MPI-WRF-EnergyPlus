@@ -1140,7 +1140,7 @@ CONTAINS
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
       integer :: ucm_tag = 0
-      integer, parameter ::  num_children = 10, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
+      integer, parameter ::  num_children = 38, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
       real :: dt, xlat, xlong
@@ -1873,7 +1873,7 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-         inner_dt = 0.6
+         inner_dt = 6
          running_hours = 6
             if (1.1 *  inner_dt .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(FRC_URB2D,ix,iy,ibui,dt,itimestep,&
