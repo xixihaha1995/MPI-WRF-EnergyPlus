@@ -1132,13 +1132,13 @@ CONTAINS
       implicit none
       include 'mpif.h'
       real :: inner_dt
-      integer ::  nbr_steps_hr, nbr_steps_exchange
+      integer,save ::  nbr_steps_hr, nbr_steps_exchange, ending_steps
       integer :: ierr, num_procs, parent_comm, child_idx
       integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm, rank
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
-      integer ::  ending_steps, ucm_tag = 0
+      integer :: ucm_tag = 0
       integer, parameter ::  num_children = 10, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
@@ -1167,6 +1167,7 @@ CONTAINS
             nbr_steps_hr = NINT(3600.0 / inner_dt)
             nbr_steps_exchange = NINT(3600.0 / inner_dt)
             ending_steps = (5) * nbr_steps_hr
+            print *, "inner_dt", inner_dt, "nbr_steps_hr", nbr_steps_hr, "ending_steps", ending_steps
             spawned = .true.
             wM2_12K = 300
             wM2_12K(1) = 0
