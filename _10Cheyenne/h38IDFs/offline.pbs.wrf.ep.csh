@@ -3,7 +3,7 @@
 #PBS -N lwu4_wrf_ep
 #PBS -A WYOM0106
 #PBS -l walltime=00:30:00
-#PBS -q premium
+#PBS -q regular
 #PBS -j oe
 #PBS -m abe
 #PBS -M lwu4@uwyo.edu
