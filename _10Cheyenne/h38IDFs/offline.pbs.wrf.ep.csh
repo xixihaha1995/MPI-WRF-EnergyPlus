@@ -2,7 +2,7 @@
 
 #PBS -N lwu4_wrf_ep
 #PBS -A WYOM0106
-#PBS -l walltime=50:00:00
+#PBS -l walltime=12:00:00
 #PBS -q premium
 #PBS -j oe
 #PBS -m abe
