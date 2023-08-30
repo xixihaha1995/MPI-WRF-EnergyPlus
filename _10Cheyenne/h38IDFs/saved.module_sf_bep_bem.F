@@ -1248,9 +1248,9 @@ CONTAINS
       else
          replaced = IDF_Coupling
          ! print *, "within spawn_children, replaced", replaced , "IDF_Coupling", IDF_Coupling
-         print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "one_grid_mapping", one_grid_mapping
-         print *, "Cur xlatall(curix, curiy), xlongall(curix, curiy)", xlatall(curix, curiy), xlongall(curix, curiy)
-         print *, "Cur xlat xlong", xlat, xlong
+         ! print *, "WRF rank ID", rank, "curix, curiy", curix, curiy, "one_grid_mapping", one_grid_mapping
+         ! print *, "Cur xlatall(curix, curiy), xlongall(curix, curiy)", xlatall(curix, curiy), xlongall(curix, curiy)
+         ! print *, "Cur xlat xlong", xlat, xlong
       end if
 
       if (saveitime(curix, curiy) == -886) then
@@ -1891,14 +1891,14 @@ CONTAINS
                else
                   ! print *, "mean_recv_waste_w", mean_recv_waste_w
                   sflev1D(1:nlev(ibui)) = mean_recv_waste_w
-                  print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
-                  print *, "replaced", replaced
+                  ! print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
+                  ! print *, "replaced", replaced
                   if (replaced == 2) then
                      do wrfFlrIdx = 1, 3
                         twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
                      end do
                      trb1D(10) = wM2_12K(14)
-                     print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
+                     ! print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                      print *, 'After trb1d(10)', trb1D(10)
                   end if
                end if
