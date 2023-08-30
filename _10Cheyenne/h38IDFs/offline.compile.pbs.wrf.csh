@@ -15,6 +15,6 @@ module load gnu/11.2.0
 cd /glade/work/lichenwu/NWP-Offline/WRF/
 echo "Start compiling offline WRF at"
 date "+%Y-%m-%d %H:%M:%S"
-./compile em_real -j 10 >& compile.log
+./compile em_real -j 10 >& offline.compile.log
 echo "End compiling offline WRF at"
 date "+%Y-%m-%d %H:%M:%S"
