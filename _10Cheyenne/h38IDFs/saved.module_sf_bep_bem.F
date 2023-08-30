@@ -1899,7 +1899,7 @@ CONTAINS
                      end do
                      trb1D(10) = wM2_12K(14)
                      ! print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
-                     print *, 'After trb1d(10)', trb1D(10)
+                     ! print *, 'After trb1d(10)', trb1D(10)
                   end if
                end if
          endif
