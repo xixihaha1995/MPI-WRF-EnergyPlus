@@ -897,7 +897,7 @@ CONTAINS
                deltar1D = DECLIN_URB
                ah1D = OMG_URB2D(ix, iy)
 
-               call BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
+               call BEP1D(FRC_URB2D,itimestep, ix, iy, iurb, kms, kme, kts, kte, z1D, dt, ua1D, va1D, pt1D, da1D, pr1D, pt01D, &
                            zr1D, deltar1D, ah1D, rs1D, rld1D, alagb, &
                            alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
                            dzr, dzf, dzw, dzgb, its,ite,jts, jte, ims, ime, jms, jme, &
@@ -1127,10 +1127,11 @@ CONTAINS
       return
    end subroutine BEP_BEM
 
-   subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
+   subroutine spawn_children(FRC_URB2D,curix,curiy,curibui,dt,curitime,&
       its, ite, jts, jte, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,inner_dt,running_hours, wM2_12K)
       implicit none
       include 'mpif.h'
+      REAL, DIMENSION(ims:ime, jms:jme), INTENT(IN)::   FRC_URB2D
       real :: inner_dt
       integer,save ::  nbr_steps_hr, nbr_steps_exchange, ending_steps
       integer :: ierr, num_procs, parent_comm, child_idx, running_hours
@@ -1181,6 +1182,8 @@ CONTAINS
             saveitime = -1 
             mapping_wrf_ep = -1
             saved_wM2_12k = 0
+            xlatall1d = 0
+            xlongall1d = 0
          !  print *, "saveitime", saveitime
             print *, "its, ite", its, ite, "jts, jte", jts, jte
             print *, "ims, ime", ims, ime, "jms, jme", jms, jme
@@ -1192,8 +1195,10 @@ CONTAINS
             k = 1
             do j = jts, jte
             do i = its, ite
-               xlatall1d(k) = xlatall(i, j)
-               xlongall1d(k) = xlongall(i, j)
+               if (FRC_URB2D(i, j) .gt. 0) then
+                  xlatall1d(k) = xlatall(i, j)
+                  xlongall1d(k) = xlongall(i, j)
+               end if
                ! print *, "i, j", i, j, "xlatall(i, j)", xlatall(i, j), "xlongall(i, j)", xlongall(i, j)
                k = k + 1
             end do
@@ -1308,7 +1313,7 @@ CONTAINS
 
 ! ===6=8===============================================================72
 
-   subroutine BEP1D(itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
+   subroutine BEP1D(FRC_URB2D,itimestep, ix, iy, iurb, kms, kme, kts, kte, z, dt, ua, va, pt, da, pr, pt0, &
                      zr, deltar, ah, rs, rld, alagb, &
                      alag, alaw, alar, alaf, csgb, csg, csw, csr, csf, &
                      dzr, dzf, dzw, dzgb, its, ite, jts, jte, ims, ime, jms, jme, &
@@ -1339,6 +1344,7 @@ CONTAINS
 ! Data relative to the "mesoscale grid"
 
 !!    integer nz                 ! Number of vertical levels
+      REAL, DIMENSION(ims:ime, jms:jme), INTENT(IN)::   FRC_URB2D
       integer kms, kme, kts, kte, ix, iy, itimestep
       real z(kms:kme)               ! Altitude above the ground of the cell interfaces.
       real ua(kms:kme)                ! Wind speed in the x direction
@@ -1870,7 +1876,7 @@ CONTAINS
          inner_dt = 0.6
          running_hours = 6
             if (1.1 *  inner_dt .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
-               call spawn_children(ix,iy,ibui,dt,itimestep,&
+               call spawn_children(FRC_URB2D,ix,iy,ibui,dt,itimestep,&
                its, ite, jts, jte,ims,ime,jms,jme,xlatall, xlongall, &
                xlat,xlong,wrf_weather,replaced, inner_dt,running_hours,wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /nlev(ibui) !it's currently averaged by bld footprint. And divided by three floors.
