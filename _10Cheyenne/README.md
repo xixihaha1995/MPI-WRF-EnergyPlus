@@ -1,6 +1,7 @@
 ### Cheyenne
 ```
 gladequota
+Log in at sam.ucar.edu and select User, then Preferences.
 ```
 https://fastx.ucar.edu:3300/session/
 
