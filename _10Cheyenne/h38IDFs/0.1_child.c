@@ -540,7 +540,7 @@ int main(int argc, char** argv) {
     requestSur(state, geoUWyoMyRank);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
-    const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/IDFs38_ep_temp" : ".";
+    const char* base_path = (strstr(curpath, "glade")) ? "/glade/scratch/lichenwu/100mIDFs38_ep_temp" : ".";
     // Choose the appropriate folder based on IDF_Coupling value
     printf("base_path = %s\n", base_path);
     sprintf(output_path, "%s/saved_%s_ep_trivial_%d", base_path,

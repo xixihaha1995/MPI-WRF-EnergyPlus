@@ -2,7 +2,7 @@
 
 #PBS -N lwu4_wrf_ep
 #PBS -A WYOM0106
-#PBS -l walltime=00:30:00
+#PBS -l walltime=50:00:00
 #PBS -q premium
 #PBS -j oe
 #PBS -m abe
@@ -22,4 +22,4 @@ module load gnu/11.2.0
 # cp -f child.exe /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 pwd
-mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/IDFs38_ep_temp/online.log.energyplus
+mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/100mIDFs38_ep_temp/online.log.energyplus
