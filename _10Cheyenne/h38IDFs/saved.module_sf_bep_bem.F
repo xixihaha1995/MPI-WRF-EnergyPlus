@@ -1128,16 +1128,17 @@ CONTAINS
    end subroutine BEP_BEM
 
    subroutine spawn_children(curix,curiy,curibui,dt,curitime,&
-      its, ite, jts, jte, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,wM2_12K)
+      its, ite, jts, jte, ims,ime,jms,jme,xlatall, xlongall, xlat, xlong,wrf_weather,replaced,inner_dt, wM2_12K)
       implicit none
       include 'mpif.h'
-      integer, parameter ::  nbr_steps_hr = 600, nbr_steps_exchange = 600
+      real :: inner_dt
+      integer, parameter ::  nbr_steps_hr, nbr_steps_exchange
       integer :: ierr, num_procs, parent_comm, child_idx
       integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm, rank
       ! ending_steps for 24 hours simulation should be 23 * nbr_steps_hr, 
       ! since we have extra MPI calling from curitime = 1 (which is not mod(nbr_steps_hr) == 0)).
-      integer ::  ending_steps = (23) * nbr_steps_hr, ucm_tag = 0
+      integer ::  ending_steps = (5) * nbr_steps_hr, ucm_tag = 0
       integer, parameter ::  num_children = 10, performance_length = 15, weatherLength = 3, wrfNeedLen = 14
       real, dimension(num_children, performance_length) :: received_data
       REAL, DIMENSION(weatherLength) :: wrf_weather
@@ -1163,6 +1164,8 @@ CONTAINS
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
       if (spawned .eqv. .false.) then
+            nbr_steps_hr = NINT(3600.0 / inner_dt)
+            nbr_steps_exchange = NINT(3600.0 / inner_dt)
             spawned = .true.
             wM2_12K = 300
             wM2_12K(1) = 0
@@ -1623,6 +1626,7 @@ CONTAINS
 
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
+      real :: inner_dt
 ! ----------------------------------------------------------------------
 ! END VARIABLES DEFINITIONS
 ! ----------------------------------------------------------------------
@@ -1860,10 +1864,11 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-         if (0.7 .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
+         inner_dt = 0.6
+            if (1.1 *  inner_dt .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(ix,iy,ibui,dt,itimestep,&
                its, ite, jts, jte,ims,ime,jms,jme,xlatall, xlongall, &
-               xlat,xlong,wrf_weather,replaced, wM2_12K)
+               xlat,xlong,wrf_weather,replaced, inner_dt,wM2_12K)
                mean_recv_waste_w = bs_u(1, iurb) * bs_u(2, iurb) * wM2_12K(1) /nlev(ibui) !it's currently averaged by bld footprint. And divided by three floors.
                ! print *, "trb1D", trb1D
                ! print *, "nlev(ibui) ", nlev(ibui) 
