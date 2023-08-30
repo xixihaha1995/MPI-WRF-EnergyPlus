@@ -1132,7 +1132,7 @@ CONTAINS
       implicit none
       include 'mpif.h'
       real :: inner_dt
-      integer, parameter ::  nbr_steps_hr, nbr_steps_exchange
+      integer, parameter ::  nbr_steps_hr = NINT(3600.0 / inner_dt), nbr_steps_exchange = NINT(3600.0 / inner_dt)
       integer :: ierr, num_procs, parent_comm, child_idx
       integer :: status(MPI_STATUS_SIZE), curix, curiy, curibui, curitime
       integer, save :: new_comm, rank
@@ -1164,8 +1164,6 @@ CONTAINS
       ! print *, "curix", curix, "curiy", curiy, "curibui", curibui, "curitime", curitime, "dt", dt
 
       if (spawned .eqv. .false.) then
-            nbr_steps_hr = NINT(3600.0 / inner_dt)
-            nbr_steps_exchange = NINT(3600.0 / inner_dt)
             spawned = .true.
             wM2_12K = 300
             wM2_12K(1) = 0
