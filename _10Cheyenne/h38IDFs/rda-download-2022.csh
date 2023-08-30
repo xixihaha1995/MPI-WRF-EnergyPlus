@@ -37,7 +37,6 @@ set filelist= ( \
     https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_12_00.grib2  \
     https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_18_00.grib2  \
     https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220703_00_00.grib2  \
-
 )
 while($#filelist > 0)
   set syscmd = "wget $cert_opt $opts $filelist[1]"
