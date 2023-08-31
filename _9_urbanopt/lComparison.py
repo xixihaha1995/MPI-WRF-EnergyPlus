@@ -15,7 +15,6 @@ columns:
 import os, pandas as pd
 
 def read_html(html_path):
-    print("html_path: ", html_path)
     if not os.path.exists(html_path):
         return 0, 0
     abs_html_path = os.path.abspath(html_path)
@@ -26,11 +25,10 @@ def read_html(html_path):
 
 def subfolder_to_dict(parent_folder, subfolder):
     bld_name = subfolder.split("_")[-1]
-    print(bld_name)
+    print("subfolder: ", subfolder)
     ifonline = "online" in subfolder
     # detect if current os is windows or linux
     iflinux = os.name == 'posix'
-    print("iflinux: ", iflinux)
     curtable = read_html(os.path.join(parent_folder, subfolder, "eplustbl.htm")) \
         if iflinux else read_html(os.path.join(parent_folder, subfolder, "ASHRAE901_ApartmentMidRise_STD2007_Albuquerque.table.htm"))
     consumption_gj = curtable[3][1][2]
@@ -40,7 +38,6 @@ def subfolder_to_dict(parent_folder, subfolder):
     return [int(bld_name), ifonline, consumption_gj, demand_w]
 
 def one_tab(parent_folder):
-    print(parent_folder)
     two_d_tabdata = [[0,0,0,0,0,0,0,0] for i in range(38)]
     for subfoler in os.listdir(parent_folder):
 #         if not folder then continue
@@ -55,10 +52,10 @@ def one_tab(parent_folder):
             two_d_tabdata[bld_name-1][1] = demand_w
     for i in range(38):
         two_d_tabdata[i][4] = two_d_tabdata[i][2] - two_d_tabdata[i][0]
-        two_d_tabdata[i][5] = two_d_tabdata[i][4] / two_d_tabdata[i][0]
+        # if division by zero, then set to NaN
+        two_d_tabdata[i][5] = two_d_tabdata[i][4] / two_d_tabdata[i][0] if two_d_tabdata[i][0] != 0 else float('NaN')
         two_d_tabdata[i][6] = two_d_tabdata[i][3] - two_d_tabdata[i][1]
-        two_d_tabdata[i][7] = two_d_tabdata[i][6] / two_d_tabdata[i][1]
-    print(two_d_tabdata)
+        two_d_tabdata[i][7] = two_d_tabdata[i][6] / two_d_tabdata[i][1] if two_d_tabdata[i][1] != 0 else float('NaN')
     return two_d_tabdata
 
 
