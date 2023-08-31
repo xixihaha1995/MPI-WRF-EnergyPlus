@@ -20,6 +20,6 @@ module load gnu/11.2.0
 ## cp -r /glade/u/home/lichenwu/project/fortran_experiments/_6_Coordinate_EP/j7080/python_standard_lib /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 ## cp saved.module_sf_bep_bem.F  /glade/u/home/lichenwu/project/NWP/WRF/phys/module_sf_bep_bem.F
 # cp -f child.exe /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
-cd /glade/u/home/lichenwu/project/NWP-Offline/WRF/test/em_real/
+cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 pwd
-mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/100mIDFs38_ep_temp/offline.log.energyplus
+mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/jun30_100mIDFs38_ep_temp/online.log.energyplus

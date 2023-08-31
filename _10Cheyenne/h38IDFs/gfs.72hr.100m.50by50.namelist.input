@@ -6,11 +6,11 @@
  start_year                          = 2022, 2022,
  start_month                         = 06,   07,
  start_day                           = 30,   02,
- start_hour                          = 00,   00,
+ start_hour                          = 06,   00,
  end_year                            = 2022, 2022,
  end_month                           = 07,   07,
  end_day                             = 03,   03,
- end_hour                            = 00,   00,
+ end_hour                            = 06,   00,
  interval_seconds                    = 21600
  input_from_file                     = .true.,.true.,
  history_interval                    = 60,  60, 
