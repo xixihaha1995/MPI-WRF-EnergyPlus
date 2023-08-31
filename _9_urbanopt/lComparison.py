@@ -15,6 +15,7 @@ columns:
 import os, pandas as pd
 
 def read_html(html_path):
+    print(html_path)
     if not os.path.exists(html_path):
         return 0, 0
     abs_html_path = os.path.abspath(html_path)
@@ -35,6 +36,7 @@ def subfolder_to_dict(parent_folder, subfolder):
     return [int(bld_name), ifonline, consumption_gj, demand_w]
 
 def one_tab(parent_folder):
+    print(parent_folder)
     two_d_tabdata = [[0,0,0,0,0,0,0,0] for i in range(38)]
     for subfoler in os.listdir(parent_folder):
 #         if not folder then continue
