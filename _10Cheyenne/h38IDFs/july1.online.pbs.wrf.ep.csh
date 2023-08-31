@@ -1,6 +1,6 @@
 #!/bin/csh
 
-#PBS -N lwu4_wrf_ep
+#PBS -N on_wrf
 #PBS -A WYOM0106
 #PBS -l walltime=12:00:00
 #PBS -q premium
