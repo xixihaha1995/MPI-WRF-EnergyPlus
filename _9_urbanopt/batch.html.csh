@@ -12,5 +12,7 @@
 
 ###Run real.exe
 module load python/3.7.12
+pip3 install pandas
+pip3 install lxml
 cd /glade/work/lichenwu/fortran_experiments/_9_urbanopt/
 python3 ./lComparison.py >& batch.log
