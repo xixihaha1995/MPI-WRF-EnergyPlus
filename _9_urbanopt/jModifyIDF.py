@@ -13,16 +13,16 @@ if not os.path.exists(saved_folder):
     os.makedirs(saved_folder)
 # get all the file names in the source_folder
 
-source_text = """
+target_text = """
   RunPeriod,
     Run Period 1,            !- Name
-    6,                       !- Begin Month
-    30,                       !- Begin Day of Month
+    7,                       !- Begin Month
+    2,                       !- Begin Day of Month
     2022,                    !- Begin Year
-    6,                       !- End Month
-    30,                       !- End Day of Month
+    7,                       !- End Month
+    2,                       !- End Day of Month
     2022,                    !- End Year
-    Thursday,                  !- Day of Week for Start Day
+    Saturday,                  !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days
     No,                      !- Use Weather File Daylight Saving Period
     No,                      !- Apply Weekend Holiday Rule
@@ -30,7 +30,7 @@ source_text = """
     Yes;                     !- Use Weather File Snow Indicators
 """
 
-target_text = """
+source_text = """
   RunPeriod,
     Run Period 1,            !- Name
     7,                       !- Begin Month
