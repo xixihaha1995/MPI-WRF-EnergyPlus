@@ -24,19 +24,20 @@ else
 endif
 # download weather files from 20220630 to 20220702
 set filelist= ( \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.06/fnl_20220630_00_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.06/fnl_20220630_06_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.06/fnl_20220630_12_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.06/fnl_20220630_18_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220701_00_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220701_06_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220701_12_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220701_18_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_00_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_06_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_12_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_18_00.grib2  \
-    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220703_00_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.06/fnl_20220630_00_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.06/fnl_20220630_06_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.06/fnl_20220630_12_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.06/fnl_20220630_18_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220701_00_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220701_06_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220701_12_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220701_18_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_00_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_06_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_12_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220702_18_00.grib2  \
+    # https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220703_00_00.grib2  \
+    https://data.rda.ucar.edu/ds083.2/grib2/2022/2022.07/fnl_20220703_06_00.grib2  \
 )
 while($#filelist > 0)
   set syscmd = "wget $cert_opt $opts $filelist[1]"

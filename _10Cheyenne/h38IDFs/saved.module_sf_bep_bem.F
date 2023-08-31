@@ -1290,7 +1290,7 @@ CONTAINS
       end do
       ! print *, "received_data(:, 2)", received_data(:, 2), "sum(received_data(:, 2))", sum(received_data(:, 2))
       ! print *, "received_data(:, 1)", received_data(:, 1), "sum(received_data(:, 1))", sum(received_data(:, 1))
-      print *, "received_data", received_data
+      ! print *, "received_data", received_data
       wM2_12K(1) = sum(received_data(:, 2)) /sum (received_data(:, 1))
       wM2_12K(2:14) = sum(received_data(:, 3:15), dim=1) / count(one_grid_mapping .gt. 0)
       saved_wM2_12k(curix, curiy, :) = wM2_12K
