@@ -52,12 +52,13 @@ def one_tab(parent_folder):
         two_d_tabdata[i][5] = two_d_tabdata[i][4] / two_d_tabdata[i][0]
         two_d_tabdata[i][6] = two_d_tabdata[i][3] - two_d_tabdata[i][1]
         two_d_tabdata[i][7] = two_d_tabdata[i][6] / two_d_tabdata[i][1]
+    print(two_d_tabdata)
     return two_d_tabdata
 
 
 def all_tabs(name):
     experiments_paths = {
-        "1km_6hr": r"/glade/scratch/lichenwu/IDFs38_ep_temp",
+        "1km_6hr": "/glade/scratch/lichenwu/IDFs38_ep_temp",
         # "100m_jun30": r"/glade/scratch/lichenwu/jun30_100mIDFs38_ep_temp",
         # "100m_jul1": r"/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp",
         # "100m_jul2": r"/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp"
