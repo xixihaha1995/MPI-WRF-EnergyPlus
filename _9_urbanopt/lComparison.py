@@ -13,6 +13,7 @@ columns:
     Consumption Difference [GJ], Consumption Difference [%], Demand Difference [W], Demand Difference [%]
 '''
 import os, pandas as pd
+import concurrent.futures
 
 def read_html(html_path):
     if not os.path.exists(html_path):
@@ -77,4 +78,10 @@ def all_tabs(name):
     excel_writer.save()
 
 if __name__ == "__main__":
-    all_tabs("urbanopt_comparison.xlsx")
+    filename = "urbanopt_comparison.xlsx"
+
+    # Get the number of CPUs/cores from the environment variable
+    num_cpus = int(os.environ["PBS_NUM_PPN"])  # Adjust the environment variable name if needed
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_cpus) as executor:
+        executor.submit(all_tabs, filename)
