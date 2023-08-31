@@ -15,7 +15,7 @@ columns:
 import os, pandas as pd
 
 def read_html(html_path):
-    print(html_path)
+    print("html_path: ", html_path)
     if not os.path.exists(html_path):
         return 0, 0
     abs_html_path = os.path.abspath(html_path)
@@ -26,13 +26,17 @@ def read_html(html_path):
 
 def subfolder_to_dict(parent_folder, subfolder):
     bld_name = subfolder.split("_")[-1]
+    print(bld_name)
     ifonline = "online" in subfolder
     # detect if current os is windows or linux
     iflinux = os.name == 'posix'
+    print("iflinux: ", iflinux)
     curtable = read_html(os.path.join(parent_folder, subfolder, "eplustbl.htm")) \
         if iflinux else read_html(os.path.join(parent_folder, subfolder, "ASHRAE901_ApartmentMidRise_STD2007_Albuquerque.table.htm"))
     consumption_gj = curtable[3][1][2]
     demand_w = curtable[17][1][3]
+    print("consumption_gj: ", consumption_gj)
+    print("demand_w: ", demand_w)
     return [int(bld_name), ifonline, consumption_gj, demand_w]
 
 def one_tab(parent_folder):
