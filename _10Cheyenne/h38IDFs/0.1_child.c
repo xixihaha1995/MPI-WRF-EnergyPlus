@@ -544,11 +544,11 @@ int main(int argc, char** argv) {
 
     char glade_folder_name[256];
     if (date_numer == 7.1) {
-        glade_folder_name = "/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp";
+        sprintf(glade_folder_name, "/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp");
     } else if(date_numer == 7.2) {
-        glade_folder_name = "/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp";
+        sprintf(glade_folder_name, "/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp");
     } else if (date_numer == 6.30) {
-        glade_folder_name = "/glade/scratch/lichenwu/june30_100mIDFs38_ep_temp";
+        sprintf(glade_folder_name, "/glade/scratch/lichenwu/june30_100mIDFs38_ep_temp");
     } else {
         printf("Error: date_numer = %f\n", date_numer);
         exit(1);
