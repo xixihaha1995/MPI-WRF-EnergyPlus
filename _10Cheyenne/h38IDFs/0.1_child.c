@@ -20,8 +20,8 @@
 #define MAPPING_TAG 6
 #define EARTH_RADIUS_KM 6371.0
 
-int IDF_Coupling = 0; //0, offline; 1, waste; 2, waste + surface;
-float date_numer = 7.1;
+int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
+char * glade_folder_name = "/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp"
 
 typedef struct {
     int gridIdx;
@@ -541,18 +541,6 @@ int main(int argc, char** argv) {
     requestSur(state, geoUWyoMyRank);
     char curpath[256];
     getcwd(curpath, sizeof(curpath));
-
-    char glade_folder_name[256];
-    if (date_numer == 7.1) {
-        sprintf(glade_folder_name, "/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp");
-    } else if(date_numer == 7.2) {
-        sprintf(glade_folder_name, "/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp");
-    } else if (date_numer == 6.30) {
-        sprintf(glade_folder_name, "/glade/scratch/lichenwu/june30_100mIDFs38_ep_temp");
-    } else {
-        printf("Error: date_numer = %f\n", date_numer);
-        exit(1);
-    }
     
     const char* base_path = (strstr(curpath, "glade")) ? glade_folder_name : ".";
     // Choose the appropriate folder based on IDF_Coupling value
