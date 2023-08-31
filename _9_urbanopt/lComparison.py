@@ -15,6 +15,16 @@ columns:
 import os, pandas as pd
 import concurrent.futures
 
+experiments_paths = {
+    # "1km_6hr": "/glade/scratch/lichenwu/IDFs38_ep_temp",
+    # "100m_jun30": r"/glade/scratch/lichenwu/jun30_100mIDFs38_ep_temp",
+    # "100m_jul1": r"/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp",
+    # "100m_jul2": r"/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp",
+    "1km_6hr": r"C:\Users\wulic\IDFs38_ep_temp\IDFs38_ep_temp",
+    "100m_jun30": r"C:\Users\wulic\100mIDFs38_ep_temp\100mIDFs38_ep_temp",
+}
+
+
 def read_html(html_path):
     if not os.path.exists(html_path):
         return 0, 0
@@ -61,15 +71,6 @@ def one_tab(parent_folder):
 
 
 def all_tabs(name):
-    experiments_paths = {
-        # "1km_6hr": "/glade/scratch/lichenwu/IDFs38_ep_temp",
-        # "100m_jun30": r"/glade/scratch/lichenwu/jun30_100mIDFs38_ep_temp",
-        # "100m_jul1": r"/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp",
-        # "100m_jul2": r"/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp",
-        "1km_6hr": r"C:\Users\wulic\IDFs38_ep_temp\IDFs38_ep_temp",
-        "100m_jun30": r"C:\Users\wulic\100mIDFs38_ep_temp\100mIDFs38_ep_temp",
-    }
-
     excel_writer = pd.ExcelWriter(name)
     for exp_name, exp_path in experiments_paths.items():
         df = pd.DataFrame(one_tab(exp_path))
