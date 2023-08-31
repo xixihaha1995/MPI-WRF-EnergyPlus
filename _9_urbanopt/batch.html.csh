@@ -8,7 +8,7 @@
 #PBS -j oe
 #PBS -m abe
 #PBS -M lwu4@uwyo.edu
-#PBS -l select=1:ncpus=10
+#PBS -l select=1:ncpus=1
 
 ###Run real.exe
 module load python/3.7.12

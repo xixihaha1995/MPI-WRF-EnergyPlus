@@ -79,9 +79,9 @@ def all_tabs(name):
 
 if __name__ == "__main__":
     filename = "urbanopt_comparison.xlsx"
+    all_tabs(filename)
+    # # Get the number of allocated CPUs/cores from the environment variable
+    # num_cpus = int(os.environ.get("PBS_NCPUS", 10))  # Default to 1 if environment variable is not set
 
-    # Get the number of allocated CPUs/cores from the environment variable
-    num_cpus = int(os.environ.get("PBS_NCPUS", 10))  # Default to 1 if environment variable is not set
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_cpus) as executor:
-        executor.submit(all_tabs, filename)
+    # with concurrent.futures.ThreadPoolExecutor(max_workers=num_cpus) as executor:
+    #     executor.submit(all_tabs, filename)
