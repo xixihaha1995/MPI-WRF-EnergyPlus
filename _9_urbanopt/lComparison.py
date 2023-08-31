@@ -26,7 +26,7 @@ def read_html(html_path):
 
 def subfolder_to_dict(parent_folder, subfolder):
     bld_name = subfolder.split("_")[-1]
-    print("subfolder: ", subfolder)
+    print("parent_folder: ", parent_folder, " subfolder: ", subfolder)
     ifonline = "online" in subfolder
     # detect if current os is windows or linux
     iflinux = os.name == 'posix'
