@@ -33,4 +33,7 @@ scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_100mIDFs38_ep_te
 mkdir copy_july1_100mIDFs38_ep_temp
 find july1_100mIDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy_july1_100mIDFs38_ep_temp \;
 scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_july1_100mIDFs38_ep_temp july1_100mIDFs38_ep_temp\
+
+find july2_100mIDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy_july2_100mIDFs38_ep_temp \;
+scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_july2_100mIDFs38_ep_temp july2_100mIDFs38_ep_temp\
 ```

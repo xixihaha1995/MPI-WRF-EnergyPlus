@@ -18,12 +18,13 @@ import concurrent.futures
 experiments_paths = {
     # "1km_6hr": "/glade/scratch/lichenwu/IDFs38_ep_temp",
     # "100m_jun30": r"/glade/scratch/lichenwu/jun30_100mIDFs38_ep_temp",
-    # "100m_jul1": r"/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp",
-    # "100m_jul2": r"/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp",
+    # "100m_july1": r"/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp",
+    # "100m_july2": r"/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp",
     "1km_6hr": r"C:\Users\wulic\IDFs38_ep_temp\IDFs38_ep_temp",
-    "100m_jun30": r"C:\Users\wulic\100mIDFs38_ep_temp\100mIDFs38_ep_temp",
+    "100m_jun30": r"C:\Users\wulic\june30_100mIDFs38_ep_temp\june30_100mIDFs38_ep_temp",
+    "100m_july1" : r"C:\Users\wulic\july1_100mIDFs38_ep_temp\july1_100mIDFs38_ep_temp",
+    "100m_july2" : r"C:\Users\wulic\july2_100mIDFs38_ep_temp\july2_100mIDFs38_ep_temp",
 }
-
 
 def read_html(html_path):
     if not os.path.exists(html_path):
@@ -41,7 +42,7 @@ def subfolder_to_dict(parent_folder, subfolder):
     # detect if current os is windows or linux
     curtable = read_html(os.path.join(parent_folder, subfolder, "eplustbl.htm"))
     consumption_gj = float(curtable[3][1][2])
-    demand_w = float(curtable[17][1][3])
+    demand_w = float(curtable[20][1][3])
     print("consumption_gj: ", consumption_gj)
     print("demand_w: ", demand_w)
     return [int(bld_name), ifonline, consumption_gj, demand_w]
@@ -70,8 +71,7 @@ def one_tab(parent_folder):
     return two_d_tabdata
 
 
-def all_tabs(name):
-    excel_writer = pd.ExcelWriter(name)
+def all_tabs():
     for exp_name, exp_path in experiments_paths.items():
         df = pd.DataFrame(one_tab(exp_path))
         # most left column name is "Building Number"
@@ -83,16 +83,35 @@ def all_tabs(name):
         # change index from 0, 1, 2, ... to 1, 2, 3, ...
         df.index += 1
         df.to_csv(exp_name + ".csv")
-        df.to_excel(excel_writer, sheet_name=exp_name)
 
+def CSVs_to_one_excel():
+    excel_writer = pd.ExcelWriter("WRF-EP-Coupling.xlsx")
+    new_df = None
+    for exp_name in experiments_paths.keys():
+        df = pd.read_csv(exp_name + ".csv")
+        df.to_excel(excel_writer, sheet_name=exp_name)
+        if exp_name == "1km_6hr":
+            continue
+        if new_df is None:
+            new_df = df
+            continue
+        # new df columns 1,3 are sum of all other dataframes; columns 2,4 are max of all other dataframes.
+        new_df.iloc[:, 1] += df.iloc[:, 1]
+        new_df.iloc[:, 3] += df.iloc[:, 3]
+        new_df.iloc[:, 2] = new_df.iloc[:, 2].combine(df.iloc[:, 2], max)
+        new_df.iloc[:, 4] = new_df.iloc[:, 4].combine(df.iloc[:, 4], max)
+
+    # new_df columns 5,6 are difference of columns 1,3; columns 7,8 are difference of columns 2,4.
+    # Calculate the differences and percentages directly using vectorized operations
+    new_df["Consumption Difference [GJ]"] = new_df["Online Cooling Electricity Consumption[GJ]"] - new_df["Offline Cooling Electricity Consumption[GJ]"]
+    new_df["Consumption Difference [%]"] = 100 * (new_df["Consumption Difference [GJ]"] / new_df["Offline Cooling Electricity Consumption[GJ]"]).where(new_df["Offline Cooling Electricity Consumption[GJ]"] != 0, float('NaN'))
+
+    new_df["Demand Difference [W]"] = new_df["Online Cooling Electricity Demand [W]"] - new_df["Offline Cooling Electricity Demand [W]"]
+    new_df["Demand Difference [%]"] = 100 * (new_df["Demand Difference [W]"] / new_df["Offline Cooling Electricity Demand [W]"]).where(new_df["Offline Cooling Electricity Demand [W]"] != 0, float('NaN'))
+    new_df.to_excel(excel_writer, sheet_name="Accumulated")
     with excel_writer:
-        pass  # This block is just to close the context, you can leave it empty
+        pass
 
 if __name__ == "__main__":
-    filename = "urbanopt_comparison.xlsx"
-    all_tabs(filename)
-    # # Get the number of allocated CPUs/cores from the environment variable
-    # num_cpus = int(os.environ.get("PBS_NCPUS", 10))  # Default to 1 if environment variable is not set
-
-    # with concurrent.futures.ThreadPoolExecutor(max_workers=num_cpus) as executor:
-    #     executor.submit(all_tabs, filename)
+    all_tabs()
+    CSVs_to_one_excel()
