@@ -235,28 +235,29 @@ void overwriteEpWeather(EnergyPlusState state) {
         return;
     }
     // MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
-    if (status.MPI_TAG == 886)
-    {
-        printf("EnergyPlus(BEMs):%d received 'ending messsage (EP 886, WRF-886)', "
-               "to reach collective barrier, EP wait WRF to finalize, then EP free MPI_Finalize().\n"
-               "Then no more MPI at all on both sides.", rank);
-        weatherMPIon = 0;
-    }
-    // msg_arr[0] += 10; //mannually increase OAT_C by 10 to get Heatwave event
-    Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
-    Real64 tdp = psyTdpFnWPb(state, msg_arr[1], msg_arr[2]);
-        printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga), %.2f (Pa)"
-            " and calculated RH = %.2f (%%), Tdp = %.2f (C)  from parent %d, at time %.2f(h)\n",
-            rank, msg_arr[0], msg_arr[1], msg_arr[2], rh, tdp, status.MPI_SOURCE, currentSimTime(state));
+    // MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
+    // if (status.MPI_TAG == 886)
+    // {
+    //     printf("EnergyPlus(BEMs):%d received 'ending messsage (EP 886, WRF-886)', "
+    //            "to reach collective barrier, EP wait WRF to finalize, then EP free MPI_Finalize().\n"
+    //            "Then no more MPI at all on both sides.", rank);
+    //     weatherMPIon = 0;
+    // }
+    // // msg_arr[0] += 10; //mannually increase OAT_C by 10 to get Heatwave event
+    // Real64 rh = 100 * psyRhFnTdbWPb(state, msg_arr[0], msg_arr[1], msg_arr[2]);
+    // Real64 tdp = psyTdpFnWPb(state, msg_arr[1], msg_arr[2]);
+
     
-    setActuatorValue(state, odbActHandle, msg_arr[0]);
-    setActuatorValue(state, orhActHandle, rh);
-    setActuatorValue(state, otdpActHandle, tdp);
+    // setActuatorValue(state, odbActHandle, msg_arr[0]);
+    // setActuatorValue(state, orhActHandle, rh);
+    // setActuatorValue(state, otdpActHandle, tdp);
 
     Real64 odbSen = getVariableValue(state, odbSenHandle);
     Real64 ohrSen = getVariableValue(state, ohrSenHandle);
     Real64 otdpSen = getVariableValue(state, otdpSenHandle);
+
+    printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga) at time %.2f(h)\n",
+            rank, odbSen, rh, currentSimTime(state));
 
 }
 
@@ -520,14 +521,14 @@ int main(int argc, char** argv) {
     char processor_name[MPI_MAX_PROCESSOR_NAME];
 
     MPI_Init(&argc, &argv);
-    MPI_Comm_get_parent(&parent_comm);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Get_processor_name(processor_name, &namelen);
-    printf("Child/parent %d/%d: rank=%d, size=%d, name=%s\n", rank, parent_comm, rank, size, processor_name);
+    printf("Child rank=%d, size=%d, name=%s\n", rank, size, processor_name);
     char output_path[MPI_MAX_PROCESSOR_NAME];
     char idfFilePath[MPI_MAX_PROCESSOR_NAME];
     EnergyPlusState state = stateNew();
+    callbackBeginZoneTimestepBeforeSetCurrentWeather(state, overwriteEpWeather);
     requestVariable(state, "Site Outdoor Air Drybulb Temperature", "ENVIRONMENT");
     requestVariable(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
     requestVariable(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
