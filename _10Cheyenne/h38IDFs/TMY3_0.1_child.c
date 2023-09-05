@@ -551,5 +551,8 @@ int main(int argc, char** argv) {
         printf("sys_args[%d] = %s\n", i, sys_args[i]);
     }
     energyplus(state,argc_, sys_args);
+    MPI_Barrier(MPI_COMM_WORLD);
+    printf("Child %d reached collective barrier, all my siblings here, let's end MPI. \n", rank);
+    MPI_Finalize();
     return 0;
 }
