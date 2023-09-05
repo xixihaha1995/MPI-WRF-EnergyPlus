@@ -2,16 +2,16 @@
 
 #PBS -N tmy3_38_ep
 #PBS -A WYOM0106
-#PBS -l walltime=00:30:00
+#PBS -l walltime=00:05:00
 #PBS -q premium
 #PBS -j oe
 #PBS -m abe
 #PBS -M lwu4@uwyo.edu
 #PBS -k eod
-#PBS -l select=1:mpiprocs=3
+#PBS -l select=2:mpiprocs=36
 
 cat $PBS_NODEFILE
-set nbr_idf = 3
+set nbr_idf = 38
 ###Run
 # cd /glade/u/home/lichenwu/project/fortran_experiments/_10Cheyenne/cCoordinateEP
 module load gnu/11.2.0
