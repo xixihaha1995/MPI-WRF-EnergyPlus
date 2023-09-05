@@ -257,7 +257,7 @@ void overwriteEpWeather(EnergyPlusState state) {
     Real64 otdpSen = getVariableValue(state, otdpSenHandle);
 
     printf("Child %d received weather %.2f (OAT_C), %.5f (Abs_Hum kgw/kga) at time %.2f(h)\n",
-            rank, odbSen, rh, currentSimTime(state));
+            rank, odbSen, ohrSen, currentSimTime(state));
 
 }
 
