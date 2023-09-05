@@ -11,7 +11,7 @@ LDLIBS = -lenergyplusapi -lm
 # export LD_LIBRARY_PATH := /glade/u/home/lichenwu/project/gcc-built-up-ep-22-2-0:$(LD_LIBRARY_PATH)
 
 FFLAGS =
-CHILD = 0.1_child.c
+CHILD = TMY3_0.1_child.c
 BOSS = 0.1_boss.f90
 
 MPI_APP = mpi_app
