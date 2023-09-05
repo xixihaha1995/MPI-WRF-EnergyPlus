@@ -22,4 +22,4 @@ module load gnu/11.2.0
 # cp -f child.exe /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 pwd
-mpiexec_mpt -spawn -np $nbr_idf ./child.exe  >& /glade/scratch/lichenwu/TMY3_WY_IDFs38_ep_temp/log.energyplus
+mpiexec_mpt -spawn -np $nbr_idf ./child.exe  >& /glade/scratch/lichenwu/TMY3_WY_IDFs38_ep_temp/tmy3.log.energyplus
