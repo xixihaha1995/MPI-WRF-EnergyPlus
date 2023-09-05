@@ -8,10 +8,10 @@
 #PBS -m abe
 #PBS -M lwu4@uwyo.edu
 #PBS -k eod
-#PBS -l select=1:mpiprocs=10
+#PBS -l select=1:mpiprocs=3
 
 cat $PBS_NODEFILE
-set nbr_idf = 10
+set nbr_idf = 3
 ###Run
 # cd /glade/u/home/lichenwu/project/fortran_experiments/_10Cheyenne/cCoordinateEP
 module load gnu/11.2.0
