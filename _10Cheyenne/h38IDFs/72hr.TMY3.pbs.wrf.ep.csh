@@ -1,6 +1,6 @@
 #!/bin/csh
 
-#PBS -N off_wrf
+#PBS -N tmy3_38_ep
 #PBS -A WYOM0106
 #PBS -l walltime=00:30:00
 #PBS -q premium
@@ -20,6 +20,6 @@ module load gnu/11.2.0
 ## cp -r /glade/u/home/lichenwu/project/fortran_experiments/_6_Coordinate_EP/j7080/python_standard_lib /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 ## cp saved.module_sf_bep_bem.F  /glade/u/home/lichenwu/project/NWP/WRF/phys/module_sf_bep_bem.F
 # cp -f child.exe /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
-cd /glade/u/home/lichenwu/project/NWP-Offline/WRF/test/em_real/
+cd /glade/u/home/lichenwu/project/NWP/WRF/test/em_real/
 pwd
 mpiexec_mpt -spawn -np $nbr_parent ./wrf.exe  >& /glade/scratch/lichenwu/TMY3_WY_IDFs38_ep_temp/log.energyplus
