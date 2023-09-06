@@ -395,7 +395,7 @@ void receiveLongLat(void) {
         }
     }
     char centroidPath[256];
-    sprintf(centroidPath, "./%s/centroid.csv", resour_name);
+    sprintf(centroidPath, "./%s/target-child-assignment.csv", resour_name);
     FILE *file = fopen(centroidPath, "r");
     if (file == NULL) {
         printf("Failed to open %s\n", centroidPath);
@@ -404,17 +404,18 @@ void receiveLongLat(void) {
     char line[100];
     fgets(line, sizeof(line), file);
 
-    int id;
-    double lat, lon;
+    int id, wrf_decom, wrf_index;
     for (int i = 0; i < NBR_IDF; i++) {
-        fscanf(file, "%d, %lf, %lf", &id, &lat, &lon);
+        fscanf(file, "%d, %lf, %lf", &id, &wrf_decom, &wrf_index);
         Mapping_Index mapping_index;
-        mapping_index = closetGridIndex(lat, lon);
+        // mapping_index = closetGridIndex(lat, lon);
+        mapping_index.wrfIdx = wrf_decom;
+        mapping_index.gridIdx = wrf_index;
         mappings[mapping_index.wrfIdx][mapping_index.gridIdx * NBR_IDF + i] = id;
 
-        printf("Building id = %d, lat = %.14lf, lon = %.14lf,"
+        printf("Building id = %d,"
             "is assigned to WRF#%d, grid %d, lat = %.14lf, lon = %.14lf\n",
-            id, lat, lon, mapping_index.wrfIdx, mapping_index.gridIdx,
+            id, mapping_index.wrfIdx, mapping_index.gridIdx,
             latall[mapping_index.wrfIdx][mapping_index.gridIdx],
             longall[mapping_index.wrfIdx][mapping_index.gridIdx]);
     }
