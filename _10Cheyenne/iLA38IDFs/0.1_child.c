@@ -25,8 +25,6 @@ int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 char date[256] = "sep26";
 char glade_folder_name[256];
 char resour_name[256];
-sprintf(glade_folder_name, "/glade/scratch/lichenwu/la_%s_100mIDFs38_ep_temp", date);
-sprintf(resour_name, "la-resources-22-23-%s", date);
 char *epw_name = "USA_CA_Hawthorne-Jack.Northrop.Field.722956_TMY3.epw";
 
 typedef struct {
@@ -523,6 +521,8 @@ void assignGeoData(int currentRank) {
 
 
 int main(int argc, char** argv) {
+    sprintf(glade_folder_name, "/glade/scratch/lichenwu/la_%s_100mIDFs38_ep_temp", date);
+    sprintf(resour_name, "la-resources-22-23-%s", date);
 
     int size, namelen;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
