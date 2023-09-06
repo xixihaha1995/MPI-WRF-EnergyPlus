@@ -9,21 +9,24 @@ I'd like to organize the results in excel file, each tab is an experiment,
 row: 1 to 38
 columns: 
     Offline Cooling Electricity Consumption[GJ], Offline Cooling Electricity Demand [W],
+    Offline Heating Natural Gas[GJ], Offline Heating Natural Gas[W],
     Online Cooling Electricity Consumption[GJ], Online Cooling Electricity Demand [W],
-    Consumption Difference [GJ], Consumption Difference [%], Demand Difference [W], Demand Difference [%]
+    Online Heating Natural Gas[GJ], Online Heating Natural Gas[W],
+    Cooling Consumption Diff[GJ], Cooling Consumption Diff[%], Cooling Demand Diff[W], Cooling Demand Diff[%],
+    Heating Consumption Diff[GJ], Heating Consumption Diff[%], Heating Demand Diff[W], Heating Demand Diff[%]
 '''
 import os, pandas as pd
-import concurrent.futures
 
 experiments_paths = {
     # "1km_6hr": "/glade/scratch/lichenwu/IDFs38_ep_temp",
     # "100m_jun30": r"/glade/scratch/lichenwu/jun30_100mIDFs38_ep_temp",
     # "100m_july1": r"/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp",
     # "100m_july2": r"/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp",
-    "1km_6hr": r"C:\Users\wulic\IDFs38_ep_temp\IDFs38_ep_temp",
-    "100m_jun30": r"C:\Users\wulic\june30_100mIDFs38_ep_temp\june30_100mIDFs38_ep_temp",
-    "100m_july1" : r"C:\Users\wulic\july1_100mIDFs38_ep_temp\july1_100mIDFs38_ep_temp",
-    "100m_july2" : r"C:\Users\wulic\july2_100mIDFs38_ep_temp\july2_100mIDFs38_ep_temp",
+    "WY_1km_6hr": r"C:\Users\wulic\IDFs38_ep_temp\IDFs38_ep_temp",
+    "WY_TMY3": r"C:\Users\wulic\TMY3_WY_IDFs38_ep_temp\TMY3_WY_IDFs38_ep_temp",
+    "WY_100m_jun30": r"C:\Users\wulic\june30_100mIDFs38_ep_temp\june30_100mIDFs38_ep_temp",
+    "WY_100m_july1" : r"C:\Users\wulic\july1_100mIDFs38_ep_temp\july1_100mIDFs38_ep_temp",
+    "WY_100m_july2" : r"C:\Users\wulic\july2_100mIDFs38_ep_temp\july2_100mIDFs38_ep_temp",
 }
 
 def read_html(html_path):
