@@ -22,10 +22,10 @@
 
 int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 // char * glade_folder_name = "/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp";
-char *date[256];
+char date[256];
 sprintf(date, "sep26");
-char *glade_folder_name[256];
-char *resour_name[256];
+char glade_folder_name[256];
+char resour_name[256];
 sprintf(glade_folder_name, "/glade/scratch/lichenwu/la_%s_100mIDFs38_ep_temp", date);
 sprintf(resour_name, "la-resources-22-23-%s", date);
 char *epw_name = "USA_CA_Hawthorne-Jack.Northrop.Field.722956_TMY3.epw";
@@ -397,7 +397,7 @@ void receiveLongLat(void) {
             // rank,i, k, longall[i][k], k, latall[i][k]);
         }
     }
-    char *centroidPath[256];
+    char centroidPath[256];
     sprintf(centroidPath, "./%s/centroid.csv", resour_name);
     FILE *file = fopen(centroidPath, "r");
     if (file == NULL) {
@@ -499,7 +499,7 @@ void parseLine(const char *line, int currentRank) {
 }
 
 void assignGeoData(int currentRank) {
-    char *surfilePath[256];
+    char surfilePath[256];
     sprintf(surfilePath, "./%s/surfaceNames.txt", resour_name);
     FILE *file = fopen(surfilePath, "r");
     if (file == NULL) {
@@ -561,7 +561,7 @@ int main(int argc, char** argv) {
     sprintf(idfFilePath, "./%s/in_uwyo_%d.idf",  resour_name, rank + 1);
     // printf("output_path = %s\n", output_path);
 
-    char* weather_file_path[256];
+    char weather_file_path[256];
     sprintf(weather_file_path, "./%s/%s", resour_name, epw_name);
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
     int argc_ = sizeof(sys_args) / sizeof(char*) - 1;
