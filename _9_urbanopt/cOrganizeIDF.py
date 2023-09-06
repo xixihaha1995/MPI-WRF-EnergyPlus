@@ -27,8 +27,8 @@ for curfolder in subfolders:
 
     #  change1= C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/future_hourly_co2e_2030.csv, !- File Name
     #  change2 = C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/historical_hourly_co2e_2019.csv, !- File Name
-    change1str = " /home/xxx/la38uo/run/baseline_scenario/38/generated_files/historical_hourly_co2e_2019.csv, !- File Name"
-    change2str = "/home/xxx/la38uo/run/baseline_scenario/38/generated_files/future_hourly_co2e_2030.csv, !- File Name"
+    change1str = "generated_files/historical_hourly_co2e_2019.csv, !- File Name"
+    change2str = "generated_files/future_hourly_co2e_2030.csv, !- File Name"
     #find the lines containing change1str, change it to "future_hourly_co2e_2030.csv, !- File Name"
     #find the lines containing change2str, change it to "historical_hourly_co2e_2019.csv, !- File Name"
     lines_to_add = '''\
