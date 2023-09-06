@@ -22,7 +22,8 @@
 
 int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 // char * glade_folder_name = "/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp";
-char *date = "sep26";
+char *date[256];
+sprintf(date, "sep26");
 char *glade_folder_name[256];
 char *resour_name[256];
 sprintf(glade_folder_name, "/glade/scratch/lichenwu/la_%s_100mIDFs38_ep_temp", date);
