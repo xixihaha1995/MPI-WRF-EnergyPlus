@@ -398,7 +398,7 @@ void receiveLongLat(void) {
     sprintf(centroidPath, "./%s/centroid.csv", resour_name);
     FILE *file = fopen(centroidPath, "r");
     if (file == NULL) {
-        printf("Failed to open la_centroid.csv file.\n");
+        printf("Failed to open %s\n", centroidPath);
     }
     // Skip the first line (header) in centroid.csv
     char line[100];
