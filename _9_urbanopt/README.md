@@ -22,6 +22,8 @@ uo create -s uo9.2/example_project.json
 uo run -s uo9.2/baseline_scenario.csv -f uo9.2/example_project.json
 
 
+Double click `IDFVersionUpdater` to executate
+
 <!-- The following is used to filer only eplustbl.htm for further processing -->
 ```bash
 find IDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy_IDFs38_ep_temp \;
