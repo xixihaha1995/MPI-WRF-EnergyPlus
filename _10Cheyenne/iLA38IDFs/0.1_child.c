@@ -25,7 +25,7 @@ int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 char date[256];
 char glade_folder_name[256];
 char resour_name[256];
-strcpy(date, "sep26");
+sprintf(date, "%s","sep26");
 sprintf(glade_folder_name, "/glade/scratch/lichenwu/la_%s_100mIDFs38_ep_temp", date);
 sprintf(resour_name, "la-resources-22-23-%s", date);
 char *epw_name = "USA_CA_Hawthorne-Jack.Northrop.Field.722956_TMY3.epw";
