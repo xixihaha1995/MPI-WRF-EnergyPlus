@@ -37,5 +37,10 @@ scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_july1_100mIDFs38
 find july2_100mIDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy_july2_100mIDFs38_ep_temp \;
 scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_july2_100mIDFs38_ep_temp july2_100mIDFs38_ep_temp\
 
+find . -type f \( -name "online.log.energyplus" -o -name "offline.log.energyplus" \) -exec cp --parents {} ./all_Logs \;
+
 scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/all_Logs all_Logs\
+
+find TMY3_WY_IDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy_TMY3_WY_IDFs38_ep_temp \;
+scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_TMY3_WY_IDFs38_ep_temp TMY3_WY_IDFs38_ep_temp\
 ```
