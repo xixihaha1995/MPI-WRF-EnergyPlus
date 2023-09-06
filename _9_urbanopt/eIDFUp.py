@@ -3,5 +3,5 @@
 
 savefile = open("22-2-0To23-1-0-Linux.lst", "w")
 for i in range(38, 0, -1):
-    savefile.write("in_uwyo_" + str(i) + ".idf\n")
+    savefile.write("/home/xxx/fortran_experiments/_9_urbanopt/la38-22-2-0/in_uwyo_" + str(i) + ".idf\n")
 savefile.close()
