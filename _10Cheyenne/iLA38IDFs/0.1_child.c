@@ -20,9 +20,12 @@
 #define MAPPING_TAG 6
 #define EARTH_RADIUS_KM 6371.0
 
-int IDF_Coupling = 0; //0, offline; 1, waste; 2, waste + surface;
+int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
 // char * glade_folder_name = "/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp";
-char *glade_folder_name = "/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp";
+char date[256] = "sep26";
+char glade_folder_name[256];
+char resour_name[256];
+char *epw_name = "USA_CA_Hawthorne-Jack.Northrop.Field.722956_TMY3.epw";
 
 typedef struct {
     int gridIdx;
@@ -391,8 +394,9 @@ void receiveLongLat(void) {
             // rank,i, k, longall[i][k], k, latall[i][k]);
         }
     }
-
-    FILE *file = fopen("./resources-23-1-0/centroid.csv", "r");
+    char centroidPath[256];
+    sprintf(centroidPath, "./%s/centroid.csv", resour_name);
+    FILE *file = fopen(centroidPath, "r");
     if (file == NULL) {
         printf("Failed to open la_centroid.csv file.\n");
     }
@@ -492,7 +496,9 @@ void parseLine(const char *line, int currentRank) {
 }
 
 void assignGeoData(int currentRank) {
-    FILE *file = fopen("./resources-23-1-0/surfaceNames.txt", "r");
+    char surfilePath[256];
+    sprintf(surfilePath, "./%s/surfaceNames.txt", resour_name);
+    FILE *file = fopen(surfilePath, "r");
     if (file == NULL) {
         perror("Failed to open file");
         exit(1);
@@ -515,6 +521,8 @@ void assignGeoData(int currentRank) {
 
 
 int main(int argc, char** argv) {
+    sprintf(glade_folder_name, "/glade/scratch/lichenwu/la_%s_100mIDFs38_ep_temp", date);
+    sprintf(resour_name, "la-resources-22-23-%s", date);
 
     int size, namelen;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
@@ -549,10 +557,11 @@ int main(int argc, char** argv) {
     sprintf(output_path, "%s/saved_%s_ep_trivial_%d", base_path,
             (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
             rank + 1);
-    sprintf(idfFilePath, "./resources-23-1-0/in_uwyo_%d.idf",  rank + 1);
+    sprintf(idfFilePath, "./%s/in_uwyo_%d.idf",  resour_name, rank + 1);
     // printf("output_path = %s\n", output_path);
 
-    char* weather_file_path = "./resources-23-1-0/USA_WY_Laramie-General.Brees.Field.725645_TMY3.epw";
+    char weather_file_path[256];
+    sprintf(weather_file_path, "./%s/%s", resour_name, epw_name);
     const char* sys_args[] = {"-d", output_path, "-w", weather_file_path, idfFilePath, NULL};
     int argc_ = sizeof(sys_args) / sizeof(char*) - 1;
     printf("argc_ = %d\n", argc_);
