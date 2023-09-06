@@ -19,9 +19,9 @@ subfolders = os.listdir(source_folder)
 # copy all the `in.idf` files to the saved_folder, rename them as `in_uwyo_1.idf`, `in_uwyo_2.idf`, etc.
 for curfolder in subfolders:
     #if curfolder is not a folder, skip
-    if not os.path.isdir(source_folder + "\\" + curfolder):
+    if not os.path.isdir(os.path.join(source_folder, curfolder)):
         continue
-    source_file = source_folder + "\\" + curfolder + "\\" + "in.idf"
+    source_file = os.path.join(source_folder, curfolder, "in.idf")
     if not os.path.exists(source_file):
         continue
 
@@ -46,7 +46,7 @@ for curfolder in subfolders:
     #add lines_to_add to the beginning of the file
     filedata = lines_to_add + filedata
 
-    saved_file = saved_folder + "\\" + "in_la_" + str(curfolder) + ".idf"
+    saved_file = os.path.join(saved_folder, "in_uwyo_" + curfolder + ".idf")
     #save the modified file in saved_file
     with open(saved_file, 'w') as file:
         file.write(filedata)
