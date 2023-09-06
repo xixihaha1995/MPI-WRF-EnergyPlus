@@ -406,7 +406,7 @@ void receiveLongLat(void) {
 
     int id, wrf_decom, wrf_index;
     for (int i = 0; i < NBR_IDF; i++) {
-        fscanf(file, "%d, %d, %d", &id, &wrf_decom, &wrf_index);
+        fscanf(file, "%d, %d, %d,", &id, &wrf_decom, &wrf_index);
         Mapping_Index mapping_index;
         // mapping_index = closetGridIndex(lat, lon);
         printf("Building id = %d, wrf_decom = %d, wrf_index = %d\n", id, wrf_decom, wrf_index);
