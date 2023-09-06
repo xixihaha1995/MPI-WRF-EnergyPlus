@@ -12,7 +12,7 @@
 
 ###Run real.exe
 module load gnu/11.2.0
-cd /glade/work/lichenwu/NWP/WRF/
+cd /glade/work/lichenwu/NWP/WRF-on-sep26/
 echo "Start compiling online WRF at"
 date "+%Y-%m-%d %H:%M:%S"
 ./compile em_real -j 10 >& online.compile.log
