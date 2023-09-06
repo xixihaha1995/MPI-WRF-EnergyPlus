@@ -12,8 +12,9 @@ columns:
     Offline Heating Natural Gas[GJ], Offline Heating Natural Gas[W],
     Online Cooling Electricity Consumption[GJ], Online Cooling Electricity Demand [W],
     Online Heating Natural Gas[GJ], Online Heating Natural Gas[W],
-    Cooling Consumption Diff[GJ], Cooling Consumption Diff[%], Cooling Demand Diff[W], Cooling Demand Diff[%],
-    Heating Consumption Diff[GJ], Heating Consumption Diff[%], Heating Demand Diff[W], Heating Demand Diff[%]
+or
+    TMY3 Cooling Electricity Consumption[GJ], TMY3 Cooling Electricity Demand [W],
+    TMY3 Heating Natural Gas[GJ], TMY3 Heating Natural Gas[W]
 '''
 import os, pandas as pd
 
@@ -44,43 +45,52 @@ def subfolder_to_dict(parent_folder, subfolder):
     ifonline = "online" in subfolder
     # detect if current os is windows or linux
     curtable = read_html(os.path.join(parent_folder, subfolder, "eplustbl.htm"))
-    consumption_gj = float(curtable[3][1][2])
-    demand_w = float(curtable[20][1][3])
-    print("consumption_gj: ", consumption_gj)
-    print("demand_w: ", demand_w)
-    return [int(bld_name), ifonline, consumption_gj, demand_w]
+    clConGJ = float(curtable[3][1][2])
+    clDemW = float(curtable[20][1][3])
+    htConGJ = float(curtable[3][2][1])
+    htDemW = float(curtable[20][2][2])
+    return [int(bld_name), ifonline, clConGJ,clDemW, htConGJ,htDemW]
 
 def one_tab(parent_folder):
-    two_d_tabdata = [[0,0,0,0,0,0,0,0] for i in range(38)]
+    if "TMY3" in parent_folder:
+        two_d_tabdata = [[0 for i in range(4)] for j in range(38)]
+    else:
+        two_d_tabdata = [[0 for i in range(8)] for j in range(38)]
     case_counter = 0
     for subfoler in os.listdir(parent_folder):
         if not os.path.isdir(os.path.join(parent_folder, subfoler)):
             continue
         print("case_counter: ", case_counter)
         case_counter += 1
-        bld_name, ifonline, consumption_gj, demand_w = subfolder_to_dict(parent_folder, subfoler)
+        bld_name, ifonline, clConGJ,clDemW, htConGJ,htDemW = subfolder_to_dict(parent_folder, subfoler)
+        print("bld_name: ", bld_name, " ifonline: ", ifonline, " clConGJ: ", clConGJ, " clDemW: ", clDemW, " htConGJ: ", htConGJ, " htDemW: ", htDemW)
         if ifonline:
-            two_d_tabdata[bld_name-1][2] = consumption_gj
-            two_d_tabdata[bld_name-1][3] = demand_w
+            two_d_tabdata[bld_name-1][4] = clConGJ
+            two_d_tabdata[bld_name-1][5] = clDemW
+            two_d_tabdata[bld_name-1][6] = htConGJ
+            two_d_tabdata[bld_name-1][7] = htDemW
         else:
-            two_d_tabdata[bld_name-1][0] = consumption_gj
-            two_d_tabdata[bld_name-1][1] = demand_w
-    for i in range(38):
-        two_d_tabdata[i][4] = two_d_tabdata[i][2] - two_d_tabdata[i][0]
-        # if division by zero, then set to NaN
-        two_d_tabdata[i][5] = 100*(two_d_tabdata[i][4] / two_d_tabdata[i][0]) if two_d_tabdata[i][0] != 0 else float('NaN')
-        two_d_tabdata[i][6] = two_d_tabdata[i][3] - two_d_tabdata[i][1]
-        two_d_tabdata[i][7] = 100*(two_d_tabdata[i][6] / two_d_tabdata[i][1]) if two_d_tabdata[i][1] != 0 else float('NaN')
-    return two_d_tabdata
+            two_d_tabdata[bld_name-1][0] = clConGJ
+            two_d_tabdata[bld_name-1][1] = clDemW
+            two_d_tabdata[bld_name-1][2] = htConGJ
+            two_d_tabdata[bld_name-1][3] = htDemW
 
+    return two_d_tabdata
 
 def all_tabs():
     for exp_name, exp_path in experiments_paths.items():
         df = pd.DataFrame(one_tab(exp_path))
         # most left column name is "Building Number"
-        df.columns = ["Offline Cooling Electricity Consumption[GJ]", "Offline Cooling Electricity Demand [W]",
-                    "Online Cooling Electricity Consumption[GJ]", "Online Cooling Electricity Demand [W]",
-                    "Consumption Difference [GJ]", "Consumption Difference [%]", "Demand Difference [W]", "Demand Difference [%]"]
+        if 'TMY3' in exp_name:
+            df.columns = ["TMY3 Cooling Electricity Consumption[GJ]", "TMY3 Cooling Electricity Demand [W]",
+                            "TMY3 Heating Natural Gas[GJ]", "TMY3 Heating Natural Gas[W]"]
+        else:
+            df.columns = ["Offline Cooling Electricity Consumption[GJ]", "Offline Cooling Electricity Demand [W]",
+                            "Offline Heating Natural Gas[GJ]", "Offline Heating Natural Gas[W]",
+                            "Online Cooling Electricity Consumption[GJ]", "Online Cooling Electricity Demand [W]",
+                            "Online Heating Natural Gas[GJ]", "Online Heating Natural Gas[W]"]
+
+
         # name index column as "Building Number"
         df.index.name = "Building Number"
         # change index from 0, 1, 2, ... to 1, 2, 3, ...
@@ -115,6 +125,6 @@ def CSVs_to_one_excel():
     with excel_writer:
         pass
 
-if __name__ == "__main__":
-    all_tabs()
-    CSVs_to_one_excel()
+
+all_tabs()
+# CSVs_to_one_excel()
