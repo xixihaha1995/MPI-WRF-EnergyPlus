@@ -6,8 +6,8 @@ copy all the `in.idf` files to the saved_folder, rename them as `in_uwyo_1.idf`,
 '''
 
 
-source_folder = r"C:\Users\wulic\Documents\GitHub\fortran_experiments\_10Cheyenne\h38IDFs\resources-23-1-0"
-saved_folder = r"C:\Users\wulic\Documents\GitHub\fortran_experiments\_10Cheyenne\h38IDFs\resources-23-1-0"
+source_folder = r"C:\Users\wulic\Documents\GitHub\fortran_experiments\_10Cheyenne\iLA38IDFs\la-resources-22-23-72hrs"
+saved_folder = r"C:\Users\wulic\Documents\GitHub\fortran_experiments\_10Cheyenne\iLA38IDFs\la-resources-22-23-72hrs"
 #make the saved_folder if it does not exist
 if not os.path.exists(saved_folder):
     os.makedirs(saved_folder)
@@ -16,13 +16,13 @@ if not os.path.exists(saved_folder):
 source_text = """
   RunPeriod,
     Run Period 1,            !- Name
-    7,                       !- Begin Month
-    2,                       !- Begin Day of Month
-    2022,                    !- Begin Year
-    7,                       !- End Month
-    2,                       !- End Day of Month
-    2022,                    !- End Year
-    Saturday,                  !- Day of Week for Start Day
+    9,                       !- Begin Month
+    25,                      !- Begin Day of Month
+    2009,                    !- Begin Year
+    9,                       !- End Month
+    25,                      !- End Day of Month
+    2009,                    !- End Year
+    Friday,                  !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days
     No,                      !- Use Weather File Daylight Saving Period
     No,                      !- Apply Weekend Holiday Rule
@@ -33,13 +33,13 @@ source_text = """
 target_text = """
   RunPeriod,
     Run Period 1,            !- Name
-    6,                       !- Begin Month
-    30,                      !- Begin Day of Month
-    2022,                    !- Begin Year
-    7,                       !- End Month
-    2,                       !- End Day of Month
-    2022,                    !- End Year
-    Thursday,                !- Day of Week for Start Day
+    9,                       !- Begin Month
+    24,                      !- Begin Day of Month
+    2009,                    !- Begin Year
+    9,                       !- End Month
+    26,                      !- End Day of Month
+    2009,                    !- End Year
+    Thursday,                  !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days
     No,                      !- Use Weather File Daylight Saving Period
     No,                      !- Apply Weekend Holiday Rule
