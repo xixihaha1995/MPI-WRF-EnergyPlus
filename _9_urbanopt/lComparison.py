@@ -18,6 +18,9 @@ or
 '''
 import os, pandas as pd
 
+import numpy as np
+import openpyxl
+
 experiments_paths = {
     # "1km_6hr": "/glade/scratch/lichenwu/IDFs38_ep_temp",
     # "100m_jun30": r"/glade/scratch/lichenwu/jun30_100mIDFs38_ep_temp",
@@ -30,6 +33,11 @@ experiments_paths = {
     "WY_100m_july2" : r"C:\Users\wulic\july2_100mIDFs38_ep_temp\july2_100mIDFs38_ep_temp",
 }
 
+def calculate_percentage_difference(row, rowNumerator, rowDenominator):
+    if rowDenominator != 0:
+        return 100 * (rowNumerator / rowDenominator)
+    else:
+        return np.nan
 def read_html(html_path):
     if not os.path.exists(html_path):
         return 0, 0
@@ -130,10 +138,79 @@ def CSVs_to_one_excel():
     #
     # new_df["Demand Difference [W]"] = new_df["Online Cooling Electricity Demand [W]"] - new_df["Offline Cooling Electricity Demand [W]"]
     # new_df["Demand Difference [%]"] = 100 * (new_df["Demand Difference [W]"] / new_df["Offline Cooling Electricity Demand [W]"]).where(new_df["Offline Cooling Electricity Demand [W]"] != 0, float('NaN'))
+    added_columns = ["DiffClConGJ", "DiffClDemW", "DiffHtConGJ", "DiffHtDemW", "DiffClCon%", "DiffClDem%", "DiffHtCon%", "DiffHtDem%"]
+    for i in range(0,4):
+        new_df[added_columns[i]] = new_df.iloc[:, i + 5] - new_df.iloc[:, i + 1]
+    for i in range(0,4):
+        new_df[added_columns[i + 4]] = 100 * (new_df.iloc[:, i + 5] - new_df.iloc[:, i + 1]) / new_df.iloc[:, i + 1]
+
     new_df.to_excel(excel_writer, sheet_name="Accumulated")
     with excel_writer:
         pass
 
+
+
+def comparied_to_tmy3():
+    pass
+    '''
+    There are 4 metric, clConGJ, clDemW, htConGJ, htDemW
+    There are 3 cases, tmy3, offline, online
+    We will compare offline and online to tmy3: 
+        DiffClConGJ, DiffClDemW, DiffHtConGJ, DiffHtDemW
+        DiffClCon%, DiffClDem%, DiffHtCon%, DiffHtDem%
+    '''
+    # open excel, new_sheet should be initialized from WY_TMY3
+    _sheetName = "CompareToTMY3"
+    _excel = openpyxl.load_workbook(excel_name)
+    _tmy3DF = pd.read_excel(excel_name, sheet_name="WY_TMY3")
+    _accuDF = pd.read_excel(excel_name, sheet_name="Accumulated")
+    '''
+    new sheet columns:
+        tmy3 columns, offline columns, online columns, 
+        off diff columns, on diff columns,
+        off diff % columns, on diff % columns
+    '''
+
+    newShtNames =     ["BldgNum", "TMY3CoolElec(GJ)", "TMY3CoolElecDemand(W)", "TMY3HeatNatGas(GJ)", "TMY3HeatNatGas(W)",
+     "OfflineCoolElec(GJ)", "OfflineCoolElecDemand(W)", "OfflineHeatNatGas(GJ)", "OfflineHeatNatGas(W)",
+     "OnlineCoolElec(GJ)", "OnlineCoolElecDemand(W)", "OnlineHeatNatGas(GJ)", "OnlineHeatNatGas(W)",
+     "OfflineCoolElecDiff(GJ)", "OfflineCoolElecDemandDiff(W)", "OfflineHeatNatGasDiff(GJ)", "OfflineHeatNatGasDiff(W)",
+     "OnlineCoolElecDiff(GJ)", "OnlineCoolElecDemandDiff(W)", "OnlineHeatNatGasDiff(GJ)", "OnlineHeatNatGasDiff(W)",
+     "OfflineCoolConDiff%", "OfflineCoolDemDiff%", "OfflineHeatConDiff%", "OfflineHeatDemDiff%",
+        "OnlineCoolConDiff%", "OnlineCoolDemDiff%", "OnlineHeatConDiff%", "OnlineHeatDemDiff%"]
+    _newDF = pd.DataFrame(columns=newShtNames)
+    '''
+    1. first copy all tmy3 data to new sheet
+    2. then copy all accumulated data (except the first BldgNum column) to new sheet
+    '''
+    tmy3DFColLen = len(_tmy3DF.columns)
+    accuDFColLen = len(_accuDF.columns) - 8
+    _newDF.iloc[:,0:tmy3DFColLen-1] = _tmy3DF.iloc[:,1:tmy3DFColLen]
+    _newDF.iloc[:,tmy3DFColLen-1:tmy3DFColLen+accuDFColLen-3] = _accuDF.iloc[:,2:accuDFColLen]
+
+    _newDF["OfflineCoolElecDiff(GJ)"] = _newDF["OfflineCoolElec(GJ)"] - _newDF["TMY3CoolElec(GJ)"]
+    _newDF["OfflineCoolElecDemandDiff(W)"] = _newDF["OfflineCoolElecDemand(W)"] - _newDF["TMY3CoolElecDemand(W)"]
+    _newDF["OfflineHeatNatGasDiff(GJ)"] = _newDF["OfflineHeatNatGas(GJ)"] - _newDF["TMY3HeatNatGas(GJ)"]
+    _newDF["OfflineHeatNatGasDiff(W)"] = _newDF["OfflineHeatNatGas(W)"] - _newDF["TMY3HeatNatGas(W)"]
+    _newDF["OnlineCoolElecDiff(GJ)"] = _newDF["OnlineCoolElec(GJ)"] - _newDF["TMY3CoolElec(GJ)"]
+    _newDF["OnlineCoolElecDemandDiff(W)"] = _newDF["OnlineCoolElecDemand(W)"] - _newDF["TMY3CoolElecDemand(W)"]
+    _newDF["OnlineHeatNatGasDiff(GJ)"] = _newDF["OnlineHeatNatGas(GJ)"] - _newDF["TMY3HeatNatGas(GJ)"]
+    _newDF["OnlineHeatNatGasDiff(W)"] = _newDF["OnlineHeatNatGas(W)"] - _newDF["TMY3HeatNatGas(W)"]
+    _newDF["OfflineCoolConDiff%"] = _newDF.apply(lambda row: calculate_percentage_difference(row, row["OfflineCoolElecDiff(GJ)"], row["TMY3CoolElec(GJ)"]), axis=1)
+    _newDF["OfflineCoolDemDiff%"] = _newDF.apply(lambda row: calculate_percentage_difference(row, row["OfflineCoolElecDemandDiff(W)"], row["TMY3CoolElecDemand(W)"]), axis=1)
+    _newDF["OfflineHeatConDiff%"] = _newDF.apply(lambda row: calculate_percentage_difference(row, row["OfflineHeatNatGasDiff(GJ)"], row["TMY3HeatNatGas(GJ)"]), axis=1)
+    _newDF["OfflineHeatDemDiff%"] = _newDF.apply(lambda row: calculate_percentage_difference(row, row["OfflineHeatNatGasDiff(W)"], row["TMY3HeatNatGas(W)"]), axis=1)
+    _newDF["OnlineCoolConDiff%"] = _newDF.apply(lambda row: calculate_percentage_difference(row, row["OnlineCoolElecDiff(GJ)"], row["TMY3CoolElec(GJ)"]), axis=1)
+    _newDF["OnlineCoolDemDiff%"] = _newDF.apply(lambda row: calculate_percentage_difference(row, row["OnlineCoolElecDemandDiff(W)"], row["TMY3CoolElecDemand(W)"]), axis=1)
+    _newDF["OnlineHeatConDiff%"] = _newDF.apply(lambda row: calculate_percentage_difference(row, row["OnlineHeatNatGasDiff(GJ)"], row["TMY3HeatNatGas(GJ)"]), axis=1)
+    _newDF["OnlineHeatDemDiff%"] = _newDF.apply(lambda row: calculate_percentage_difference(row, row["OnlineHeatNatGasDiff(W)"], row["TMY3HeatNatGas(W)"]), axis=1)
+
+    # save to excel
+    with pd.ExcelWriter(excel_name, engine='openpyxl', mode='a',if_sheet_exists='replace') as excel_writer:
+        _newDF.to_excel(excel_writer, sheet_name=_sheetName,index=False)
+
+
 excel_name = "WRF-EP-Coupling.xlsx"
 # all_tabs()
 CSVs_to_one_excel()
+comparied_to_tmy3()
