@@ -98,33 +98,42 @@ def all_tabs():
         df.to_csv(exp_name + ".csv")
 
 def CSVs_to_one_excel():
-    excel_writer = pd.ExcelWriter("WRF-EP-Coupling.xlsx")
+    excel_writer = pd.ExcelWriter(excel_name)
     new_df = None
     for exp_name in experiments_paths.keys():
         df = pd.read_csv(exp_name + ".csv")
         df.to_excel(excel_writer, sheet_name=exp_name)
-        if exp_name == "1km_6hr":
+        if "1km" in exp_name or "TMY3" in exp_name:
             continue
         if new_df is None:
             new_df = df
             continue
-        # new df columns 1,3 are sum of all other dataframes; columns 2,4 are max of all other dataframes.
-        new_df.iloc[:, 1] += df.iloc[:, 1]
-        new_df.iloc[:, 3] += df.iloc[:, 3]
-        new_df.iloc[:, 2] = new_df.iloc[:, 2].combine(df.iloc[:, 2], max)
-        new_df.iloc[:, 4] = new_df.iloc[:, 4].combine(df.iloc[:, 4], max)
+        # new_df.columns
+        # Index(['Building Number', 'Offline Cooling Electricity Consumption[GJ]',
+        #        'Offline Cooling Electricity Demand [W]',
+        #        'Offline Heating Natural Gas[GJ]', 'Offline Heating Natural Gas[W]',
+        #        'Online Cooling Electricity Consumption[GJ]',
+        #        'Online Cooling Electricity Demand [W]',
+        #        'Online Heating Natural Gas[GJ]', 'Online Heating Natural Gas[W]'],
+        #       dtype='object')
+        # odd columns should be summed, even columns should be maxed
+        len_columns = len(new_df.columns)
+        for i in range(1, len_columns, 2):
+            new_df.iloc[:, i] += df.iloc[:, i]
+        for i in range(2, len_columns, 2):
+            new_df.iloc[:, i] = new_df.iloc[:, i].combine(df.iloc[:, i], max)
 
     # new_df columns 5,6 are difference of columns 1,3; columns 7,8 are difference of columns 2,4.
     # Calculate the differences and percentages directly using vectorized operations
-    new_df["Consumption Difference [GJ]"] = new_df["Online Cooling Electricity Consumption[GJ]"] - new_df["Offline Cooling Electricity Consumption[GJ]"]
-    new_df["Consumption Difference [%]"] = 100 * (new_df["Consumption Difference [GJ]"] / new_df["Offline Cooling Electricity Consumption[GJ]"]).where(new_df["Offline Cooling Electricity Consumption[GJ]"] != 0, float('NaN'))
-
-    new_df["Demand Difference [W]"] = new_df["Online Cooling Electricity Demand [W]"] - new_df["Offline Cooling Electricity Demand [W]"]
-    new_df["Demand Difference [%]"] = 100 * (new_df["Demand Difference [W]"] / new_df["Offline Cooling Electricity Demand [W]"]).where(new_df["Offline Cooling Electricity Demand [W]"] != 0, float('NaN'))
+    # new_df["Consumption Difference [GJ]"] = new_df["Online Cooling Electricity Consumption[GJ]"] - new_df["Offline Cooling Electricity Consumption[GJ]"]
+    # new_df["Consumption Difference [%]"] = 100 * (new_df["Consumption Difference [GJ]"] / new_df["Offline Cooling Electricity Consumption[GJ]"]).where(new_df["Offline Cooling Electricity Consumption[GJ]"] != 0, float('NaN'))
+    #
+    # new_df["Demand Difference [W]"] = new_df["Online Cooling Electricity Demand [W]"] - new_df["Offline Cooling Electricity Demand [W]"]
+    # new_df["Demand Difference [%]"] = 100 * (new_df["Demand Difference [W]"] / new_df["Offline Cooling Electricity Demand [W]"]).where(new_df["Offline Cooling Electricity Demand [W]"] != 0, float('NaN'))
     new_df.to_excel(excel_writer, sheet_name="Accumulated")
     with excel_writer:
         pass
 
-
-all_tabs()
-# CSVs_to_one_excel()
+excel_name = "WRF-EP-Coupling.xlsx"
+# all_tabs()
+CSVs_to_one_excel()
