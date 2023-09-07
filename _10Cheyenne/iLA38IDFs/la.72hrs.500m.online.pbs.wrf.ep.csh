@@ -2,7 +2,7 @@
 
 #PBS -N onLA72hrs
 #PBS -A WYOM0106
-#PBS -l walltime=12:00:00
+#PBS -l walltime=01:00:00
 #PBS -q premium
 #PBS -j oe
 #PBS -m abe
