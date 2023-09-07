@@ -45,4 +45,10 @@ scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/all_Logs all_Logs\
 
 find TMY3_WY_IDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy_TMY3_WY_IDFs38_ep_temp \;
 scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_TMY3_WY_IDFs38_ep_temp TMY3_WY_IDFs38_ep_temp\
+
+find TMY3_LA_IDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy_TMY3_LA_IDFs38_ep_temp \;
+find la_72hrs500m_IDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy_la_72hrs500m_IDFs38_ep_temp \;
+
+scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_la_72hrs500m_IDFs38_ep_temp la_72hrs500m_IDFs38_ep_temp\
+scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_TMY3_LA_IDFs38_ep_temp TMY3_LA_IDFs38_ep_temp\
 ```

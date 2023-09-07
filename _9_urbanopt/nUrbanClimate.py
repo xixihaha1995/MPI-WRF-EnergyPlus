@@ -19,8 +19,10 @@ def readTextfile(filepath):
     return curUrbanWeather
 def iterate_file(base,subfolder,filename):
     col = None
-    if "tmy3" in filename:
-        col = "TMY3"
+    if "la.tmy3" in filename:
+        col = "LA.TMY3"
+    elif "tmy3" in filename:
+        col = "WY.TMY3"
     else:
         # online.log.energyplus
         # jun30_100mIDFs38_ep_temp

@@ -26,11 +26,13 @@ experiments_paths = {
     # "100m_jun30": r"/glade/scratch/lichenwu/jun30_100mIDFs38_ep_temp",
     # "100m_july1": r"/glade/scratch/lichenwu/july1_100mIDFs38_ep_temp",
     # "100m_july2": r"/glade/scratch/lichenwu/july2_100mIDFs38_ep_temp",
-    "WY_1km_6hr": r"C:\Users\wulic\IDFs38_ep_temp\IDFs38_ep_temp",
-    "WY_TMY3": r"C:\Users\wulic\TMY3_WY_IDFs38_ep_temp\TMY3_WY_IDFs38_ep_temp",
-    "WY_100m_jun30": r"C:\Users\wulic\june30_100mIDFs38_ep_temp\june30_100mIDFs38_ep_temp",
-    "WY_100m_july1" : r"C:\Users\wulic\july1_100mIDFs38_ep_temp\july1_100mIDFs38_ep_temp",
-    "WY_100m_july2" : r"C:\Users\wulic\july2_100mIDFs38_ep_temp\july2_100mIDFs38_ep_temp",
+    # "WY_1km_6hr": r"C:\Users\wulic\IDFs38_ep_temp\IDFs38_ep_temp",
+    # "WY_TMY3": r"C:\Users\wulic\TMY3_WY_IDFs38_ep_temp\TMY3_WY_IDFs38_ep_temp",
+    # "WY_100m_jun30": r"C:\Users\wulic\june30_100mIDFs38_ep_temp\june30_100mIDFs38_ep_temp",
+    # "WY_100m_july1" : r"C:\Users\wulic\july1_100mIDFs38_ep_temp\july1_100mIDFs38_ep_temp",
+    # "WY_100m_july2" : r"C:\Users\wulic\july2_100mIDFs38_ep_temp\july2_100mIDFs38_ep_temp",
+    "LA_TMY3":r"C:\Users\wulic\TMY3_LA_IDFs38_ep_temp\TMY3_LA_IDFs38_ep_temp",
+    "LA_500m":r"C:\Users\wulic\la_72hrs500m_IDFs38_ep_temp\la_72hrs500m_IDFs38_ep_temp",
 }
 
 def calculate_percentage_difference(row, rowNumerator, rowDenominator):
@@ -105,14 +107,17 @@ def all_tabs():
         df.index += 1
         df.to_csv(exp_name + ".csv")
 
-def CSVs_to_one_excel():
+def CSVs_to_one_excel(_shtname):
     excel_writer = pd.ExcelWriter(excel_name)
     new_df = None
     for exp_name in experiments_paths.keys():
         df = pd.read_csv(exp_name + ".csv")
         df.to_excel(excel_writer, sheet_name=exp_name)
-        if "1km" in exp_name or "TMY3" in exp_name:
+        if "1km" in exp_name or "TMY3" in exp_name or "LA" in exp_name:
+            if "LA_500m" in exp_name:
+                new_df = df
             continue
+
         if new_df is None:
             new_df = df
             continue
@@ -144,13 +149,12 @@ def CSVs_to_one_excel():
     for i in range(0,4):
         new_df[added_columns[i + 4]] = 100 * (new_df.iloc[:, i + 5] - new_df.iloc[:, i + 1]) / new_df.iloc[:, i + 1]
 
-    new_df.to_excel(excel_writer, sheet_name="Accumulated")
+    new_df.to_excel(excel_writer, sheet_name=_shtname)
     with excel_writer:
         pass
 
 
-
-def comparied_to_tmy3():
+def comparied_to_tmy3(_tmyStName, _accuStName):
     pass
     '''
     There are 4 metric, clConGJ, clDemW, htConGJ, htDemW
@@ -162,8 +166,8 @@ def comparied_to_tmy3():
     # open excel, new_sheet should be initialized from WY_TMY3
     _sheetName = "CompareToTMY3"
     _excel = openpyxl.load_workbook(excel_name)
-    _tmy3DF = pd.read_excel(excel_name, sheet_name="WY_TMY3")
-    _accuDF = pd.read_excel(excel_name, sheet_name="Accumulated")
+    _tmy3DF = pd.read_excel(excel_name, sheet_name= _tmyStName)
+    _accuDF = pd.read_excel(excel_name, sheet_name= _accuStName)
     '''
     new sheet columns:
         tmy3 columns, offline columns, online columns, 
@@ -210,7 +214,9 @@ def comparied_to_tmy3():
         _newDF.to_excel(excel_writer, sheet_name=_sheetName,index=False)
 
 
-excel_name = "WRF-EP-Coupling.xlsx"
-# all_tabs()
-CSVs_to_one_excel()
-comparied_to_tmy3()
+excel_name = "LA-WRF-EP-Coupling.xlsx"
+_tmyStName = "LA_TMY3"
+_accName = "LA-Sep2009-72hrs"
+all_tabs()
+CSVs_to_one_excel(_accName)
+comparied_to_tmy3(_tmyStName, _accName)
