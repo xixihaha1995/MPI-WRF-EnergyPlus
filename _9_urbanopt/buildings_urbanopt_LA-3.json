@@ -1,0 +1,216 @@
+{
+  "type": "FeatureCollection",
+  "mappers": [],
+  "project": {
+    "id": "7c33a001-bccb-413e-ac87-67558b5d4b07",
+    "name": "New Project",
+    "begin_date": "2009-09-25T00:00:00.000Z",
+    "end_date": "2009-09-25T12:00:00.000Z",
+    "cec_climate_zone": null,
+    "climate_zone": "3C",
+    "default_template": "90.1-2013",
+    "import_surrounding_buildings_as_shading": null,
+    "surface_elevation": null,
+    "tariff_filename": null,
+    "timesteps_per_hour": 1,
+    "weather_filename": "USA_CA_Hawthorne-Jack.Northrop.Field.722956_TMY3.epw",
+    "emissions": true,
+    "electricity_emissions_future_subregion": "NYSTc",
+    "electricity_emissions_hourly_historical_subregion": "New York",
+    "electricity_emissions_annual_historical_subregion": "NYCW",
+    "electricity_emissions_future_year": "2030",
+    "electricity_emissions_hourly_historical_year": "2019",
+    "electricity_emissions_annual_historical_year": "2019"
+  },
+  "scenarios": [
+    {
+      "feature_mappings": [],
+      "id": "72301739-c6c3-4dd7-bf1a-f37c8eff40db",
+      "name": "New Scenario"
+    }
+  ],
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "53340c2c-ab20-40db-aba1-11ac607c52a7",
+        "name": "Site Origin",
+        "type": "Site Origin",
+        "begin_date": "2009-09-25T00:00:00.000Z",
+        "end_date": "2009-09-25T12:00:00.000Z",
+        "cec_climate_zone": null,
+        "climate_zone": "3C",
+        "default_template": "90.1-2013",
+        "import_surrounding_buildings_as_shading": null,
+        "surface_elevation": null,
+        "tariff_filename": null,
+        "timesteps_per_hour": 1,
+        "weather_filename": "USA_CA_Hawthorne-Jack.Northrop.Field.722956_TMY3.epw"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -105.58106,
+          41.313007
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "1",
+        "name": "bld_1",
+        "type": "Building",
+        "number_of_stories": 4,
+        "footprint_area": 1743.801046147262,
+        "floor_area": 6975.204184589048,
+        "building_type": "Mixed use",
+        "mixed_type_1": "Office",
+        "mixed_type_1_percentage": 40,
+        "mixed_type_2": "Education",
+        "mixed_type_2_percentage": 60
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -105.58147,
+              41.315381
+            ],
+            [
+              -105.581573,
+              41.315383
+            ],
+            [
+              -105.58158,
+              41.315214
+            ],
+            [
+              -105.581477,
+              41.315212
+            ],
+            [
+              -105.58147,
+              41.315381
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "2",
+        "name": "bld_2",
+        "type": "Building",
+        "number_of_stories": 4,
+        "footprint_area": 27030.396061687497,
+        "floor_area": 108121.58424674999,
+        "building_type": "Mixed use",
+        "mixed_type_1": "Office",
+        "mixed_type_1_percentage": 40,
+        "mixed_type_2": "Education",
+        "mixed_type_2_percentage": 60
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -105.584323,
+              41.31349
+            ],
+            [
+              -105.58491,
+              41.313518
+            ],
+            [
+              -105.584942,
+              41.313125
+            ],
+            [
+              -105.584499,
+              41.313105
+            ],
+            [
+              -105.584478,
+              41.313044
+            ],
+            [
+              -105.584264,
+              41.313034
+            ],
+            [
+              -105.584255,
+              41.313148
+            ],
+            [
+              -105.584261,
+              41.313167
+            ],
+            [
+              -105.584255,
+              41.313249
+            ],
+            [
+              -105.584273,
+              41.313303
+            ],
+            [
+              -105.58427,
+              41.313335
+            ],
+            [
+              -105.584323,
+              41.31349
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "3",
+        "name": "bld_3",
+        "type": "Building",
+        "number_of_stories": 4,
+        "footprint_area": 405.9965680226266,
+        "floor_area": 1623.9862720905064,
+        "building_type": "Mixed use",
+        "mixed_type_1": "Office",
+        "mixed_type_1_percentage": 40,
+        "mixed_type_2": "Education",
+        "mixed_type_2_percentage": 60
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -105.578887,
+              41.315238
+            ],
+            [
+              -105.578965,
+              41.315238
+            ],
+            [
+              -105.578965,
+              41.315186
+            ],
+            [
+              -105.578887,
+              41.315186
+            ],
+            [
+              -105.578887,
+              41.315238
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
