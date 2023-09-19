@@ -1890,6 +1890,9 @@ CONTAINS
                   ! print *, 'offline; one way coupling from WRF -> EP'
                else
                   ! print *, "mean_recv_waste_w", mean_recv_waste_w
+                  print *, 'Before urban temp, tmp_u', tmp_u
+                  print *, 'Before urban waste heat, sflev1D', sflev1D
+                  print *, 'Before urban waste heat, sflev1D(1:nlev(ibui))', sflev1D(1:nlev(ibui))
                   sflev1D(1:nlev(ibui)) = mean_recv_waste_w
                   ! print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   ! print *, "replaced", replaced
@@ -1900,10 +1903,7 @@ CONTAINS
                      trb1D(10) = wM2_12K(14)
                      ! print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                      ! print *, 'After trb1d(10)', trb1D(10)
-                     print *, 'Before urban temp, tmp_u', tmp_u
                      print *, 'After urban temp, wrf_weather(1)', wrf_weather(1)
-                     print *, 'Before urban waste heat, sflev1D', sflev1D
-                     print *, 'Before urban waste heat, sflev1D(1:nlev(ibui))', sflev1D(1:nlev(ibui))
                      print *, 'After urban waste heat, sflev1D', sflev1D
                   end if
                end if
