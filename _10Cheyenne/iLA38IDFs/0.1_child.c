@@ -21,7 +21,7 @@
 #define EARTH_RADIUS_KM 6371.0
 
 int IDF_Coupling = 0; //0, offline; 1, waste; 2, waste + surface;
-char date[256] = "72hrs500m";
+char date[256] = "72hrs1000m";
 // sprintf(glade_folder_name, "/glade/scratch/lichenwu/la_%s_IDFs38_ep_temp", date);
 char glade_folder_name[256];
 char resour_name[256];
