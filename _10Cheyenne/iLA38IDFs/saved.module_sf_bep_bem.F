@@ -1873,7 +1873,7 @@ CONTAINS
             wrf_weather(1) = sum(tmp_u)/COUNT(tmp_u /= 0.0) - 273.15 !external temperature [K]
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
-         inner_dt = 0.6 * 5
+         inner_dt = 6
          running_hours = 72
             if (1.1 *  inner_dt .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(FRC_URB2D,ix,iy,ibui,dt,itimestep,&
@@ -1900,6 +1900,11 @@ CONTAINS
                      trb1D(10) = wM2_12K(14)
                      ! print *, 'After twb1D wall surface temp[k],  twb1d(:,10, 1:3)', twb1D(:,10, 1:3)
                      ! print *, 'After trb1d(10)', trb1D(10)
+                     print *, 'Before urban temp, tmp_u', tmp_u
+                     print *, 'After urban temp, wrf_weather(1)', wrf_weather(1)
+                     print *, 'Before urban waste heat, sflev1D', sflev1D
+                     print *, 'Before urban waste heat, sflev1D(1:nlev(ibui))', sflev1D(1:nlev(ibui))
+                     print *, 'After urban waste heat, sflev1D', sflev1D
                   end if
                end if
          endif

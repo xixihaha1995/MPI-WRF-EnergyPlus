@@ -27,3 +27,5 @@ _6_Coordinate_EP/j7080/log.mpiAPP
 .idea/workspace.xml
 *.html
 _9_urbanopt/*.csv
+pyenergyplus/
+_6_Coordinate_EP/mLWR/api_data.csv
