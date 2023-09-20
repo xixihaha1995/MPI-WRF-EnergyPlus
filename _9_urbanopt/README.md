@@ -51,4 +51,6 @@ find la_72hrs500m_IDFs38_ep_temp -name "eplustbl.htm" -exec cp --parents {} copy
 
 scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_la_72hrs500m_IDFs38_ep_temp la_72hrs500m_IDFs38_ep_temp\
 scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_TMY3_LA_IDFs38_ep_temp TMY3_LA_IDFs38_ep_temp\
+
+scp -r  lichenwu@cheyenne.ucar.edu:/glade/u/home/lichenwu/project/NWP/WRF-la-on-72hrs/test/em_real/rsl.out.0000 override.rsl.out.0000
 ```

@@ -15,7 +15,7 @@
 log.mpirun
 *.geojson
 *.json
-!buildings_urbanopt_LA*
+!buildings_urbanopt_*
 .idea/workspace.xml
 .idea/misc.xml
 .idea/deployment.xml
