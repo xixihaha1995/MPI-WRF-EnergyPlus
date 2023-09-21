@@ -8,8 +8,10 @@ copy all the `in.idf` files to the saved_folder, rename them as `in_uwyo_1.idf`,
 source_folder = r"C:\Users\wulic\uouwyo38\run\baseline_scenario"
 source_folder = r"C:\Users\wulic\la3urbanopt\run\baseline_scenario"
 source_folder = "/home/xxx/la38uo/run/baseline_scenario"
+source_folder = r"C:\Users\wulic\uwyo-simplified\run\baseline_scenario"
 saved_folder = "./resources-22-2-0"
-saved_folder = "./la38-22-2-0"
+saved_folder = "./wy-simpified-22-2-0"
+saved_file_prefix = "in_uwyo_simplified_"
 #make the saved_folder if it does not exist
 if not os.path.exists(saved_folder):
     os.makedirs(saved_folder)
@@ -27,8 +29,10 @@ for curfolder in subfolders:
 
     #  change1= C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/future_hourly_co2e_2030.csv, !- File Name
     #  change2 = C:/Users/wulic/uouwyo38/run/baseline_scenario/1/generated_files/historical_hourly_co2e_2019.csv, !- File Name
-    change1str = f" /home/xxx/la38uo/run/baseline_scenario/{curfolder}/generated_files/future_hourly_co2e_2030.csv, !- File Name"
-    change2str = f"/home/xxx/la38uo/run/baseline_scenario/{curfolder}/generated_files/historical_hourly_co2e_2019.csv, !- File Name"
+    change1str = f"generated_files/future_hourly_co2e_2030.csv, !- File Name"
+    change2str = f"generated_files/historical_hourly_co2e_2019.csv, !- File Name"
+    changto1str = f"    future_hourly_co2e_2030.csv, !- File Name"
+    changto2str = f"    historical_hourly_co2e_2019.csv, !- File Name"
     #find the lines containing change1str, change it to "future_hourly_co2e_2030.csv, !- File Name"
     #find the lines containing change2str, change it to "historical_hourly_co2e_2019.csv, !- File Name"
     lines_to_add = '''\
@@ -37,18 +41,18 @@ for curfolder in subfolders:
       25;                      !- Maximum HVAC Iterations
     '''
 
-
+    #find lines containing change1str and change2str, delete that line, and add changto1str and changto2str
     with open(source_file, 'r') as file:
-        filedata = file.read()
-    #find lines containing change1str and change2str, change them to the new strings
-    filedata = filedata.replace(change1str, "future_hourly_co2e_2030.csv, !- File Name")
-    filedata = filedata.replace(change2str, "historical_hourly_co2e_2019.csv, !- File Name")
-    #add lines_to_add to the beginning of the file
-    filedata = lines_to_add + filedata
+        for line in file:
+            if change1str in line:
+                lines_to_add += changto1str + "\n"
+                continue
+            if change2str in line:
+                lines_to_add += changto2str + "\n"
+                continue
+            lines_to_add += line
 
-    saved_file = os.path.join(saved_folder, "in_uwyo_" + curfolder + ".idf")
+    saved_file = os.path.join(saved_folder, saved_file_prefix + curfolder + ".idf")
     #save the modified file in saved_file
     with open(saved_file, 'w') as file:
-        file.write(filedata)
-
-
+        file.write(lines_to_add)
