@@ -1897,8 +1897,11 @@ CONTAINS
                   ! print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   ! print *, "replaced", replaced
                   if (replaced == 2) then
+                     print *, 'Floor layers nlev(ibui) and twb1d', nlev(ibui), twb1d(1,10,:)
                      do wrfFlrIdx = 1, nlev(ibui)
-                        twb1d(:,1:10, wrfFlrIdx) = wM2_12K(2:5)
+                        do gridIdx = 1, 10
+                           twb1d(:,gridIdx, wrfFlrIdx) = wM2_12K(6:9)
+                        end do
                      end do
                      trb1D(1:10) = wM2_12K(14)
                      ! print *, 'After urban temp, wrf_weather(1)', wrf_weather(1)
