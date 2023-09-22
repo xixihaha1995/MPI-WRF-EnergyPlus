@@ -1,6 +1,6 @@
 import json
 from shapely.geometry import Polygon
-sourceFile = 'buildings_urbanopt_uwyo.json'
+sourceFile = 'buildings_urbanopt_uwyo_simplified-obsolete.json'
 targetFile = 'buildings_urbanopt_uwyo_simplified.json'
 _centroidOutput = 'WY-Simplified-Centroids.csv'
 _ftprintm2lst = []

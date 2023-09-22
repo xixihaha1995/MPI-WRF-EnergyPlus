@@ -1875,7 +1875,7 @@ CONTAINS
             wrf_weather(2) = sum(qv_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external humidity ratio [kg/kg]
             wrf_weather(3) = sum(pr_u(1:COUNT(tmp_u /= 0.0)))/COUNT(tmp_u /= 0.0) !external pressure [Pa]
          inner_dt = 6
-         running_hours = 6
+         running_hours = 24
             if (1.1 *  inner_dt .gt. dt ) then !innermost 1111.11m ~ 6.67 s; 100m ~ 0.6 s
                call spawn_children(FRC_URB2D,ix,iy,ibui,dt,itimestep,&
                its, ite, jts, jte,ims,ime,jms,jme,xlatall, xlongall, &
@@ -1897,7 +1897,7 @@ CONTAINS
                   ! print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   ! print *, "replaced", replaced
                   if (replaced == 2) then
-                     print *, 'Floor layers nlev(ibui) and twb1d', nlev(ibui), twb1d(1,10,:)
+                     ! print *, 'Floor layers nlev(ibui) and twb1d', nlev(ibui), twb1d(1,10,:)
                      do wrfFlrIdx = 1, nlev(ibui)
                         do gridIdx = 1, 10
                            twb1d(:,gridIdx, wrfFlrIdx) = wM2_12K(6:9)

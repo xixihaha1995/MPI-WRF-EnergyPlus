@@ -21,8 +21,8 @@
 #define EARTH_RADIUS_KM 6371.0
 
 int IDF_Coupling = 2; //0, offline; 1, waste; 2, waste + surface;
-char _scratch[256] = "ASHRAE2024/1000m-Online-NoLWR-3flrs";
-char _resource[256] = "wy-simplified-noLWR-3flrs";
+char _scratch[256] = "ASHRAE2024/1000m-30flrs";
+char _resource[256] = "wy-simplified-23-1-0-HighRise";
 char _centroidsName[256] = "WY-Simplified-Centroids.csv";
 char _surfName[256] = "WY-Simplified-SurNames.txt";
 char _idfPrefix[256] = "in_uwyo_simplified_";
@@ -104,13 +104,14 @@ int *mappings[NBR_WRF];
 
 Building buildings[NBR_IDF]; 
 float footprintm2[38] = {
-    174.21, 2700.32, 40.56, 381.57, 1127.94, 
-    446.91, 2802.04, 124.25, 1927.3, 2992.25, 
-    1029.63, 2949.76, 1388.49, 373.71, 2648.12,
-     9721.11, 589.21, 199.8, 890.39, 98.18, 
-     115.43, 96.72, 195.16, 1824.5, 4394.59, 
-     26215.62, 169.99, 4543.75, 99.19, 116.36, 
-     4062.77, 132.37, 3543.82, 276.18, 904.21, 86.24, 1943.4, 955.66
+    188.1, 3325.08, 40.56, 446.0, 1223.82, 
+    543.4, 2688.63, 136.85, 2953.16, 3459.5, 
+    1467.34, 4115.9, 2188.86, 593.68, 5057.3, 
+    11786.58, 699.05, 210.08, 1882.35, 107.25, 
+    115.43, 96.72, 262.45, 5513.55, 5405.5, 
+    52001.95, 169.99, 8471.0, 99.19, 117.9, 
+    7656.43, 145.14, 4036.47, 336.35, 1065.75,
+    86.24, 3462.08, 1115.55
 };
 
 int weatherMPIon = 1, wasteMPIon = 1;
