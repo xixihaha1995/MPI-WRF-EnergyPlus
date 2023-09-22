@@ -1631,6 +1631,7 @@ CONTAINS
       real, dimension(14) :: wM2_12K;
       integer :: replaced;
       integer wrfFlrIdx, ims, ime, jms, jme, its, ite, jts, jte
+      integer gridIdx
 
       REAL, DIMENSION(ims:ime, jms:jme), &
       INTENT(IN)  ::                           xlatall, xlongall
@@ -1896,10 +1897,10 @@ CONTAINS
                   ! print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   ! print *, "replaced", replaced
                   if (replaced == 2) then
-                     do wrfFlrIdx = 1, 3
-                        twb1d(:,10, wrfFlrIdx) = wM2_12K(2+(wrfFlrIdx-1)*4:5+(wrfFlrIdx-1)*4)
+                     do wrfFlrIdx = 1, nlev(ibui)
+                        twb1d(:,1:10, wrfFlrIdx) = wM2_12K(2:5)
                      end do
-                     trb1D(10) = wM2_12K(14)
+                     trb1D(1:10) = wM2_12K(14)
                      ! print *, 'After urban temp, wrf_weather(1)', wrf_weather(1)
                      ! print *, 'After urban waste heat, sflev1D', sflev1D
                   end if
