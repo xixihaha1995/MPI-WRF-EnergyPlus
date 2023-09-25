@@ -1896,7 +1896,7 @@ CONTAINS
                   sflev1D(1:nlev(ibui)) = mean_recv_waste_w
                   ! print *, 'After sflev1D(w) due to a.c.', sflev1D(1:7)
                   ! print *, "replaced", replaced
-                  if (replaced == 2) then
+                  if (replaced >= 2) then
                      ! print *, 'Floor layers nlev(ibui) and twb1d', nlev(ibui), twb1d(1,10,:)
                      do wrfFlrIdx = 1, nlev(ibui)
                         do gridIdx = 1, 10

@@ -31,8 +31,9 @@ experiments_paths = {
     # "WY_100m_jun30": r"C:\Users\wulic\june30_100mIDFs38_ep_temp\june30_100mIDFs38_ep_temp",
     # "WY_100m_july1" : r"C:\Users\wulic\july1_100mIDFs38_ep_temp\july1_100mIDFs38_ep_temp",
     # "WY_100m_july2" : r"C:\Users\wulic\july2_100mIDFs38_ep_temp\july2_100mIDFs38_ep_temp",
-    "LA_TMY3":r"C:\Users\wulic\TMY3_LA_IDFs38_ep_temp\TMY3_LA_IDFs38_ep_temp",
-    "LA_500m":r"C:\Users\wulic\la_72hrs500m_IDFs38_ep_temp\la_72hrs500m_IDFs38_ep_temp",
+    # "LA_TMY3":r"C:\Users\wulic\TMY3_LA_IDFs38_ep_temp\TMY3_LA_IDFs38_ep_temp",
+    # "LA_500m":r"C:\Users\wulic\la_72hrs500m_IDFs38_ep_temp\la_72hrs500m_IDFs38_ep_temp",
+    "WY-Simple-1000m-30flrs":r"C:\Users\wulic\1000m-30flrs\1000m-30flrs",
 }
 
 def calculate_percentage_difference(row, rowNumerator, rowDenominator):
@@ -214,9 +215,9 @@ def comparied_to_tmy3(_tmyStName, _accuStName):
         _newDF.to_excel(excel_writer, sheet_name=_sheetName,index=False)
 
 
-excel_name = "LA-WRF-EP-Coupling.xlsx"
-_tmyStName = "LA_TMY3"
-_accName = "LA-Sep2009-72hrs"
-all_tabs()
-CSVs_to_one_excel(_accName)
-comparied_to_tmy3(_tmyStName, _accName)
+excel_name = "WY-Simple-1000m-30flrs.xlsx"
+_accumulatedName = "Diff"
+# all_tabs()
+CSVs_to_one_excel(_accumulatedName)
+# _tmyStName = "LA_TMY3"
+# comparied_to_tmy3(_tmyStName, _accumulatedName)

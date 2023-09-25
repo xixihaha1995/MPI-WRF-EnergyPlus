@@ -53,4 +53,7 @@ scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_la_72hrs500m_IDF
 scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/copy_TMY3_LA_IDFs38_ep_temp TMY3_LA_IDFs38_ep_temp\
 
 scp -r  lichenwu@cheyenne.ucar.edu:/glade/u/home/lichenwu/project/NWP/WRF-la-on-72hrs/test/em_real/rsl.out.0000 override.rsl.out.0000
+
+find 1000m-30flrs -name "eplustbl.htm" -exec cp --parents {} copy-1000m-30flrs \;
+scp -r  lichenwu@cheyenne.ucar.edu:/glade/scratch/lichenwu/ASHRAE2024/copy-1000m-30flrs 1000m-30flrs\
 ```

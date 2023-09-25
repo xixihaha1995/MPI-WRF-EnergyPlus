@@ -20,7 +20,9 @@
 #define MAPPING_TAG 6
 #define EARTH_RADIUS_KM 6371.0
 
-int IDF_Coupling = 0; //0, offline; 1, waste; 2, waste + surface;
+int IDF_Coupling = 3; //0, offline; 1, waste; 2, waste + surface, 3, waste + surface + LWR.
+int srfLWRNames[4] = {56,44,50,38};
+int srfTmpSchAct[4];
 char _scratch[256] = "ASHRAE2024/1000m-30flrs";
 char _resource[256] = "wy-simplified-23-1-0-HighRise";
 char _centroidsName[256] = "WY-Simplified-Centroids.csv";
@@ -155,6 +157,7 @@ void requestSur(EnergyPlusState state, GeoUWyo geoUWyo) {
 void getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
     // This function is used to iterate bot, mid, top surfaces. get their handles
     char surfaceName[100];
+    char surSchName[100];
     for (int i = 0; i < 4; i++) {
         sprintf(surfaceName, "Surface %d", geoUWyo.bot[i]);
         surHandles.botHandle[i] = getVariableHandle(state, "Surface Outside Face Temperature", surfaceName);
@@ -166,6 +169,15 @@ void getSurHandle(EnergyPlusState state, GeoUWyo geoUWyo) {
                    rank, i, surHandles.botHandle[i], i, surHandles.topHandle[i], i, geoUWyo.top[i]);
             exit(1);
         }
+        if (IDF_Coupling == 3) {
+            sprintf(surSchName, "Srf-Surface %d-Tmp", srfLWRNames[i]);
+            srfTmpSchAct[i] = getActuatorHandle(state, "Schedule:Compact", "Schedule Value", surSchName);
+            if (srfTmpSchAct[i] < 0) {
+                printf("Error: srfTmpSchAct[%d] = %d\n", i, srfTmpSchAct[i]);
+                exit(1);
+            }
+        }
+
     }
     for (int i = 0; i < midLen; i++) {
         sprintf(surfaceName, "Surface %d", geoUWyo.mid[i]);
@@ -217,7 +229,7 @@ void overwriteEpWeather(EnergyPlusState state) {
         odbSenHandle = getVariableHandle(state, "SITE OUTDOOR AIR DRYBULB TEMPERATURE", "ENVIRONMENT");
         ohrSenHandle = getVariableHandle(state, "Site Outdoor Air Humidity Ratio", "ENVIRONMENT");
         otdpSenHandle = getVariableHandle(state, "Site Outdoor Air Dewpoint Temperature", "ENVIRONMENT");
-
+        getSurHandle(state, geoUWyoMyRank);
 
         if (odbActHandle < 0 || orhActHandle < 0 || odbSenHandle < 0 || ohrSenHandle < 0)
         {
@@ -241,6 +253,13 @@ void overwriteEpWeather(EnergyPlusState state) {
         printf("Child rank = %d weatherMPIon=0, No more MPI\n", rank);
         return;
     }
+    getSurVal(state, surHandles);
+    if (IDF_Coupling == 3) {
+        for (int i = 0; i < 4; i++) {
+            setActuatorValue(state, srfTmpSchAct[i], surValues.midVal[i]);
+        }
+    }
+
     // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Recv(&msg_arr, 3, MPI_FLOAT, MPI_ANY_SOURCE, MPI_ANY_TAG, parent_comm, &status);
     if (status.MPI_TAG == 886)
@@ -275,7 +294,6 @@ void endSysTimeStepHandler(EnergyPlusState state) {
         }
         handlesRetrieved = 1;
         simHVACSensor = getVariableHandle(state, "HVAC System Total Heat Rejection Energy", "SIMHVAC");
-        getSurHandle(state, geoUWyoMyRank);
         
         if (simHVACSensor < 0)
         {
@@ -297,7 +315,6 @@ void endSysTimeStepHandler(EnergyPlusState state) {
     Real64 simHVAC_J = getVariableValue(state, simHVACSensor);
     Real64 simHVAC_W = simHVAC_J/ 3600;
 
-    getSurVal(state, surHandles);
     // for surValues.midVal, its length is a multiple of 4. Average it into 4 values
     Real64 avgMidVal[4];
     for (int i = 0; i < midLen; i++) {
@@ -335,8 +352,8 @@ void endSysTimeStepHandler(EnergyPlusState state) {
 
     MPI_Send(&data, performanc_length, MPI_FLOAT,status.MPI_SOURCE, 0, parent_comm);
     printf("Child %d sent flootaream2 = %.2f (m2), simHVAC_W = %.2f (W),"
-        "data[0], data[1] = %.2f, %.2f, data[performanc_length - 1] = %.2f\n", 
-        rank, data[0], simHVAC_W, data[0], data[1], data[performanc_length - 1]);
+        "data[0], data[1] = %.2f, %.2f, data[performanc_length - 1] = %.2f, at time %.2f(h)\n", 
+        rank, data[0], simHVAC_W, data[0], data[1], data[performanc_length - 1], currentSimTime(state));
     
     if (!weatherMPIon) {
         printf("Child %d reached collective barrier, all my siblings here, let's end MPI. \n", rank);
@@ -559,7 +576,10 @@ int main(int argc, char** argv) {
     // Choose the appropriate folder based on IDF_Coupling value
     printf("base_path = %s\n", base_path);
     sprintf(output_path, "%s/saved_%s_ep_trivial_%d", base_path,
-            (IDF_Coupling == 0) ? "offline" : (IDF_Coupling == 1) ? "online1_waste" : "online2_waste_surf",
+            (IDF_Coupling == 0) ? "offline" :
+            (IDF_Coupling == 1) ? "online1_waste" :
+            (IDF_Coupling == 2) ? "online2_waste_surf" :
+            (IDF_Coupling == 3) ? "online2_LWR" : "", // Added case for IDF_Coupling == 3
             rank + 1);
     sprintf(idfFilePath, "./%s/%s%d.idf",  resour_name, _idfPrefix, rank + 1);
 
