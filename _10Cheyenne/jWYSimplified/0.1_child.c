@@ -20,12 +20,13 @@
 #define MAPPING_TAG 6
 #define EARTH_RADIUS_KM 6371.0
 
-int IDF_Coupling = 3; //0, offline; 1, waste; 2, waste + surface, 3, waste + surface + LWR.
-if (IDF_Coupling == 3) {
-    char _resource[256] = "wy-simplified-23-1-0-HighRise-LWR";
-} else {
-    char _resource[256] = "wy-simplified-23-1-0-HighRise";
-}
+int IDF_Coupling = 0; //0, offline; 1, waste; 2, waste + surface, 3, waste + surface + LWR.
+// if (IDF_Coupling == 3) {
+//     char _resource[256] = "wy-simplified-23-1-0-HighRise-LWR";
+// } else {
+//     char _resource[256] = "wy-simplified-23-1-0-HighRise";
+// }
+char _resource[256] = "wy-simplified-23-1-0-HighRise";
 int srfLWRNames[4] = {56,44,50,38};
 int srfTmpSchAct[4];
 char _scratch[256] = "ASHRAE2024/100m-30flrs";
