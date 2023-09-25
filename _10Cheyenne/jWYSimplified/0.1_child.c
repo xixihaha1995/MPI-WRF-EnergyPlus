@@ -21,10 +21,14 @@
 #define EARTH_RADIUS_KM 6371.0
 
 int IDF_Coupling = 3; //0, offline; 1, waste; 2, waste + surface, 3, waste + surface + LWR.
-char _resource[256] = "wy-simplified-23-1-0-HighRise-LWR";
+if (IDF_Coupling == 3) {
+    char _resource[256] = "wy-simplified-23-1-0-HighRise-LWR";
+} else {
+    char _resource[256] = "wy-simplified-23-1-0-HighRise";
+}
 int srfLWRNames[4] = {56,44,50,38};
 int srfTmpSchAct[4];
-char _scratch[256] = "ASHRAE2024/1000m-30flrs";
+char _scratch[256] = "ASHRAE2024/100m-30flrs";
 char _centroidsName[256] = "WY-Simplified-Centroids.csv";
 char _surfName[256] = "WY-Simplified-SurNames.txt";
 char _idfPrefix[256] = "in_uwyo_simplified_";
