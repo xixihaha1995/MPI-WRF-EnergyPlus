@@ -8,3 +8,16 @@
 2.add link directories (shared libraries path)
 
 3.add link liraries (shared libraries name)
+
+### citation
+
+```bibtex
+@misc{0b73665f1cb394ab7613a63764767420db0aab6a4c9343bf29ccdc0171d02d3a,
+title = {{Integrating Urban Microclimate Prediction into Large Scale Building Energy Modeling ...}},
+author = {Lichen Wu},
+url = {https://dx.doi.org/10.13140/rg.2.2.36195.53284},
+year = {2023},
+note = {{Description: Unpublished}},
+language = {{en}},
+}
+```
