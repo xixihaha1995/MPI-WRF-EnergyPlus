@@ -1,14 +1,3 @@
-### set the ep shared file path:
-1. #libenergyplusapi.so.*
-2. `export LD_LIBRARY_PATH=/usr/local/EnergyPlus-23-1-0`
-
-### for compile
-1.add include directories
-
-2.add link directories (shared libraries path)
-
-3.add link liraries (shared libraries name)
-
 ### citation
 
 ```bibtex
@@ -21,3 +10,21 @@ note = {{Description: Unpublished}},
 language = {{en}},
 }
 ```
+
+### introduction
+
+This repo includes thee full software developing path for integrating [EnergyPlus](https://github.com/NREL/EnergyPlus) into [WRF](https://github.com/wrf-model/WRF).
+The integration part is developed using Fortran(MPC_SendRecv) in WRF, and C API (MPI_Recv, MPI_Send) for EnergyPlus building energy model.
+
+### set the ep shared file path:
+1. #libenergyplusapi.so.*
+2. `export LD_LIBRARY_PATH=/usr/local/EnergyPlus-23-1-0`
+
+### for compile
+1.add include directories
+
+2.add link directories (shared libraries path)
+
+3.add link liraries (shared libraries name)
+
+
