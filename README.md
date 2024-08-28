@@ -13,7 +13,7 @@ language = {{en}},
 
 ### introduction
 
-This repo includes thee full software developing path for integrating [EnergyPlus](https://github.com/NREL/EnergyPlus) into [WRF](https://github.com/wrf-model/WRF).
+This repo includes the full software developing path for integrating [EnergyPlus](https://github.com/NREL/EnergyPlus) into [WRF](https://github.com/wrf-model/WRF).
 The integration part is developed using Fortran(MPC_SendRecv) in WRF, and C API (MPI_Recv, MPI_Send) for EnergyPlus building energy model.
 
 ### set the ep shared file path:
